@@ -7,15 +7,13 @@ namespace Memorandum.Web.Views.Drops
     {
         private readonly URLNode _node;
 
-        public UrlNodeDrop(URLNode node)
+        public UrlNodeDrop(URLNode node) : base(node.NodeId)
         {
             _node = node;
         }
 
-        public override string Provider { get { return _node.Provider; }}
-        public override string Id { get { return _node.Hash; } }
+        public int Id { get { return _node.Id; } }
         public string Name { get { return _node.Name; } }
-        public string Hash { get { return _node.Hash; } }
         public string Url { get { return _node.URL; } }
         public string Image { get { return _node.Image; } }
         public DateTime DateAdded { get { return _node.DateAdded; } }

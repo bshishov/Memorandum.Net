@@ -1,4 +1,6 @@
-﻿namespace Memorandum.Core.Domain
+﻿using System;
+
+namespace Memorandum.Core.Domain
 {
     public class Link
     {
@@ -8,8 +10,18 @@
         public virtual string EndNode { get; set; }
         public virtual string StartNodeProvider { get; set; }
         public virtual string EndNodeProvider { get; set; }
+        public virtual DateTime DateAdded { get; set; }
         public virtual User User { get; set; }
 
+        public virtual NodeIdentifier GetStartIdentifier()
+        {
+            return new NodeIdentifier(StartNodeProvider, StartNode);
+        }
+
+        public virtual NodeIdentifier GetEndIdentifier()
+        {
+            return new NodeIdentifier(EndNodeProvider, EndNode);
+        }
 
         public Link()
         {
@@ -18,10 +30,10 @@
 
         public Link(Node start, Node end)
         {
-            StartNode = start.NodeId;
-            StartNodeProvider = start.Provider;
-            EndNode = end.NodeId;
-            EndNodeProvider = end.Provider;
+            StartNode = start.NodeId.Id;
+            StartNodeProvider = start.NodeId.Provider;
+            EndNode = end.NodeId.Id;
+            EndNodeProvider = end.NodeId.Provider;
         }
 
         public override string ToString()

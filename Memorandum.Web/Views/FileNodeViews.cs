@@ -22,7 +22,7 @@ namespace Memorandum.Web.Views
 
         static Response FileNodeView(Request request, string[] args)
         {
-            var node = Engine.Memo.Files.FindById(WebUtility.UrlDecode(args[0]));
+            var node = Engine.Memo.FileNodes.FindById(WebUtility.UrlDecode(args[0]));
             BaseFileNodeDrop drop;
             if (node.IsDirectory)
             {
@@ -40,13 +40,13 @@ namespace Memorandum.Web.Views
                 throw new Exception("Incorrect file node");
 
             if (EditableFileTypes.Contains(fileNode.Mime))
-                template = "Files/_text";
+                template = "FileNodes/_text";
             else if (fileNode.Mime.Contains("image/"))
-                template = "Files/_image";
+                template = "FileNodes/_image";
             else if (fileNode.Mime.Contains("video/"))
-                template = "Files/_video";
+                template = "FileNodes/_video";
             else if (fileNode.Mime.Contains("audio/"))
-                template = "Files/_audio";
+                template = "FileNodes/_audio";
 
             return new TemplatedResponse(template, new
             {
@@ -58,7 +58,7 @@ namespace Memorandum.Web.Views
 
         static Response RawFileNode(Request request, string[] args)
         {
-            var node = Engine.Memo.Files.FindById(args[0]);
+            var node = Engine.Memo.FileNodes.FindById(args[0]);
             if(node.IsDirectory)
                 throw new InvalidOperationException("Not a file");
             var fileNode = node as FileNode;
@@ -69,7 +69,7 @@ namespace Memorandum.Web.Views
 
         static Response DownloadFileNode(Request request, string[] args)
         {
-            var node = Engine.Memo.Files.FindById(args[0]);
+            var node = Engine.Memo.FileNodes.FindById(args[0]);
             if (node.IsDirectory)
                 throw new InvalidOperationException("Not a file");
             var fileNode = node as FileNode;

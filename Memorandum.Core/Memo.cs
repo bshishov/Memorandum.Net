@@ -1,33 +1,33 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Memorandum.Core.Domain;
 using Memorandum.Core.Repositories;
 using Memorandum.Core.Utilities;
-
+using NHibernate;
 
 namespace Memorandum.Core
 {
-    public class Memo
+    public class Memo : IDisposable
     {
+        private readonly ISession _dbSession;
         public TextNodeRepository TextNodes { get; private set; }
         public UrlNodeRepository URLNodes { get; private set; }
         public LinksRepository Links { get; private set; }
-        public FileNodeRepository Files { get; private set; }
-        public DatabaseRepository<Profile, int> Profiles { get; set; }
+        public FileNodeRepository FileNodes { get; private set; }
+        public NodeRepository Nodes { get; private set; }
         private UserRepository Users { get; set; }
         
-
-
         public Memo()
         {
-            Files = new FileNodeRepository();
-            Links = new LinksRepository();
-            URLNodes = new UrlNodeRepository();
-            TextNodes = new TextNodeRepository();
-            Users = new UserRepository();
-            Profiles = new DatabaseRepository<Profile, int>();
+            _dbSession = Database.OpenSession();
+
+            FileNodes = new FileNodeRepository();
+            Links = new LinksRepository(_dbSession);
+            URLNodes = new UrlNodeRepository(_dbSession);
+            TextNodes = new TextNodeRepository(_dbSession);
+            Users = new UserRepository(_dbSession);
+            Nodes = new NodeRepository(TextNodes, URLNodes, FileNodes);
         }
 
         public User Auth(string login, string password)
@@ -52,6 +52,15 @@ namespace Memorandum.Core
             }
 
             throw new Exception("Password mismatch");
+        }
+
+        public void Dispose()
+        {
+            if (_dbSession != null)
+            {
+                _dbSession.Flush(); // commit session transactions
+                _dbSession.Close();
+            }
         }
     }
 }

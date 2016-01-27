@@ -76,7 +76,7 @@ namespace Memorandum.Core.Repositories
 
         public T FindById(TKey id)
         {
-            return Session.Load(typeof(T), id) as T;
+            return Session.CreateCriteria<T>().Add(Restrictions.Eq(Projections.Id(), id)).UniqueResult<T>();
         }
 
         public IEnumerable<T> ByIds(TKey[] ids)

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Memorandum.Core.Repositories;
 using MimeTypes;
 
 namespace Memorandum.Core.Domain
@@ -22,14 +23,9 @@ namespace Memorandum.Core.Domain
 
         public override User User { get; set; }
 
-        public override string Provider
+        public override NodeIdentifier NodeId
         {
-            get { return "file"; }
-        }
-
-        public override string NodeId
-        {
-            get { return this.Path; }
+            get { return new NodeIdentifier("file", Path); }
         }
     }
 

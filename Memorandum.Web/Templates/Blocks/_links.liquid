@@ -1,7 +1,7 @@
 {% for group in Links %}       
 <div class="section">
-    {% if group.Name != '' %}
-        <h5>{{ group.Name }}</h5>     
+    {% if group.Name %}
+        <h5>{{ group.Name|Capitalize }}</h5>     
     {% endif %}
 	{% include 'Blocks/add_buttons' %}
     {%if group.Items %}   
@@ -26,7 +26,7 @@
                 </div>  
                 <div class="col s1 m1">
                     {% if link.Id %}
-                    <a href="/links/{{ link.Id }}/remove" title="Unlink" class="secondary-content"><i class="material-icons tiny">remove_circle_outline</i></a>
+                    <a href="/links/{{ link.Id }}/delete$" title="Unlink" class="secondary-content"><i class="material-icons tiny">remove_circle_outline</i></a>
                     {% endif %} 
                 </div>                
             </li>

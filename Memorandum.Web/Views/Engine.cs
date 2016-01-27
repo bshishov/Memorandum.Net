@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Memorandum.Core;
@@ -13,19 +12,10 @@ namespace Memorandum.Web.Views
 
         public static IEnumerable<LinksGroupDrop> GetGroupedLinks(Node node)
         {
-            var links = Memo.Links.Where(l => l.StartNode == node.NodeId && l.StartNodeProvider == node.Provider).ToList();
-            var linkDrops = new List<LinkDrop>();
-            foreach (var link in links)
-            {
-                if (link.EndNodeProvider == "text")
-                    linkDrops.Add(new LinkDrop(link, Memo.TextNodes.FindById(Convert.ToInt32(link.EndNode))));
-                if (link.EndNodeProvider == "url")
-                    linkDrops.Add(new LinkDrop(link, Memo.URLNodes.Where(u=>u.Hash == link.EndNode).First()));
-                if (link.EndNodeProvider == "file")
-                    linkDrops.Add(new LinkDrop(link, Memo.Files.FindById(link.EndNode)));
-            }
+            var links = Memo.Links.Where(l => l.StartNode == node.NodeId.Id && l.StartNodeProvider == node.NodeId.Provider).ToList();
+            var linkDrops = links.Select(link => new LinkDrop(link, Memo.Nodes.FindById(link.GetEndIdentifier()))).ToList();
 
-            if (node.Provider == "file")
+            if (node.NodeId.Provider == "file")
             {
                 var dir = node as DirectoryNode;
                 if (dir != null)
@@ -35,12 +25,35 @@ namespace Memorandum.Web.Views
             }
 
             if (linkDrops.Count == 0)
-                return null;
+                return new List<LinksGroupDrop>{ new LinksGroupDrop() };
 
-            return new List<LinksGroupDrop>()
+            var groups = new List<LinksGroupDrop>();
+            var unnamedGroup = new LinksGroupDrop();
+            groups.Add(unnamedGroup);
+
+            foreach (var link in linkDrops)
             {
-                new LinksGroupDrop(linkDrops)
-            };
+                var sameRealtionLink = unnamedGroup.Items.FirstOrDefault(l => l.Relation == link.Relation);
+                if (sameRealtionLink != null)
+                {
+                    unnamedGroup.Items.Remove(link);
+                    var group = new LinksGroupDrop(new List<LinkDrop> {link, sameRealtionLink});
+                    groups.Add(group);
+                    continue;
+                }
+
+                var groupWithSameRelation = groups.FirstOrDefault(g => g.Name == link.Relation);
+                if (groupWithSameRelation != null)
+                {
+                    groupWithSameRelation.Items.Add(link);
+                    continue;
+                }
+                
+                unnamedGroup.Items.Add(link);
+            }
+
+
+            return groups;
         }
     }
 }

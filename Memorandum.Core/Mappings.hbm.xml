@@ -1,20 +1,18 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" assembly="Memorandum.Core" namespace="Memorandum.Core.Domain">
-  <class name="User" table="auth_user">
+  <class name="User" table="memo_user">
     <id name="Id" type="int" generator="native"></id>
     <property name="Username" column="username" type="String" />
     <property name="Password" column="password" type="String" />
-  </class>
-  <class name="Profile" table="Profiles_profile">
-    <id name="Id" type="int" generator="native"></id>
-    <many-to-one name="User" class="User">
-      <column name="user_id"/>
-    </many-to-one>
+    <property name="DateJoined" column="date_joined" type="DateTime" />
+    <property name="LastLogin" column="last_login" type="DateTime" />
+    <property name="Email" column="email" type="String" />
     <many-to-one name="Home" class="TextNode">
       <column name="home_id"/>
     </many-to-one>
   </class>
-  <class name="TextNode" table="Nodes_node">
+ 
+  <class name="TextNode" table="memo_text">
     <id name="Id" type="int" generator="native"></id>
     <property name="Text" column="text" type="String" />
     <property name="DateAdded" column="date_added" type="DateTime" />
@@ -22,24 +20,26 @@
       <column name="user_id"/>
     </many-to-one>
   </class>
-  <class name="URLNode" table="Nodes_url">
+  
+  <class name="URLNode" table="memo_url">
     <id name="Id" type="int" generator="native"></id>
     <property name="URL" column="url" type="String" />
     <property name="Name" column="name" type="String" />
     <property name="Image" column="image" type="String" />
-    <property name="Hash" column="url_hash" type="String" />
     <property name="DateAdded" column="date_added" type="DateTime" />
     <many-to-one name="User" class="User">
       <column name="user_id"/>
     </many-to-one>
   </class>
-  <class name="Link" table="Nodes_link">
+  
+  <class name="Link" table="memo_link">
     <id name="Id" type="int" generator="native"></id>
     <property name="Relation" column="relation" type="String" />
-    <property name="StartNode" column="node1" type="String" />
-    <property name="EndNode" column="node2" type="String" />
-    <property name="StartNodeProvider" column="provider1" type="String" />
-    <property name="EndNodeProvider" column="provider2" type="String" />
+    <property name="StartNode" column="start_node" type="String" />
+    <property name="StartNodeProvider" column="start_provider" type="String" />
+    <property name="EndNode" column="end_node" type="String" />
+    <property name="EndNodeProvider" column="end_provider" type="String" />
+    <property name="DateAdded" column="date_added" type="DateTime" />
     <many-to-one name="User" class="User">
       <column name="user_id"/>
     </many-to-one>

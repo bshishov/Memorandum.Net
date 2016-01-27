@@ -1,10 +1,9 @@
 <div id="textform" class="modal">   
     <div class="modal-content">
         <h4>Add text note</h4>
-        <form method="post" action="/add">
-            <input type="hidden" name="parent_id" value="{{ id }}" />
-            <input type="hidden" name="parent_provider" value="{{ provider }}" />
-            <input type="hidden" name="new_provider" value="text" />
+        <form method="post" action="/text/add">
+            <input type="hidden" name="parent_id" value="{{ Node.NodeId }}" />
+            <input type="hidden" name="parent_provider" value="{{ Node.Provider }}" />
 
             <div class="row">                
                 <div class="input-field col s6">
@@ -49,10 +48,9 @@
 <div id="urlform" class="modal">
     <div class="modal-content">
         <h4>Add URL</h4>
-        <form method="post" action="/add">
-            <input type="hidden" name="parent_id" value="{{ id }}" />
-            <input type="hidden" name="parent_provider" value="{{ provider }}" />
-            <input type="hidden" name="new_provider" value="url" />
+        <form method="post" action="/url/add">
+            <input type="hidden" name="parent_id" value="{{ Node.NodeId }}" />
+            <input type="hidden" name="parent_provider" value="{{ Node.Provider }}" />
 
             <div class="row">                
                 <div class="input-field col s6">
@@ -89,10 +87,9 @@
 <div id="fileform" class="modal">
     <div class="modal-content">
         <h4>Upload file</h4>
-        <form method="post" action="/add">
-            <input type="hidden" name="parent_id" value="{{ id }}" />
-            <input type="hidden" name="parent_provider" value="{{ provider }}" />
-            <input type="hidden" name="new_provider" value="file" />
+        <form method="post" action="/file/add">
+          <input type="hidden" name="parent_id" value="{{ Node.NodeId }}" />
+          <input type="hidden" name="parent_provider" value="{{ Node.Provider }}" />
 
             <div class="row">                
                 <div class="input-field col s6">

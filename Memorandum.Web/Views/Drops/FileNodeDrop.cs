@@ -6,15 +6,12 @@ namespace Memorandum.Web.Views.Drops
     abstract class BaseFileNodeDrop : NodeDrop
     {
         protected BaseFileNode Node;
-
-        public override string Provider { get { return Node.Provider; } }
-        public override string Id { get { return Node.NodeId; } }
         public string Name { get { return Node.Name; } }
         public bool IsDirectory { get { return Node.IsDirectory; } }
         public string Path { get { return Node.Path; } }
         public DateTime LastModified { get { return Node.LastModified; } }
 
-        protected BaseFileNodeDrop(BaseFileNode node)
+        protected BaseFileNodeDrop(BaseFileNode node) : base(node.NodeId)
         {
             Node = node;
         }

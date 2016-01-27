@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using DotLiquid;
 using Memorandum.Core.Domain;
@@ -46,11 +45,16 @@ namespace Memorandum.Web.Views.Drops
     class DropGroup<T> : Drop
     {
         public string Name { get; protected set; }
-        public IEnumerable<T> Items { get; protected set; }
+        public List<T> Items { get; protected set; }
     }
 
     class LinksGroupDrop : DropGroup<LinkDrop>
     {
+        public LinksGroupDrop()
+        {
+            Items = new List<LinkDrop>();
+        }
+
         public LinksGroupDrop(IEnumerable<LinkDrop> linkDrops)
         {
             Items = linkDrops.ToList();

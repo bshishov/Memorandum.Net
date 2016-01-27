@@ -50,7 +50,6 @@
   <ItemGroup>
     <Compile Include="Domain\Link.cs" />
     <Compile Include="Domain\FileNode.cs" />
-    <Compile Include="Domain\Profile.cs" />
     <Compile Include="Domain\User.cs" />
     <Compile Include="Repositories\Database.cs" />
     <Compile Include="Repositories\FileNodeRepository.cs" />
@@ -61,6 +60,8 @@
     <Compile Include="Domain\URLNode.cs" />
     <Compile Include="Repositories\LinksRepository.cs" />
     <Compile Include="Repositories\DatabaseRepository.cs" />
+    <Compile Include="Domain\NodeIdentifier.cs" />
+    <Compile Include="Repositories\NodeRepository.cs" />
     <Compile Include="Repositories\TextNodeRepository.cs" />
     <Compile Include="Repositories\UrlNodeRepository.cs" />
     <Compile Include="Memo.cs" />

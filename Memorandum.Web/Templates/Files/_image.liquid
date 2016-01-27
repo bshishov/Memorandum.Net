@@ -1,0 +1,9 @@
+{% extends 'file_node' %}
+
+{% block file_content %}
+<div class="image-file center-align">
+    <div>
+        <img class="materialboxed responsive-img" src="/file/raw/{{Node.Path|Urlencode}}" data-caption="{{Node.Name}}">
+    </div>
+</div>
+{% endblock %}

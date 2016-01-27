@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" assembly="Memorandum.Core" namespace="Memorandum.Core.Domain">
+  <class name="User" table="auth_user">
+    <id name="Id" type="int" generator="native"></id>
+    <property name="Username" column="username" type="String" />
+    <property name="Password" column="password" type="String" />
+  </class>
+  <class name="Profile" table="Profiles_profile">
+    <id name="Id" type="int" generator="native"></id>
+    <many-to-one name="User" class="User">
+      <column name="user_id"/>
+    </many-to-one>
+    <many-to-one name="Home" class="TextNode">
+      <column name="home_id"/>
+    </many-to-one>
+  </class>
+  <class name="TextNode" table="Nodes_node">
+    <id name="Id" type="int" generator="native"></id>
+    <property name="Text" column="text" type="String" />
+    <property name="DateAdded" column="date_added" type="DateTime" />
+    <many-to-one name="User" class="User">
+      <column name="user_id"/>
+    </many-to-one>
+  </class>
+  <class name="URLNode" table="Nodes_url">
+    <id name="Id" type="int" generator="native"></id>
+    <property name="URL" column="url" type="String" />
+    <property name="Name" column="name" type="String" />
+    <property name="Image" column="image" type="String" />
+    <property name="Hash" column="url_hash" type="String" />
+    <property name="DateAdded" column="date_added" type="DateTime" />
+    <many-to-one name="User" class="User">
+      <column name="user_id"/>
+    </many-to-one>
+  </class>
+  <class name="Link" table="Nodes_link">
+    <id name="Id" type="int" generator="native"></id>
+    <property name="Relation" column="relation" type="String" />
+    <property name="StartNode" column="node1" type="String" />
+    <property name="EndNode" column="node2" type="String" />
+    <property name="StartNodeProvider" column="provider1" type="String" />
+    <property name="EndNodeProvider" column="provider2" type="String" />
+    <many-to-one name="User" class="User">
+      <column name="user_id"/>
+    </many-to-one>
+  </class>
+</hibernate-mapping>

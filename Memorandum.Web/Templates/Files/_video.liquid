@@ -1,0 +1,9 @@
+{% extends 'file_node' %}
+
+{% block file_content %}
+<div class="center-align">
+    <video class="responsive-video" controls>
+        <source src="/file/raw/{{Node.Path|Urlencode}}" type="{{Node.Mime}}">
+    </video>
+</div>
+{% endblock %}

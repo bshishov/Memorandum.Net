@@ -1,0 +1,13 @@
+<strong><a href="/{{ link.EndNodeProvider }}/{{ link.EndNode|UrlEncode }}" class="link-title">
+    <!-- URL { user, url_hash, name, image, date_added } -->
+  {{ link.Node.Name }}
+</a></strong>  
+
+<a href="{{ link.Node.Url }}" class="link-title" target="_blank">View</a> 
+{% if link.Node.Image %}  
+<div class="link-additional">
+    <a href="/{{ link.EndNodeProvider }}/{{ link.EndNode|UrlEncode }}">
+        <img src="{{link.Node.Image}}" alt="" class="responsive-img z-depth-1" />
+    </a>
+</div>
+{% endif %}

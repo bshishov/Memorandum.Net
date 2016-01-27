@@ -1,0 +1,169 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{30DD4420-6808-4F21-A8AF-DBE08EC1B5BC}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Memorandum.Web</RootNamespace>
+    <AssemblyName>Memorandum.Web</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="DotLiquid">
+      <HintPath>..\packages\DotLiquid.1.8.0\lib\NET45\DotLiquid.dll</HintPath>
+    </Reference>
+    <Reference Include="FastCGI">
+      <HintPath>..\packages\FastCGI.1.2.0.0\lib\net45\FastCGI.dll</HintPath>
+    </Reference>
+    <Reference Include="MimeTypeMap">
+      <HintPath>..\packages\MediaTypeMap.2.1.0.0\lib\net40\MimeTypeMap.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Newtonsoft.Json.8.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Framework\App.cs" />
+    <Compile Include="Framework\Errors\HttpErrorException.cs" />
+    <Compile Include="Framework\Middleware\IMiddleware.cs" />
+    <Compile Include="Framework\Middleware\Session.cs" />
+    <Compile Include="Framework\Middleware\SessionMiddleware.cs" />
+    <Compile Include="Framework\Request.cs" />
+    <Compile Include="Framework\Responses\RedirectResponse.cs" />
+    <Compile Include="Framework\Responses\TemplatedResponse.cs" />
+    <Compile Include="Framework\Routing\IRoute.cs" />
+    <Compile Include="Framework\Responses\HttpResponse.cs" />
+    <Compile Include="Framework\Utilities\Pipeline.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Framework\Routing\IRouteContext.cs" />
+    <Compile Include="Framework\Routing\RequestHandler.cs" />
+    <Compile Include="Framework\Responses\Response.cs" />
+    <Compile Include="Framework\Routing\RequestHandlerWithArg.cs" />
+    <Compile Include="Framework\Routing\Route.cs" />
+    <Compile Include="Framework\Routing\RouteContext.cs" />
+    <Compile Include="Framework\Routing\RouteContextWithArg.cs" />
+    <Compile Include="Framework\Routing\Router.cs" />
+    <Compile Include="Framework\Routing\RouteWithArg.cs" />
+    <Compile Include="Framework\Utilities\Filters.cs" />
+    <Compile Include="Framework\Utilities\HttpUtilities.cs" />
+    <Compile Include="Framework\Utilities\RequestExtensions.cs" />
+    <Compile Include="Framework\Utilities\Tags.cs" />
+    <Compile Include="Views\ApiViews.cs" />
+    <Compile Include="Views\Drops\FileNodeDrop.cs" />
+    <Compile Include="Views\Drops\LinkDrop.cs" />
+    <Compile Include="Views\Drops\NodeDrop.cs" />
+    <Compile Include="Views\Drops\TextNodeDrop.cs" />
+    <Compile Include="Views\Drops\UrlNodeDrop.cs" />
+    <Compile Include="Views\Engine.cs" />
+    <Compile Include="Views\FileNodeViews.cs" />
+    <Compile Include="Views\GeneralViews.cs" />
+    <Compile Include="Views\TextNodeViews.cs" />
+    <Compile Include="Views\UrlNodeViews.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Templates\Blocks\_add_buttons.liquid">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Templates\Blocks\_add_form.liquid">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Templates\Blocks\_links.liquid">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Templates\Blocks\_parent_links.liquid">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Templates\Blocks\Widgets\_file.liquid">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Templates\Blocks\Widgets\_text.liquid">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Templates\Blocks\Widgets\_url.liquid">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Templates\error.liquid">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Templates\Files\_audio.liquid">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Templates\Files\_image.liquid">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Templates\Files\_text.liquid">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Templates\Files\_video.liquid">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Templates\_file_node.liquid">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Templates\_layout.liquid">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Templates\login.liquid">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Templates\_node.liquid">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Templates\text_node.liquid">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Templates\url_node.liquid">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Memorandum.Core\Memorandum.Core.csproj">
+      <Project>{f4bf3ea8-2436-4bc5-8fb4-8d2c603b77ec}</Project>
+      <Name>Memorandum.Core</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="hibernate.cfg.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

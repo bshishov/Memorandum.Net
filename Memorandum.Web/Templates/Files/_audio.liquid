@@ -1,0 +1,7 @@
+{% extends 'file_node' %}
+
+{% block file_content %}
+<audio controls>
+    <source src="/file/raw/{{Node.Path|Urlencode}}" type="{{Node.Mime}}">
+</audio>
+{% endblock %}

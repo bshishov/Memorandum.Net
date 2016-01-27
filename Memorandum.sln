@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.21005.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Memorandum.Core", "Memorandum.Core\Memorandum.Core.csproj", "{F4BF3EA8-2436-4BC5-8FB4-8D2C603B77EC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Memorandum.Web", "Memorandum.Web\Memorandum.Web.csproj", "{30DD4420-6808-4F21-A8AF-DBE08EC1B5BC}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F4BF3EA8-2436-4BC5-8FB4-8D2C603B77EC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F4BF3EA8-2436-4BC5-8FB4-8D2C603B77EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F4BF3EA8-2436-4BC5-8FB4-8D2C603B77EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F4BF3EA8-2436-4BC5-8FB4-8D2C603B77EC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{30DD4420-6808-4F21-A8AF-DBE08EC1B5BC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{30DD4420-6808-4F21-A8AF-DBE08EC1B5BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{30DD4420-6808-4F21-A8AF-DBE08EC1B5BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{30DD4420-6808-4F21-A8AF-DBE08EC1B5BC}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

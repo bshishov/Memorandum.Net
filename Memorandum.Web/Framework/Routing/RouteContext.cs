@@ -1,0 +1,20 @@
+using FastCGI;
+using Memorandum.Web.Framework.Responses;
+
+namespace Memorandum.Web.Framework.Routing
+{
+    class RouteContext : IRouteContext
+    {
+        private readonly Route _route;
+
+        public RouteContext(Route route)
+        {
+            _route = route;
+        }
+
+        public Response Proceed(Request request)
+        {
+            return _route.Proceed(request);
+        }
+    }
+}

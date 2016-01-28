@@ -9,31 +9,10 @@ $(document).ready(function(){
         window.location = path;        
     else
         console.log(path);
-  });
-
-  initSelector($('#selector'));
+  });  
 });
-
 
 var setRelation = function(relation) {
     $( "input[name='relation']" ).val(relation);
     $( "input[name='relation']" ).trigger('autoresize');
 };
-
-var initSelector = function(elem) {
-  var id = elem.data('id');
-  var provider = elem.data('provider');
-  //alert(provider + "/" + id);
-  loadLinks(elem, id, provider);  
-};
-
-var loadLinks = function(parentElem, parentId, parentProvider) {
-  $.ajax({
-    url: "/api/" + parentProvider + "/" + parentId + "/links",    
-    dataType: "json",
-    success: function(data) {
-      console.log(data);
-    },          
-  });
-}
-

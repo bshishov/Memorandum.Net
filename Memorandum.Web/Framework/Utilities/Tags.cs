@@ -18,7 +18,6 @@ namespace Memorandum.Web.Framework.Utilities
 
             public override void Render(Context context, TextWriter result)
             {
-                // TODO LOAD STATICFILES DIR
                 result.Write("/static/" + _path);
             }
         }

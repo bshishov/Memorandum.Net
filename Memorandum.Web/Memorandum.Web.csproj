@@ -47,6 +47,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Framework\App.cs" />
@@ -75,10 +76,16 @@
     <Compile Include="Framework\Utilities\HttpUtilities.cs" />
     <Compile Include="Framework\Utilities\RequestExtensions.cs" />
     <Compile Include="Framework\Utilities\Tags.cs" />
-    <Compile Include="Views\ApiViews.cs" />
+    <Compile Include="Views\RestApi\ApiResponse.cs" />
+    <Compile Include="Views\RestApi\ApiViews.cs" />
+    <Compile Include="Views\RestApi\BadRequestApiResponse.cs" />
+    <Compile Include="Views\RestApi\ForbiddenApiResponse.cs" />
+    <Compile Include="Views\RestApi\NonAuthorizedApiResponse.cs" />
+    <Compile Include="Views\RestApi\ResourceNotFoundApiResponse.cs" />
     <Compile Include="Views\Drops\FileNodeDrop.cs" />
     <Compile Include="Views\Drops\LinkDrop.cs" />
     <Compile Include="Views\Drops\NodeDrop.cs" />
+    <Compile Include="Views\Drops\NodeDropFactory.cs" />
     <Compile Include="Views\Drops\TextNodeDrop.cs" />
     <Compile Include="Views\Drops\UrlNodeDrop.cs" />
     <Compile Include="Views\Engine.cs" />

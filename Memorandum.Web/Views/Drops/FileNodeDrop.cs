@@ -11,7 +11,7 @@ namespace Memorandum.Web.Views.Drops
         public string Path { get { return Node.Path; } }
         public DateTime LastModified { get { return Node.LastModified; } }
 
-        protected BaseFileNodeDrop(BaseFileNode node) : base(node.NodeId)
+        protected BaseFileNodeDrop(BaseFileNode node) : base(node)
         {
             Node = node;
         }

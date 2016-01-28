@@ -12,7 +12,7 @@ namespace Memorandum.Web.Framework.Utilities
             foreach (var segment in querySegments)
             {
                 var parts = segment.Split('=');
-                if (parts.Length <= 0) continue;
+                if (parts.Length <= 1) continue;
                 var key = parts[0].Trim(new[] { '?', ' ' });
                 var val = WebUtility.UrlDecode(parts[1].Trim());
 

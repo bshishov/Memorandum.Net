@@ -23,7 +23,6 @@ namespace Memorandum.Web.Views
         static Response FileNodeView(Request request, string[] args)
         {
             var node = Engine.Memo.FileNodes.FindById(WebUtility.UrlDecode(args[0]));
-            BaseFileNodeDrop drop;
             if (node.IsDirectory)
             {
                 return new TemplatedResponse("_file_node", new

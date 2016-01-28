@@ -1,5 +1,6 @@
 ﻿using Memorandum.Web.Framework;
 using Memorandum.Web.Framework.Routing;
+using Memorandum.Web.Views.RestApi;
 
 namespace Memorandum.Web
 {
@@ -12,7 +13,7 @@ namespace Memorandum.Web
             router.Bind("^/text", Views.TextNodeViews.Router);
             router.Bind("^/url", Views.UrlNodeViews.Router);
             router.Bind("^/file", Views.FileNodeViews.Router);
-            router.Bind("^/api", Views.ApiViews.Router);
+            router.Bind("^/api", ApiViews.Router);
 
             var app = new App(router);
             app.Listen(19000);

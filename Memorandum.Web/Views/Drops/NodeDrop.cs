@@ -1,3 +1,4 @@
+using System.Net;
 using DotLiquid;
 using Memorandum.Core.Domain;
 
@@ -5,13 +6,17 @@ namespace Memorandum.Web.Views.Drops
 {
     public abstract class NodeDrop : Drop
     {
+        public string Link { get; private set; }
         public string NodeId { get; private set; }
         public string Provider { get; private set; }
+        public int UserId { get; private set; }
 
-        protected NodeDrop(NodeIdentifier identifier)
+        protected NodeDrop(Node node)
         {
-            NodeId = identifier.Id;
-            Provider = identifier.Provider;
+            NodeId = node.NodeId.Id;
+            Provider = node.NodeId.Provider;
+            Link = string.Format("/{0}/{1}", Provider, WebUtility.UrlEncode(NodeId));
+            UserId = node.User.Id;
         }
     }
 }

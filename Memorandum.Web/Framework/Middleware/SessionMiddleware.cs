@@ -18,27 +18,28 @@ namespace Memorandum.Web.Framework.Middleware
         /// <param name="request">Input request</param>
         public void Handle(Request request)
         {
+            string key = null;
+            
             if (request.Cookies != null)
+                key = request.Cookies[SessionKeyCookieName];
+
+            if (String.IsNullOrEmpty(key))
             {
-                var key = request.Cookies[SessionKeyCookieName];
-                if (key != null)
-                {
-                    if (_sessions.ContainsKey(key))
-                    {
-                        // Set existing session
-                        request.Session = _sessions[key];
-                        request.Session.CookieExist = true;
-                    }
-                    else
-                    {
-                        // Create new session with provided key
-                        InitNewSession(request, key, true);
-                    }
-                }
+                InitNewSession(request, Guid.NewGuid().ToString());
             }
             else
             {
-                InitNewSession(request, Guid.NewGuid().ToString());
+                if (_sessions.ContainsKey(key))
+                {
+                    // Set existing session
+                    request.Session = _sessions[key];
+                    request.Session.CookieExist = true;
+                }
+                else
+                {
+                    // Create new session with provided key
+                    InitNewSession(request, key, true);
+                }
             }
         }
 

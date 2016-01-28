@@ -12,7 +12,7 @@ namespace Memorandum.Web.Views.Drops
         public DateTime DateAdded { get { return _node.DateAdded; } }
 
         public TextNodeDrop(TextNode node)
-            : base(node.NodeId)
+            : base(node)
         {
             _node = node;
         }

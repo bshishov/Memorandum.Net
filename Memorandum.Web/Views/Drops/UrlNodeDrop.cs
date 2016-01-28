@@ -7,7 +7,7 @@ namespace Memorandum.Web.Views.Drops
     {
         private readonly URLNode _node;
 
-        public UrlNodeDrop(URLNode node) : base(node.NodeId)
+        public UrlNodeDrop(URLNode node) : base(node)
         {
             _node = node;
         }

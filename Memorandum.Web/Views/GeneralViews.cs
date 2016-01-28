@@ -15,7 +15,7 @@ namespace Memorandum.Web.Views
             new Route("^/login$", Login),
             new Route("^/logout$", Logout),
         });
-
+        
         public static Response Home(Request request)
         {
             var user = request.Session.Get<User>("user");

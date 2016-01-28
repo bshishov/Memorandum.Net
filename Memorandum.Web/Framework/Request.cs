@@ -6,6 +6,7 @@ namespace Memorandum.Web.Framework
 {
     class Request
     {
+        public string QueryString { get { return RawRequest.GetParameterASCII("QUERY_STRING"); } }
         public string Method { get { return RawRequest.GetParameterASCII("REQUEST_METHOD"); } }
         public string Path { get { return RawRequest.GetParameterUTF8("DOCUMENT_URI"); } }
         public Session Session { get; set; }

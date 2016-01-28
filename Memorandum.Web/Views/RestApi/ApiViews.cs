@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Memorandum.Core.Domain;
 using Memorandum.Web.Framework;
 using Memorandum.Web.Framework.Responses;
@@ -17,9 +18,27 @@ namespace Memorandum.Web.Views.RestApi
         {
             new Route("/$", ApiHome),
             new Route("/auth$", Auth),
+            new Route("/search$", Search),
             new RouteWithArg("/([a-z]+)/(.+)/links$", LinksView),
             new RouteWithArg("/([a-z]+)/([^/.]+)$", NodeView),
         });
+
+        private static Response Search(Request request)
+        {
+            const string searchQueryKey = "q";
+            
+            var user = UserAuth(request, true);
+            if (user == null)
+                return new NonAuthorizedApiResponse();
+
+            var qs = HttpUtilities.ParseQueryString(request.QueryString);
+            var query = qs[searchQueryKey];
+            if (string.IsNullOrEmpty(query))
+                return new BadRequestApiResponse("Empty query");
+            var nodes = Engine.Memo.Nodes.Search(query);
+            var drops = nodes.Select(NodeDropFactory.Create);
+            return new ApiResponse(drops);
+        }
 
         /// <summary>
         /// TODO: Implement OAuth
@@ -103,7 +122,7 @@ namespace Memorandum.Web.Views.RestApi
             if (node.User.Id != user.Id)
                 return new ForbiddenApiResponse();
             
-            return new ApiResponse(Engine.GetGroupedLinks(node));
+            return new ApiResponse(Engine.GetLinks(node));
         }
 
         static Response ApiHome(Request request)

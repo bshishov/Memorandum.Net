@@ -10,20 +10,22 @@ namespace Memorandum.Web.Views
     {
         public static Memo Memo = new Memo();
 
-        public static IEnumerable<LinksGroupDrop> GetGroupedLinks(Node node)
+        public static List<LinkDrop> GetLinks(Node node)
         {
             var links = Memo.Links.Where(l => l.StartNode == node.NodeId.Id && l.StartNodeProvider == node.NodeId.Provider).ToList();
             var linkDrops = links.Select(link => new LinkDrop(link, Memo.Nodes.FindById(link.GetEndIdentifier()))).ToList();
-
-            if (node.NodeId.Provider == "file")
+            
+            var dir = node as DirectoryNode;
+            if (dir != null)
             {
-                var dir = node as DirectoryNode;
-                if (dir != null)
-                {
-                    linkDrops.AddRange(dir.GetChild().Select(ch => new LinkDrop(new Link(node,ch), ch)));
-                }
+                linkDrops.AddRange(dir.GetChild().Select(ch => new LinkDrop(new Link(node, ch), ch)));
             }
+            return linkDrops;
+        }
 
+        public static IEnumerable<LinksGroupDrop> GetGroupedLinks(Node node)
+        {
+            var linkDrops = GetLinks(node);
             if (linkDrops.Count == 0)
                 return new List<LinksGroupDrop>{ new LinksGroupDrop() };
 
@@ -36,7 +38,7 @@ namespace Memorandum.Web.Views
                 var sameRealtionLink = unnamedGroup.Items.FirstOrDefault(l => l.Relation == link.Relation);
                 if (sameRealtionLink != null)
                 {
-                    unnamedGroup.Items.Remove(link);
+                    unnamedGroup.Items.Remove(sameRealtionLink);
                     var group = new LinksGroupDrop(new List<LinkDrop> {link, sameRealtionLink});
                     groups.Add(group);
                     continue;

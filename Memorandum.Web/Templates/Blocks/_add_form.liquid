@@ -160,19 +160,37 @@
     </div>
 </div>
 
-<!-- 
-    parent_id
-    parent_provider
-    new_provider
-    relation
-    relation_back
+<div id="selectorform" class="modal">
+    <div class="modal-content">
+        <h4>Reference</h4>
+        <form method="post" action="/links/add">
+            <input type="hidden" name="parent_id" value="{{ Node.NodeId }}" />
+            <input type="hidden" name="parent_provider" value="{{ Node.Provider }}" />
 
-    text
+            <div class="row">                
+                <div class="input-field col s6">
+                    <i class="material-icons prefix">arrow_forward</i>
+                    <input type="text" name="relation" placeholder="Relation">
+                    <label for="relation">Relation</label>
+                </div>
+                <div class="input-field col s6">
+                    <i class="material-icons prefix">arrow_backward</i>
+                    <input type="text" name="relation_back">
+                    <label for="relation_back">Backward relation</label>
+                </div>
+            </div>
+            <div class="row">                
+                <div id="selector" data-id="{{ Node.NodeId }}" data-provider="{{ Node.Provider }}"></div>                
+            </div>
+            <div class="row">  
+                <div class="col s12"> 
+                    <button type="submit" class="btn"><i class="material-icons">add</i></button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
 
-    url
-
-    folder
- -->
 
 <div class="fixed-action-btn" style="bottom: 45px; right: 24px;">
     <a class="btn-floating btn-large blue">

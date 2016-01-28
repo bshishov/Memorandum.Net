@@ -17,14 +17,18 @@ namespace Memorandum.Web.Framework
         public readonly Pipeline<Request, Response> AfterView;
 
         private readonly Router _rootRouter;
-        private readonly FastCGI.FCGIApplication _fcgiApplication;
+        private readonly FCGIApplication _fcgiApplication;
 
         public App(Router router)
         {
             _rootRouter = router;
 
             // Template engine initialization
-            var templatesDir = Directory.GetCurrentDirectory() + "\\Templates";
+#if DEBUG
+            var templatesDir = Path.Combine(Directory.GetParent(Directory.GetParent(Directory.GetCurrentDirectory()).FullName).FullName, "Templates");
+#else
+            var templatesDir = Path.Combine(Directory.GetCurrentDirectory(), "Templates");
+#endif
             Template.RegisterTag<Tags.StaticTag>("static");
             Template.FileSystem = new LocalFileSystem(templatesDir);
             Template.NamingConvention = new DotLiquid.NamingConventions.CSharpNamingConvention();
@@ -71,7 +75,7 @@ namespace Memorandum.Web.Framework
                     response.Write(request);
                 }
                 else
-                    throw new InvalidOperationException("No route found");
+                    throw new Http404Exception("No route found");
             }
             catch (HttpErrorException e)
             {

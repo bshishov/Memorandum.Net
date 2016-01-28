@@ -16,7 +16,8 @@ namespace Memorandum.Web.Views.Drops
             NodeId = node.NodeId.Id;
             Provider = node.NodeId.Provider;
             Link = string.Format("/{0}/{1}", Provider, WebUtility.UrlEncode(NodeId));
-            UserId = node.User.Id;
+            if(node.User != null)
+                UserId = node.User.Id;
         }
     }
 }

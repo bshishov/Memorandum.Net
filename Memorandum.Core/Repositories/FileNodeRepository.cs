@@ -36,5 +36,11 @@ namespace Memorandum.Core.Repositories
         {
             return ids.Select(FindById);
         }
+
+        public IEnumerable<Node> SearchFiles(string query)
+        {
+            var files = Directory.GetFiles(Directory.GetCurrentDirectory(), query, SearchOption.AllDirectories);
+            return files.Select(file => new FileNode(file));
+        }
     }
 }

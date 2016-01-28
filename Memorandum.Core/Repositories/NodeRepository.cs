@@ -75,5 +75,14 @@ namespace Memorandum.Core.Repositories
         {
             throw new NotImplementedException();
         }
+
+        public IEnumerable<Node> Search(string query)
+        {
+            var results = new List<Node>();
+            results.AddRange(_textNodeRepository.Where(n=>n.Text.Contains(query)));
+            results.AddRange(_urlNodeRepository.Where(n => n.Name.Contains(query) || n.URL.Contains(query)));
+            results.AddRange(_fileNodeRepository.SearchFiles(query));
+            return results;
+        }
     }
 }

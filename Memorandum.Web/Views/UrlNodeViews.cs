@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Net;
+using System.Net.Mime;
 using System.Text.RegularExpressions;
 using Memorandum.Core.Domain;
 using Memorandum.Web.Framework;
@@ -113,12 +114,18 @@ namespace Memorandum.Web.Views
             HttpWebResponse response = null;
             try { response = request.GetResponse() as HttpWebResponse; }
             catch (WebException) { return null; }
+            
+            if(response == null)
+                return null;
 
+            response.Close();
             // Regular expression for an HTML title
             const string regex = @"(?<=<title.*>)([\s\S]*)(?=</title>)";
 
             // If the correct HTML header exists for HTML text, continue
-            if (new List<string>(response.Headers.AllKeys).Contains("Content-Type"))
+            var headers = new List<string>(response.Headers.AllKeys);
+            if (headers.Contains("Content-Type"))
+            {
                 if (response.Headers["Content-Type"].StartsWith("text/html"))
                 {
                     // Download the page
@@ -127,16 +134,27 @@ namespace Memorandum.Web.Views
                         UseDefaultCredentials = true,
                         Encoding = System.Text.Encoding.UTF8
                     };
-                    
+
                     var page = web.DownloadString(url);
 
                     // Extract the title
                     var ex = new Regex(regex, RegexOptions.IgnoreCase);
                     return ex.Match(page).Value.Trim();
                 }
-            response.Close();
-
-            // Not a valid HTML page
+            }
+            
+            // If content disposition fails
+            if(headers.Contains("Content-Disposition"))
+            {
+                var cd = response.Headers["content-disposition"];
+                if (!string.IsNullOrEmpty(cd))
+                {
+                    var filename = new ContentDisposition(cd).FileName;
+                    if (!string.IsNullOrEmpty(filename))
+                        return filename;
+                }
+            }
+            
             return null;
         }
     }

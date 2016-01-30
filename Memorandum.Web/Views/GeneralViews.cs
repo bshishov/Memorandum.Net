@@ -21,7 +21,7 @@ namespace Memorandum.Web.Views
             var user = request.Session.Get<User>("user");
             if (user != null)
             {
-                return new RedirectResponse("/text/1");
+                return new RedirectResponse("/text/" + user.Home.Id);
             }
             
             return new RedirectResponse("/login");

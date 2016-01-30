@@ -3,7 +3,7 @@ using NHibernate.Cfg;
 
 namespace Memorandum.Core.Repositories
 {
-    public static class Database
+    static class Database
     {
         private static ISessionFactory _sessionFactory;
 

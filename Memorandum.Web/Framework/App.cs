@@ -13,8 +13,8 @@ namespace Memorandum.Web.Framework
 {
     class App
     {
-        public readonly Pipeline<Request> BeforeView;
-        public readonly Pipeline<Request, Response> AfterView;
+        private readonly Pipeline<Request> _beforeView = new Pipeline<Request>();
+        private readonly Pipeline<Request, Response> _afterView = new Pipeline<Request, Response>();
 
         private readonly Router _rootRouter;
         private readonly FCGIApplication _fcgiApplication;
@@ -34,21 +34,14 @@ namespace Memorandum.Web.Framework
             Template.NamingConvention = new DotLiquid.NamingConventions.CSharpNamingConvention();
             Template.RegisterFilter(typeof(Filters));
 
-
-            // Middlewares
-            var sessionMiddleware = new SessionMiddleware();
-            BeforeView = new Pipeline<Request>()
-            {
-                sessionMiddleware
-            };
-
-            AfterView = new Pipeline<Request, Response>()
-            {
-                sessionMiddleware
-            };
-
             _fcgiApplication = new FCGIApplication();
             _fcgiApplication.OnRequestReceived += FcgiApplicationOnOnRequestReceived;
+        }
+
+        public void RegisterMiddleware(IMiddleware middleware)
+        {
+            _beforeView.Add(middleware);
+            _afterView.Add(middleware);
         }
 
         private void FcgiApplicationOnOnRequestReceived(object sender, FastCGI.Request rawRequest)
@@ -56,14 +49,14 @@ namespace Memorandum.Web.Framework
             var request = new Request(rawRequest);
             try
             {
-                BeforeView.Run(request);
+                _beforeView.Run(request);
 
                 var routeContext = _rootRouter.GetRoute(request.Path);
 
                 if (routeContext != null)
                 {
                     var response = routeContext.Proceed(request);
-                    AfterView.Run(request, response);
+                    _afterView.Run(request, response);
 
                     var httpResponse = response as HttpResponse;
                     if (httpResponse != null)

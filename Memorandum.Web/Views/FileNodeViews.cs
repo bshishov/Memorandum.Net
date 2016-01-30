@@ -22,14 +22,14 @@ namespace Memorandum.Web.Views
 
         static Response FileNodeView(Request request, string[] args)
         {
-            var node = Engine.Memo.FileNodes.FindById(WebUtility.UrlDecode(args[0]));
+            var node = request.UnitOfWork.Files.FindById(WebUtility.UrlDecode(args[0]));
             if (node.IsDirectory)
             {
                 return new TemplatedResponse("_file_node", new
                 {
                     Title = node.Name,
                     Node = new DirectoryNodeDrop(node),
-                    Links = Engine.GetGroupedLinks(node)
+                    Links = Utilities.GetGroupedLinks(request.UnitOfWork, node)
                 });
             }
 
@@ -51,13 +51,13 @@ namespace Memorandum.Web.Views
             {
                 Title = node.Name,
                 Node =  new FileNodeDrop(node),
-                Links = Engine.GetGroupedLinks(node)
+                Links = Utilities.GetGroupedLinks(request.UnitOfWork, node)
             });
         }
 
         static Response RawFileNode(Request request, string[] args)
         {
-            var node = Engine.Memo.FileNodes.FindById(args[0]);
+            var node = request.UnitOfWork.Files.FindById(args[0]);
             if(node.IsDirectory)
                 throw new InvalidOperationException("Not a file");
             var fileNode = node as FileNode;
@@ -68,7 +68,7 @@ namespace Memorandum.Web.Views
 
         static Response DownloadFileNode(Request request, string[] args)
         {
-            var node = Engine.Memo.FileNodes.FindById(args[0]);
+            var node = request.UnitOfWork.Files.FindById(args[0]);
             if (node.IsDirectory)
                 throw new InvalidOperationException("Not a file");
             var fileNode = node as FileNode;

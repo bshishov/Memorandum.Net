@@ -5,7 +5,6 @@ using Memorandum.Web.Framework;
 using Memorandum.Web.Framework.Errors;
 using Memorandum.Web.Framework.Responses;
 using Memorandum.Web.Framework.Routing;
-using Memorandum.Web.Framework.Utilities;
 using Memorandum.Web.Views.Drops;
 
 namespace Memorandum.Web.Views
@@ -24,8 +23,8 @@ namespace Memorandum.Web.Views
             var user = request.Session.Get<User>("user");
             if(user == null)
                 return new RedirectResponse("/login");
-
-            var node = Engine.Memo.TextNodes.FindById(Convert.ToInt32(args[0]));
+            
+            var node = request.UnitOfWork.Text.FindById(Convert.ToInt32(args[0]));
             if(node == null)
                 throw new Http404Exception("Node not found");
 
@@ -34,15 +33,14 @@ namespace Memorandum.Web.Views
          
             if (request.Method == "POST")
             {
-                var p = HttpUtilities.ParseQueryString(request.RawRequest.Body);
-                node.Text = p["text"];
-                Engine.Memo.TextNodes.Save(node);
+                node.Text = request.PostArgs["text"];
+                request.UnitOfWork.Text.Save(node);
             }
 
             return new TemplatedResponse("text_node", new {
                 Title = "Home",
                 Node = new TextNodeDrop(node),
-                Links = Engine.GetGroupedLinks(node)
+                Links = Utilities.GetGroupedLinks(request.UnitOfWork, node)
             });
         }
 
@@ -52,7 +50,7 @@ namespace Memorandum.Web.Views
             if (user == null)
                 return new RedirectResponse("/login");
 
-            var node = Engine.Memo.TextNodes.FindById(Convert.ToInt32(args[0]));
+            var node = request.UnitOfWork.Text.FindById(Convert.ToInt32(args[0]));
             if (node == null)
                 throw new Http404Exception("Node not found");
 
@@ -62,7 +60,8 @@ namespace Memorandum.Web.Views
             if (node.Id == user.Home.Id)
                 throw new Http404Exception("Cannot delete own home");
 
-            Engine.Memo.TextNodes.Delete(node);
+            Utilities.DeleteLinks(request.UnitOfWork, node);
+            request.UnitOfWork.Text.Delete(node);
             return new RedirectResponse("/");
         }
 
@@ -74,36 +73,35 @@ namespace Memorandum.Web.Views
 
             if (request.Method == "POST")
             {
-                var p = HttpUtilities.ParseQueryString(request.RawRequest.Body);
-                var parentNodeId = new NodeIdentifier(p["parent_provider"], p["parent_id"]);
-                var parentNode = Engine.Memo.Nodes.FindById(parentNodeId);
-                if (parentNode == null || p["text"] == null || p["relation"] == null)
+                var parentNodeId = new NodeIdentifier(request.PostArgs["parent_provider"], request.PostArgs["parent_id"]);
+                var parentNode = request.UnitOfWork.Nodes.FindById(parentNodeId);
+                if (parentNode == null || request.PostArgs["text"] == null || request.PostArgs["relation"] == null)
                     throw new Http500Exception("Incorect parameters");
 
                 var newNode = new TextNode()
                 {
-                    DateAdded = DateTime.Now, 
-                    Text = p["text"], 
+                    DateAdded = DateTime.Now,
+                    Text = request.PostArgs["text"], 
                     User = user
                 };
-                Engine.Memo.TextNodes.Save(newNode);
+                request.UnitOfWork.Text.Save(newNode);
                 var link = new Link(parentNode, newNode)
                 {
-                    Relation = p["relation"].ToLower(),
+                    Relation = request.PostArgs["relation"].ToLower(),
                     DateAdded = DateTime.Now,
                     User = user
                 };
-                Engine.Memo.Links.Save(link);
+                request.UnitOfWork.Links.Save(link);
 
-                if (p["relation_back"] != null)
+                if (request.PostArgs["relation_back"] != null)
                 {
                     var linkBack = new Link(newNode, parentNode)
                     {
-                        Relation = p["relation_back"].ToLower(),
+                        Relation = request.PostArgs["relation_back"].ToLower(),
                         DateAdded = DateTime.Now,
                         User = user
                     };
-                    Engine.Memo.Links.Save(linkBack);
+                    request.UnitOfWork.Links.Save(linkBack);
                 }
 
                 return new RedirectResponse("/" + parentNode.NodeId.Provider + "/" + parentNode.NodeId.Id);

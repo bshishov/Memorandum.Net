@@ -31,11 +31,10 @@ namespace Memorandum.Web.Views.RestApi
             if (user == null)
                 return new NonAuthorizedApiResponse();
 
-            var qs = HttpUtilities.ParseQueryString(request.QueryString);
-            var query = qs[searchQueryKey];
+            var query = request.QuerySet[searchQueryKey];
             if (string.IsNullOrEmpty(query))
                 return new BadRequestApiResponse("Empty query");
-            var nodes = Engine.Memo.Nodes.Search(query);
+            var nodes = request.UnitOfWork.Nodes.Search(query);
             var drops = nodes.Select(NodeDropFactory.Create);
             return new ApiResponse(drops);
         }
@@ -52,10 +51,10 @@ namespace Memorandum.Web.Views.RestApi
                 var loggineduser = UserAuth(request, true);
                 if (loggineduser == null)
                     return new BadRequestApiResponse("Already authorized");
-                var p = HttpUtilities.ParseQueryString(request.RawRequest.Body);
-                if(p["username"] == null || p["password"] == null)
+
+                if (request.PostArgs["username"] == null || request.PostArgs["password"] == null)
                     return new BadRequestApiResponse("Invalid creditentials");
-                var user = Engine.Memo.Auth(p["username"], p["password"]);
+                var user = request.UnitOfWork.Users.Auth(request.PostArgs["username"], request.PostArgs["password"]);
                 if(user == null)
                     return new BadRequestApiResponse("Invalid creditentials");
                 var token = Guid.NewGuid().ToString();
@@ -81,9 +80,8 @@ namespace Memorandum.Web.Views.RestApi
                     return user;
             }
 
-            var qs = HttpUtilities.ParseQueryString(request.QueryString);
             const string tokenQueryStrigKey = "token";
-            var token = qs[tokenQueryStrigKey];
+            var token = request.QuerySet[tokenQueryStrigKey];
             if (string.IsNullOrEmpty(token))
                 return null;
             if (Tokens.ContainsKey(token))
@@ -97,7 +95,7 @@ namespace Memorandum.Web.Views.RestApi
             if (user == null)
                 return new NonAuthorizedApiResponse();
 
-            var node = Engine.Memo.Nodes.FindById(new NodeIdentifier(args[0], args[1]));
+            var node = request.UnitOfWork.Nodes.FindById(new NodeIdentifier(args[0], args[1]));
 
             if (node == null)
                 return new ResourceNotFoundApiResponse();
@@ -114,7 +112,7 @@ namespace Memorandum.Web.Views.RestApi
             if (user == null)
                 return new NonAuthorizedApiResponse();
             
-            var node = Engine.Memo.Nodes.FindById(new NodeIdentifier(args[0], args[1]));
+            var node = request.UnitOfWork.Nodes.FindById(new NodeIdentifier(args[0], args[1]));
 
             if (node == null)
                 return new ResourceNotFoundApiResponse();
@@ -122,7 +120,7 @@ namespace Memorandum.Web.Views.RestApi
             if (node.User.Id != user.Id)
                 return new ForbiddenApiResponse();
             
-            return new ApiResponse(Engine.GetLinks(node));
+            return new ApiResponse(Utilities.GetLinks(request.UnitOfWork, node));
         }
 
         static Response ApiHome(Request request)

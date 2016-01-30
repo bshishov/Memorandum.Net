@@ -43,8 +43,7 @@ namespace Memorandum.Web.Views
 
             if (request.Method == "POST")
             {
-                var p = HttpUtilities.ParseQueryString(request.RawRequest.Body);
-                var user = Engine.Memo.Auth(p["username"], p["password"]);
+                var user = request.UnitOfWork.Users.Auth(request.PostArgs["username"], request.PostArgs["password"]);
                 if (user != null)
                 {
                     request.Session.Set("user", user);

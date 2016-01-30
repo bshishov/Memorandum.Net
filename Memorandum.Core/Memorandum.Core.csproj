@@ -64,8 +64,8 @@
     <Compile Include="Repositories\NodeRepository.cs" />
     <Compile Include="Repositories\TextNodeRepository.cs" />
     <Compile Include="Repositories\UrlNodeRepository.cs" />
-    <Compile Include="Memo.cs" />
     <Compile Include="Repositories\UserRepository.cs" />
+    <Compile Include="UnitOfWork.cs" />
     <Compile Include="Utilities\Rfc2898DeriveBytes_sha256.cs" />
   </ItemGroup>
   <ItemGroup>

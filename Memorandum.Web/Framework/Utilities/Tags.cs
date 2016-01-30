@@ -16,15 +16,10 @@ namespace Memorandum.Web.Framework.Utilities
                 _path = markup.Trim().Trim('"', '\'');
             }
 
-            public override void Render(Context context, TextWriter result)
+            public override void Render(DotLiquid.Context context, TextWriter result)
             {
                 result.Write("/static/" + _path);
             }
-        }
-
-        public class DynamicTemplate : Tag
-        {
-             
         }
     }
 }

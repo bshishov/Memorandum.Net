@@ -51,7 +51,7 @@
     <Compile Include="Domain\Link.cs" />
     <Compile Include="Domain\FileNode.cs" />
     <Compile Include="Domain\User.cs" />
-    <Compile Include="Repositories\Database.cs" />
+    <Compile Include="Database.cs" />
     <Compile Include="Repositories\FileNodeRepository.cs" />
     <Compile Include="Repositories\IRepository.cs" />
     <Compile Include="Domain\Node.cs" />

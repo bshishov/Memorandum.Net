@@ -15,10 +15,16 @@ namespace Memorandum.Web.Views
     {
         public static Router Router = new Router(new List<IRoute>()
         {
+            new Route("/add$", FileNodeAdd),
             new RouteWithArg("/raw/(.+)$", RawFileNode),
             new RouteWithArg("/download/(.+)$", DownloadFileNode),
             new RouteWithArg("/(.+)$", FileNodeView),
         });
+
+        private static Response FileNodeAdd(Request request)
+        {
+            throw new NotImplementedException();
+        }
 
         static Response FileNodeView(Request request, string[] args)
         {

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using Memorandum.Core.Domain;
 using Memorandum.Core.Utilities;
@@ -9,7 +10,7 @@ namespace Memorandum.Core.Repositories
 {
     public class UserRepository : DatabaseRepository<User, int>
     {
-        public UserRepository() : base()
+        public UserRepository()
         {
         }
 
@@ -18,8 +19,25 @@ namespace Memorandum.Core.Repositories
         {
         }
 
-         public User Auth(string login, string password)
-         {
+        public string CreateNewPasswordString(string password, int iterations = 24000)
+        {
+            var salt = CreateSalt();
+            var rfc2898 = new Rfc2898DeriveBytes_sha256(password, Encoding.ASCII.GetBytes(salt), iterations);
+            var hash = Convert.ToBase64String(rfc2898.GetBytes(32));
+
+            return string.Format("pbkdf2_sha256${0}${1}${2}", iterations, salt, hash);
+        }
+
+        private static string CreateSalt(int length = 12)
+        {
+            var random = new RNGCryptoServiceProvider();
+            var salt = new byte[length];
+            random.GetNonZeroBytes(salt);
+            return Convert.ToBase64String(salt);
+        }
+
+        public User Auth(string login, string password)
+        {
              var user = Where(u => u.Username.Equals(login)).FirstOrDefault();
              if (user == null)
                  throw new Exception("User not found");
@@ -40,6 +58,6 @@ namespace Memorandum.Core.Repositories
              }
 
              throw new Exception("Password mismatch");
-         }
+        }
     }
 }

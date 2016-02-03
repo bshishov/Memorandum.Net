@@ -11,7 +11,7 @@ namespace Memorandum.Web.Views
 {
     static class TextNodeViews
     {
-        public static Router Router = new Router(new List<IRoute>()
+        public static Router Router = new Router(new List<IRoute>
         {
             new Route("/add$", TextNodeAdd),
             new RouteWithArg("/([0-9]+)$", TextNode),
@@ -78,7 +78,7 @@ namespace Memorandum.Web.Views
                 if (parentNode == null || request.PostArgs["text"] == null || request.PostArgs["relation"] == null)
                     throw new Http500Exception("Incorect parameters");
 
-                var newNode = new TextNode()
+                var newNode = new TextNode
                 {
                     DateAdded = DateTime.Now,
                     Text = request.PostArgs["text"], 

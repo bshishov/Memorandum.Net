@@ -87,7 +87,7 @@
 <div id="fileform" class="modal">
     <div class="modal-content">
         <h4>Upload file</h4>
-        <form method="post" action="/file/add">
+        <form method="post" action="/file/add" enctype="multipart/form-data">
           <input type="hidden" name="parent_id" value="{{ Node.NodeId }}" />
           <input type="hidden" name="parent_provider" value="{{ Node.Provider }}" />
 

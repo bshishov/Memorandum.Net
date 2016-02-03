@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -34,18 +35,25 @@ namespace Memorandum.Web.Framework.Responses
 
         public override void Write(Request request)
         {
-            var header = string.Format("HTTP/1.1 {0} {1}", _status, _statusReason);
-            request.RawRequest.WriteResponseUtf8(header);
+            try
+            {
+                var header = string.Format("HTTP/1.1 {0} {1}", _status, _statusReason);
+                request.RawRequest.WriteResponseUtf8(header);
 
-            if(!string.IsNullOrEmpty(_contentType))
-                request.RawRequest.WriteResponseUtf8(string.Format("\nContent-Type:{0}", _contentType));
+                if (!string.IsNullOrEmpty(_contentType))
+                    request.RawRequest.WriteResponseUtf8(string.Format("\nContent-Type:{0}", _contentType));
 
-            if(Attributes != null)
-                foreach (var kvp in Attributes)
-                    request.RawRequest.WriteResponseUtf8(string.Format("\n{0}:{1}", kvp.Key, kvp.Value));
+                if (Attributes != null)
+                    foreach (var kvp in Attributes)
+                        request.RawRequest.WriteResponseUtf8(string.Format("\n{0}:{1}", kvp.Key, kvp.Value));
 
-            request.RawRequest.WriteResponseASCII("\n\n");
-            request.RawRequest.WriteResponse(Content);
+                request.RawRequest.WriteResponseASCII("\n\n");
+                request.RawRequest.WriteResponse(Content);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
         }
     }
 }

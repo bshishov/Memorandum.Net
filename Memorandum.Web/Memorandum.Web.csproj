@@ -32,10 +32,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="CommandLine">
+      <HintPath>..\packages\CommandLineParser.2.0.275-beta\lib\net45\CommandLine.dll</HintPath>
+    </Reference>
     <Reference Include="DotLiquid">
       <HintPath>..\packages\DotLiquid.1.8.0\lib\NET45\DotLiquid.dll</HintPath>
     </Reference>
-    <Reference Include="FastCGI">
+    <Reference Include="FastCGI, Version=1.2.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\FastCGI.1.2.0.0\lib\net45\FastCGI.dll</HintPath>
     </Reference>
     <Reference Include="MimeTypeMap">
@@ -78,6 +82,11 @@
     <Compile Include="Framework\Utilities\HttpUtilities.cs" />
     <Compile Include="Framework\Utilities\RequestExtensions.cs" />
     <Compile Include="Framework\Utilities\Tags.cs" />
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
     <Compile Include="Views\RestApi\ApiResponse.cs" />
     <Compile Include="Views\RestApi\ApiViews.cs" />
     <Compile Include="Views\RestApi\BadRequestApiResponse.cs" />
@@ -101,6 +110,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
     <None Include="Templates\Blocks\_add_buttons.liquid">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

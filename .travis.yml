@@ -1,0 +1,6 @@
+language: csharp
+solution: Memorandum.sln
+install:
+  - nuget restore Memorandum.sln  
+script:
+  - xbuild /p:Configuration=Release /p:TargetFrameworkVersion="v4.5" /p:ToolsVersion="4.0" Memorandum.sln  

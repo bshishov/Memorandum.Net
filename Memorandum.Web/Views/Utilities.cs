@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -5,6 +6,7 @@ using System.Net.Mime;
 using System.Text.RegularExpressions;
 using Memorandum.Core;
 using Memorandum.Core.Domain;
+using Memorandum.Web.Framework;
 using Memorandum.Web.Views.Drops;
 
 namespace Memorandum.Web.Views
@@ -36,7 +38,7 @@ namespace Memorandum.Web.Views
 
             foreach (var link in linkDrops)
             {
-                var sameRealtionLink = unnamedGroup.Items.FirstOrDefault(l => l.Relation == link.Relation);
+                var sameRealtionLink = unnamedGroup.Items.FirstOrDefault(l => l.Relation.Equals(link.Relation, StringComparison.CurrentCultureIgnoreCase));
                 if (sameRealtionLink != null)
                 {
                     unnamedGroup.Items.Remove(sameRealtionLink);
@@ -45,7 +47,7 @@ namespace Memorandum.Web.Views
                     continue;
                 }
 
-                var groupWithSameRelation = groups.FirstOrDefault(g => g.Name == link.Relation);
+                var groupWithSameRelation = groups.FirstOrDefault(g => g.Name.Equals(link.Relation, StringComparison.CurrentCultureIgnoreCase));
                 if (groupWithSameRelation != null)
                 {
                     groupWithSameRelation.Items.Add(link);
@@ -130,6 +132,28 @@ namespace Memorandum.Web.Views
             }
 
             return null;
+        }
+
+        public static void MakeRelationsForNewNode(Request request, Node parentNode, Node newNode)
+        {
+            var link = new Link(parentNode, newNode)
+            {
+                Relation = request.PostArgs["relation"],
+                DateAdded = DateTime.Now,
+                User = newNode.User
+            };
+            request.UnitOfWork.Links.Save(link);
+
+            if (!string.IsNullOrEmpty(request.PostArgs["relation_back"]))
+            {
+                var linkBack = new Link(newNode, parentNode)
+                {
+                    Relation = request.PostArgs["relation_back"],
+                    DateAdded = DateTime.Now,
+                    User = newNode.User
+                };
+                request.UnitOfWork.Links.Save(linkBack);
+            }
         }
     }
 }

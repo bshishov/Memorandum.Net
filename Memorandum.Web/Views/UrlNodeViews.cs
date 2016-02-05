@@ -59,25 +59,7 @@ namespace Memorandum.Web.Views
                 };
 
                 request.UnitOfWork.URL.Save(newNode);
-                var link = new Link(parentNode, newNode)
-                {
-                    Relation = request.PostArgs["relation"].ToLower(),
-                    DateAdded = DateTime.Now,
-                    User = user
-                };
-                request.UnitOfWork.Links.Save(link);
-
-                if (request.PostArgs["relation_back"] != null)
-                {
-                    var linkBack = new Link(newNode, parentNode)
-                    {
-                        Relation = request.PostArgs["relation_back"].ToLower(),
-                        DateAdded = DateTime.Now,
-                        User = user
-                    };
-                    request.UnitOfWork.Links.Save(linkBack);
-                }
-
+                Utilities.MakeRelationsForNewNode(request, parentNode, newNode);
                 return new RedirectResponse("/" + parentNode.NodeId.Provider + "/" + parentNode.NodeId.Id);
             }
 

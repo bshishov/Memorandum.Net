@@ -58,5 +58,10 @@ namespace Memorandum.Web.Views.Drops
             Items = linkDrops.ToList();
             Name = Items.First().Relation;
         }
+
+        public bool HasItems
+        {
+            get { return Items != null && Items.Count > 0; }
+        }
     }
 }

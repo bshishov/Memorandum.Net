@@ -5,7 +5,7 @@ namespace Memorandum.Core.Domain
     public class Link
     {
         public virtual int Id { get; set; }
-        public virtual string Relation { get; set; }
+        public virtual string Comment { get; set; }
         public virtual string StartNode { get; set; }
         public virtual string EndNode { get; set; }
         public virtual string StartNodeProvider { get; set; }
@@ -30,8 +30,11 @@ namespace Memorandum.Core.Domain
 
         public Link(Node start, Node end)
         {
-            StartNode = start.NodeId.Id;
-            StartNodeProvider = start.NodeId.Provider;
+            if (start != null && start.NodeId != null)
+            {
+                StartNode = start.NodeId.Id;
+                StartNodeProvider = start.NodeId.Provider;
+            }
             EndNode = end.NodeId.Id;
             EndNodeProvider = end.NodeId.Provider;
         }

@@ -1,4 +1,5 @@
-﻿using NHibernate;
+﻿using System.Reflection;
+using NHibernate;
 using NHibernate.Cfg;
 using NHibernate.Tool.hbm2ddl;
 
@@ -18,7 +19,7 @@ namespace Memorandum.Core
                     _configuration = new Configuration();
 
                     _configuration.Configure();
-                    _configuration.AddAssembly("Memorandum.Core");
+                    _configuration.AddAssembly(Assembly.GetExecutingAssembly());
 
                     _sessionFactory = _configuration.BuildSessionFactory();
                 }

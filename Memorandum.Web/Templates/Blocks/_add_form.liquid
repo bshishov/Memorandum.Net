@@ -1,257 +1,48 @@
-<div id="textform" class="modal">   
-    <div class="modal-content">
-        <h4>Add text note</h4>
-        <form method="post" action="/text/add">
-            <input type="hidden" name="parent_id" value="{{ Node.NodeId }}" />
-            <input type="hidden" name="parent_provider" value="{{ Node.Provider }}" />
-
-            <div class="row">                
-                <div class="input-field col s6">
-                    <i class="material-icons prefix">arrow_forward</i>
-                    <input type="text" name="relation" placeholder="Relation">
-                    <label for="relation">Relation</label>
-                </div>
-                <div class="input-field col s6">
-                    <i class="material-icons prefix">arrow_backward</i>
-                    <input type="text" name="relation_back">
-                    <label for="relation_back">Backward relation</label>
-                </div>
-            </div>
-
-            <div class="row" >
-                <div class="col s12">                    
-                    <textarea id="form-text-field" name="text" class="formatted-text"></textarea>
-                </div>
-            </div> 
-            
-            <div class="row">
-                <div class="col s12"> 
-                    <button type="submit" class="btn"><i class="material-icons">add</i></button>
-                </div>
-            </div>  
-        </form>          
-    </div>        
-</div>
-
-<script type="text/javascript">
-    var formEditor = new MediumEditor('#form-text-field', {
-        toolbar: { 
-             buttons: ['bold', 'italic', 'underline', 'anchor', 'h1', 'h2', 'h3', 'quote', 'orderedlist', 'unorderedlist'],
-        },
-        placeholder: {                
-            text: 'Type your text'
-        },
-        autoLink: true
-    });
-</script>
-
-<div id="urlform" class="modal">
-    <div class="modal-content">
-        <h4>Add URL</h4>
-        <form method="post" action="/url/add">
-            <input type="hidden" name="parent_id" value="{{ Node.NodeId }}" />
-            <input type="hidden" name="parent_provider" value="{{ Node.Provider }}" />
-
-            <div class="row">                
-                <div class="input-field col s6">
-                    <i class="material-icons prefix">arrow_forward</i>
-                    <input type="text" name="relation" placeholder="Relation">
-                    <label for="relation">Relation</label>
-                </div>
-                <div class="input-field col s6">
-                    <i class="material-icons prefix">arrow_backward</i>
-                    <input type="text" name="relation_back">
-                    <label for="relation_back">Backward relation</label>
-                </div>
-            </div>
-            <div class="row">                
-                <div class="input-field col s6">
-                    <i class="material-icons prefix">link</i>
-                    <input type="text" name="url">
-                    <label for="url">URL</label>
-                </div>
-                 <div class="input-field col s6">
-                    <input type="checkbox" id="download" name="download" />
-                    <label for="download">Should download contents</label>
-                </div>
-            </div>
-            <div class="row">  
-                <div class="col s12"> 
-                    <button type="submit" class="btn"><i class="material-icons">add</i></button>
-                </div>
-            </div>
-        </form>
+<div class="link form" id="form{{ group.Name }}container" style="display:none;">
+  <form id="form{{ group.Name }}">
+    <input type="hidden" name="parent_id" value="{{ Node.NodeId }}" />
+    <input type="hidden" name="parent_provider" value="{{ Node.Provider }}" />
+    <div class="row">
+      <div class="col col2-3 set">
+        <a class="system dashed tab-switch" href="javascript:;" data-target="text" data-tabgroup="{{ group.Name }}">Text</a>
+        <a class="system dashed tab-switch" href="javascript:;" data-target="url" data-tabgroup="{{ group.Name }}">Url</a>
+        <a class="system dashed tab-switch" href="javascript:;" data-target="file" data-tabgroup="{{ group.Name }}">File</a>
+        <a class="system dashed tab-switch" href="javascript:;" data-target="search" data-tabgroup="{{ group.Name }}">Search</a>
+      </div>
+      <div class="col col1-3 text-right">
+        <input type="text" name="comment" class="italic" placeholder="Write comment here" value="{{ group.Name }}"/>
+      </div>
     </div>
-</div>
-
-<div id="fileform" class="modal">
-    <div class="modal-content">
-        <h4>Upload file</h4>
-        <form method="post" action="/file/add" enctype="multipart/form-data">
-          <input type="hidden" name="parent_id" value="{{ Node.NodeId }}" />
-          <input type="hidden" name="parent_provider" value="{{ Node.Provider }}" />
-
-            <div class="row">                
-                <div class="input-field col s6">
-                    <i class="material-icons prefix">arrow_forward</i>
-                    <input type="text" name="relation" placeholder="Relation">
-                    <label for="relation">Relation</label>
-                </div>
-                <div class="input-field col s6">
-                    <i class="material-icons prefix">arrow_backward</i>
-                    <input type="text" name="relation_back">
-                    <label for="relation_back">Backward relation</label>
-                </div>
-            </div>
-            <div class="row">                
-                <div class="file-field input-field">
-                  <div class="btn">
-                    <span>File</span>
-                    <input type="file" name="file" multiple>
-                  </div>
-                  <div class="file-path-wrapper">
-                    <input class="file-path validate" type="text" placeholder="Select one or more files">
-                  </div>
-                </div>
-            </div>
-            <div class="row">  
-                <div class="col s12"> 
-                    <button type="submit" class="btn"><i class="material-icons">add</i></button>
-                </div>
-            </div>
-        </form>
+    <div class="row form-section {{ group.Name }}tab active" data-tab="text">
+      <textarea id="form-text-field" name="text" class="formatted-text"></textarea>
     </div>
-</div>
-
-
-<div id="folderform" class="modal">
-    <div class="modal-content">
-        <h4>Create folder</h4>
-        <form method="post" action="/add">
-            <input type="hidden" name="parent_id" value="{{ id }}" />
-            <input type="hidden" name="parent_provider" value="{{ provider }}" />
-            <input type="hidden" name="new_provider" value="file" />
-
-            <div class="row">                
-                <div class="input-field col s6">
-                    <i class="material-icons prefix">arrow_forward</i>
-                    <input type="text" name="relation" placeholder="Relation">
-                    <label for="relation">Relation</label>
-                </div>
-                <div class="input-field col s6">
-                    <i class="material-icons prefix">arrow_backward</i>
-                    <input type="text" name="relation_back">
-                    <label for="relation_back">Backward relation</label>
-                </div>
-            </div>
-            <div class="row">                
-                <div class="input-field col s12">
-                    <i class="material-icons prefix">folder</i>
-                    <input type="text" name="folder">
-                    <label for="folder">Folder Name</label>
-                </div>                
-            </div>
-            <div class="row">  
-                <div class="col s12"> 
-                    <button type="submit" class="btn"><i class="material-icons">add</i></button>
-                </div>
-            </div>
-        </form>
+    <div class="row form-section {{ group.Name }}tab" style="display:none;" data-tab="url">
+      <div class="row field">
+        <label for="url">URL</label>
+        <input type="text" name="url" />
+      </div>
+      <div class="row">
+        <input type="checkbox" id="download" name="download" />
+        <label for="download">Should download content</label>
+      </div>
     </div>
-</div>
-
-<div id="selectorform" class="modal">
-    <div class="modal-content">
-        <h4>Reference</h4>
-        <form method="post" action="/links/add">
-            <input type="hidden" name="parent_id" value="{{ Node.NodeId }}" />
-            <input type="hidden" name="parent_provider" value="{{ Node.Provider }}" />
-
-            <div class="row">                
-                <div class="input-field col s6">
-                    <i class="material-icons prefix">arrow_forward</i>
-                    <input type="text" name="relation" placeholder="Relation">
-                    <label for="relation">Relation</label>
-                </div>
-                <div class="input-field col s6">
-                    <i class="material-icons prefix">arrow_backward</i>
-                    <input type="text" name="relation_back">
-                    <label for="relation_back">Backward relation</label>
-                </div>
-            </div>
-            <div class="row">                
-                <select id="selector"></select>               
-            </div>
-            <div class="row">  
-                <div class="col s12"> 
-                    <button type="submit" class="btn"><i class="material-icons">add</i></button>
-                </div>
-            </div>
-        </form>
+    <div class="row form-section {{ group.Name }}tab" style="display:none;" data-tab="file">
+      <!--<input type="file" name="file" multiple="" />-->
     </div>
+    <div class="row form-section {{ group.Name }}tab" style="display:none;" data-tab="search">
+      <div class="row field">
+        <label for="search">Search</label>
+        <input type="text" name="search" class="searchinput full-width" data-target="{{ group.Name }}results"/>
+      </div>
+      <div class="row" id="{{ group.Name }}results"></div>
+    </div>
+    <div class="row form-section set text-right">
+      <a href="javascript:;" class="system button small">Cancel</a>
+      <a href="javascript:;" class="system button small submitform" data-target="form{{ group.Name }}">Add</a>
+    </div>
+  </form>
+  <script type="text/javascript">
+    initEditor('#form-text-field');
+  </script>
 </div>
 
-<script type="text/javascript">
-
-$("#selector").select2({
-  ajax: {
-    url: "/api/search",
-    dataType: 'json',
-    delay: 250,
-    data: function (params) {
-      return {
-        q: params.term, // search term
-        //page: params.page
-      };
-    },
-    processResults: function (data, params) {
-      // parse the results into the format expected by Select2
-      // since we are using custom formatting functions we do not need to
-      // alter the remote JSON data, except to indicate that infinite
-      // scrolling can be used
-      //params.page = params.page || 1;
- 
-      return {
-        results: data,
-        /*pagination: {
-          more: (params.page * 30) < data.length
-        }*/
-      };
-    },
-    cache: true
-  },
-  escapeMarkup: function (markup) { return markup; }, // let our custom formatter work
-  minimumInputLength: 1,
-  templateResult: function(item) { return item.Text || item.Name; }
-  //templateResult: formatRepo, // omitted for brevity, see the source of this page
-  //templateSelection: formatRepoSelection // omitted for brevity, see the source of this page
-});
-</script>
-
-
-<div class="fixed-action-btn" style="bottom: 45px; right: 24px;">
-    <a class="btn-floating btn-large blue">
-        <i class="large material-icons">add</i>
-    </a>
-    <ul>
-        <li><a class="modal-trigger btn-floating green" title="Add text note" href="#textform" onclick="setRelation('{% if relation %}{{relation}}{%endif%}');">
-            <i class="material-icons">note_add</i>
-        </a></li>
-
-        <li><a class="modal-trigger btn-floating blue" title="Add URL" href="#urlform" onclick="setRelation('{% if relation %}{{relation}}{%endif%}');">
-            <i class="material-icons">link</i>
-        </a>  </li>
-
-        <li><a class="modal-trigger btn-floating red" title="Add Files" href="#fileform" onclick="setRelation('{% if relation %}{{relation}}{%endif%}');">
-            <i class="material-icons">insert_drive_file</i>
-        </a></li>
-
-        <li><a class="modal-trigger btn-floating red" title="Create folder" href="#folderform" onclick="setRelation('{% if relation %}{{relation}}{%endif%}');">
-            <i class="material-icons">folder</i>
-        </a></li>
-
-        <li><a class="modal-trigger btn-floating " title="Link another node" href="#!" onclick="setRelation('{% if relation %}{{relation}}{%endif%}');">
-            <i class="material-icons">search</i>
-        </a></li>        
-    </ul>
-</div>

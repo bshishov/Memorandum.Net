@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Globalization;
-using Memorandum.Core.Repositories;
 
 namespace Memorandum.Core.Domain
 {

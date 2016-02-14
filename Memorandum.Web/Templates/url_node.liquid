@@ -1,15 +1,17 @@
 {% extends 'node' %}
 
 {% block node_content %}       
-    <h3><a href="{{Node.Url}}" target="_blank">{{ Node.Url }}</a></h3>   
-    <h3><a href="{{Node.Url}}" target="_blank">{{ Node.Name }}</a></h3>   
-    <div class="row">
-        <div class="col m5 s12">                        
-            <div class="chip">{{ Node.DateAdded }}</div>
+	<div class="card">
+		<h3><a href="{{Node.Url}}" target="_blank">{{ Node.Name }}</a></h3>   
+		<a href="{{Node.Url}}" target="_blank">{{ Node.Url }}</a>
+	</div>
+    <div class="row details">
+        <div class="col col2-3">                        
+            <div class="system">{{ Node.DateAdded }}</div>
         </div>
-        <div class="col m7 s12 right-align">                       
-            <a class="waves-effect btn-flat" href="#"><i class="material-icons left">file_download</i> Download</a>
-            <a class="waves-effect btn-flat" href="/{{Node.Provider}}/{{ Node.NodeId }}/delete"><i class="material-icons left">delete</i> Delete</a>
+        <div class="col col1-3 set text-right">                       
+            <a class="system button small" href="#">Download</a>
+            <a class="system button small" href="/{{ Node.Provider }}/{{ Node.NodeId }}/delete">Delete</a>
         </div> 
     </div>   
 {% endblock %}

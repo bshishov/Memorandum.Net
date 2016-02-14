@@ -16,7 +16,7 @@ namespace Memorandum.Web.Views.Drops
         public int Id { get { return _link.Id; } }
 
         [DataMember]
-        public string Relation { get { return _link.Relation; } }
+        public string Comment { get { return _link.Comment; } }
 
         [DataMember]
         public string StartNode { get { return _link.StartNode; } }
@@ -38,6 +38,12 @@ namespace Memorandum.Web.Views.Drops
             _link = link;
             _endnode = NodeDropFactory.Create(endnode);
         }
+
+        public LinkDrop(Link link, NodeDrop endnode)
+        {
+            _link = link;
+            _endnode = endnode;
+        }
     }
 
     class DropGroup<T> : Drop
@@ -51,12 +57,13 @@ namespace Memorandum.Web.Views.Drops
         public LinksGroupDrop()
         {
             Items = new List<LinkDrop>();
+            Name = "";
         }
 
         public LinksGroupDrop(IEnumerable<LinkDrop> linkDrops)
         {
             Items = linkDrops.ToList();
-            Name = Items.First().Relation;
+            Name = Items.First().Comment;
         }
 
         public bool HasItems

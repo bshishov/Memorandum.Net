@@ -1,39 +1,20 @@
 {% for group in Links %}       
-<div class="section">
-	{% if group.HasItems %}   
-		{% if group.Name %}
-			<h5>{{ group.Name|Capitalize }}</h5>     
-		{% endif %}
-		{% include 'Blocks/add_buttons' %}    
-			<ul class="collection z-depth-1"> 
-			{% for link in group.Items %}
-				<li class="collection-item row link" data-path="/{{ link.EndNodeProvider }}/{{ link.EndNode|UrlEncode }}">
-					<div class="col m2 s11 link-icon">    
-						{% if link.EndNodeProvider == "file" %}
-						<i class="material-icons tiny left circle red">insert_drive_file</i>
-						{% elseif link.EndNodeProvider == "text" %}
-						<i class="material-icons tiny left circle green">description</i>
-						{% elseif link.EndNodeProvider == "url" %}
-						<i class="material-icons tiny left circle blue">link</i>
-						{% else %}
-						<i class="material-icons tiny left circle teal">message</i>
-						{% endif %}            
-						<STRONG>{{ link.Relation|Capitalize }}</STRONG>    
-					</div>                               
-					<div class="col m9 s11 link-content">
-						{% assign tpl = "Blocks/Widgets/"|Append:link.EndNodeProvider %}
-						{% include tpl %}
-					</div>  
-					<div class="col s1 m1">
-						{% if link.Id %}
-						<a href="/links/{{ link.Id }}/delete" title="Unlink" class="secondary-content"><i class="material-icons tiny">remove_circle_outline</i></a>
-						{% endif %} 
-					</div>                
-				</li>
-			{% endfor %}
-			</ul>
-	{% else %}   
-		{% include 'Blocks/add_buttons' %}
-	{% endif %}  
+<div class="row links-group">
+		{% if group.Name != "" %}
+			<div class="links-group-title">{{ group.Name|Capitalize }} &nbsp;
+				<a href="javascript:;" class="system button small toggle" data-target="form{{ group.Name }}container">Add</a>
+			</div>
+		{% else %}
+			<center>
+				<a href="javascript:;" class="system button small toggle" data-target="form{{ group.Name }}container">Add</a>
+			</center>
+			<br>
+		{% endif %}		
+		<div class="links"> 
+		{% include 'Blocks/add_form' %}
+		{% for link in group.Items %}
+			{% include 'Blocks/link' %}
+		{% endfor %}
+		</div>
 </div>      
 {% endfor %}

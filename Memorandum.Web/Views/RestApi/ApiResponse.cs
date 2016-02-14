@@ -5,8 +5,14 @@ namespace Memorandum.Web.Views.RestApi
 {
     class ApiResponse : HttpResponse
     {
-        public ApiResponse(object o, int statusCode = 200) : base(content: 
-            JsonConvert.SerializeObject(o, new JsonSerializerSettings() { Formatting = Formatting.Indented }), 
+        private static readonly JsonSerializerSettings Settings = new JsonSerializerSettings()
+        {
+            Formatting = Formatting.Indented,
+            ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+        }; 
+
+        public ApiResponse(object o, int statusCode = 200) : base(content:
+            JsonConvert.SerializeObject(o, Settings), 
             status:statusCode,
             contenttype: "text/plain; charset=utf-8")
         {

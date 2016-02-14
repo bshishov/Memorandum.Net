@@ -75,7 +75,7 @@ namespace Memorandum.Web.Views
             {
                 var parentNodeId = new NodeIdentifier(request.PostArgs["parent_provider"], request.PostArgs["parent_id"]);
                 var parentNode = request.UnitOfWork.Nodes.FindById(parentNodeId);
-                if (parentNode == null || request.PostArgs["text"] == null || request.PostArgs["relation"] == null)
+                if (parentNode == null || request.PostArgs["text"] == null || request.PostArgs["comment"] == null)
                     throw new Http500Exception("Incorect parameters");
 
                 var newNode = new TextNode
@@ -85,7 +85,7 @@ namespace Memorandum.Web.Views
                     User = user
                 };
                 request.UnitOfWork.Text.Save(newNode);
-                Utilities.MakeRelationsForNewNode(request, parentNode, newNode);
+                Utilities.MakeRelationForNewNode(request, parentNode, newNode);
                 return new RedirectResponse("/" + parentNode.NodeId.Provider + "/" + parentNode.NodeId.Id);
             }
 

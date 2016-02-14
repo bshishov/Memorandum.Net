@@ -1,11 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using DotLiquid;
 using Memorandum.Core.Domain;
 using Memorandum.Web.Framework;
 using Memorandum.Web.Framework.Responses;
 using Memorandum.Web.Framework.Routing;
-using Memorandum.Web.Framework.Utilities;
 using Memorandum.Web.Views.Drops;
 
 namespace Memorandum.Web.Views.RestApi
@@ -23,6 +24,12 @@ namespace Memorandum.Web.Views.RestApi
             new RouteWithArg("/([a-z]+)/([^/.]+)$", NodeView),
         });
 
+        public class SearchResult
+        {
+            public NodeDrop Node { get; set; }
+            public String Rendered { get; set; }
+        }
+
         private static Response Search(Request request)
         {
             const string searchQueryKey = "q";
@@ -35,8 +42,26 @@ namespace Memorandum.Web.Views.RestApi
             if (string.IsNullOrEmpty(query))
                 return new BadRequestApiResponse("Empty query");
             var nodes = request.UnitOfWork.Nodes.Search(query);
-            var drops = nodes.Select(NodeDropFactory.Create);
-            return new ApiResponse(drops);
+            if (string.IsNullOrEmpty(request.QuerySet["mode"]))
+            {
+                var drops = nodes.Select(NodeDropFactory.Create);
+                return new ApiResponse(drops);
+            }
+
+            var tpl = Template.Parse(File.ReadAllText("Templates/Blocks/_link.liquid"));
+            var results = new List<SearchResult>();
+            foreach (var node in nodes)
+            {
+                var l = new LinkDrop(new Link(node, node), node);
+                var r = new SearchResult()
+                {
+                    Node = NodeDropFactory.Create(node),
+                    Rendered = tpl.Render(Hash.FromAnonymousObject(new { link = l })),
+                };
+                results.Add(r);
+            }
+
+            return new ApiResponse(results);
         }
 
         /// <summary>

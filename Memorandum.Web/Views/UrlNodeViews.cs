@@ -59,7 +59,7 @@ namespace Memorandum.Web.Views
                 };
 
                 request.UnitOfWork.URL.Save(newNode);
-                Utilities.MakeRelationsForNewNode(request, parentNode, newNode);
+                Utilities.MakeRelationForNewNode(request, parentNode, newNode);
                 return new RedirectResponse("/" + parentNode.NodeId.Provider + "/" + parentNode.NodeId.Id);
             }
 
@@ -68,7 +68,18 @@ namespace Memorandum.Web.Views
 
         static Response UrlNode(Request request, string[] args)
         {
+            var user = request.Session.Get<User>("user");
+            if (user == null)
+                return new RedirectResponse("/login");
+
             var node = request.UnitOfWork.URL.FindById(Convert.ToInt32(args[0]));
+
+            if (node == null)
+                throw new Http404Exception("Node not found");
+
+            if (node.User.Id != user.Id)
+                throw new Http404Exception("Access denied :)");
+
             return new TemplatedResponse("url_node", new
             {
                 Title = "Home",

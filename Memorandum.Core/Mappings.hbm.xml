@@ -34,7 +34,7 @@
   
   <class name="Link" table="memo_link">
     <id name="Id" type="int" generator="native"></id>
-    <property name="Relation" column="relation" type="String" not-null="true"/>
+    <property name="Comment" column="comment" type="String" not-null="false"/>
     <property name="StartNode" column="start_node" type="String" not-null="true"/>
     <property name="StartNodeProvider" column="start_provider" type="String" not-null="true"/>
     <property name="EndNode" column="end_node" type="String" not-null="true"/>

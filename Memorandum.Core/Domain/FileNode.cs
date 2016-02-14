@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Memorandum.Core.Repositories;
 using MimeTypes;
 
 namespace Memorandum.Core.Domain

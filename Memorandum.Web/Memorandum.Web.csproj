@@ -114,10 +114,10 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
-    <None Include="Templates\Blocks\_add_buttons.liquid">
+    <None Include="Templates\Blocks\_add_form.liquid">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Templates\Blocks\_add_form.liquid">
+    <None Include="Templates\Blocks\_link.liquid">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Templates\Blocks\_links.liquid">

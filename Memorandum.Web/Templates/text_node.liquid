@@ -13,7 +13,7 @@
 		</div>
         <div class="col col1-3 set text-right">           
             <a class="system button small" href="javascript:;" id="save-button">Save</a>
-            <a class="system button small needconfirm" href="/{{ Node.Provider }}/{{ Node.NodeId }}/delete">Delete</a>
+            <a class="system button small needconfirm" href="javascript:;" data-action="send('DELETE', '/api/{{ Node.Provider }}/{{ Node.NodeId }}')" title="Delete this text note">Delete</a>
         </div> 
     </div>
     <script type="text/javascript">
@@ -26,20 +26,7 @@
             if(!saved) {
                 $("#text-field").val($("#text-content").html());
                 var data = $("#text-form").serialize();
-
-                $.ajax({
-                  type: "POST",
-                  url: "",
-                  data: data,
-                  success: function() { 
-                    notify('Saved', 1000);
-                    saved = true;
-                  },                  
-                  error: function() { 
-                    notify('Error', 1000);
-                    console.log(data);
-                  },        
-                });
+				send("PUT", "/api/text/{{ Node.NodeId }}", data);
             }
             setTimeout(checkAndSave, 10000);
         };
@@ -54,7 +41,8 @@
         $("#save-button").on("click", function(){
             saved = true;
             $("#text-field").val($("#text-content").html());
-            $("#text-form").submit();   
+            var data = $("#text-form").serialize();
+			send("PUT", "/api/text/{{ Node.NodeId }}", data);  
         });     
     </script>
 {% endblock %}

@@ -13,7 +13,7 @@
 	{% if link.Id %}
 	<div class="link-tools-container">
 		<div class="link-tools">
-			<a href="/links/{{ link.Id }}/delete" title="Unlink" class="system button small">Unlink</a>
+			<a href="javascript:;" data-action="send('DELETE', '/api/links/{{ link.Id }}')" title="Unlink" class="system button small needconfirm">Unlink</a>
 		</div>
 	</div>                
 	{% endif %} 

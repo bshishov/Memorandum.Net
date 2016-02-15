@@ -67,7 +67,7 @@ namespace Memorandum.Web.Framework
         {
             get
             {
-                if (_postArgs == null && Method.Equals("POST") && RawRequest.RequestBodyStream.Length > 0)
+                if (_postArgs == null && (Method.Equals("POST") || Method.Equals("PUT")) && RawRequest.RequestBodyStream.Length > 0)
                 {
                     if (ContentType.Contains("multipart"))
                     {

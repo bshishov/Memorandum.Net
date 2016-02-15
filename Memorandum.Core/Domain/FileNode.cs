@@ -22,49 +22,36 @@ namespace Memorandum.Core.Domain
 
         public override User User { get; set; }
 
-        public override NodeIdentifier NodeId
-        {
-            get { return new NodeIdentifier("file", Path); }
-        }
+        public override NodeIdentifier NodeId => new NodeIdentifier("file", Path);
     }
 
     public class FileNode : BaseFileNode
     {
-        public override bool IsDirectory { get { return false; } }
+        public override bool IsDirectory => false;
         public readonly long Size;
         public string Mime;
 
-        private readonly DateTime _lastModified;
-
-        public override DateTime LastModified
-        {
-            get { return _lastModified; }
-        }
+        public override DateTime LastModified { get; }
 
 
         public FileNode(string path) : base(path)
         {
             var info = new FileInfo(path);
             Size = info.Length;
-            _lastModified = info.LastWriteTime;
+            LastModified = info.LastWriteTime;
             Mime = MimeTypeMap.GetMimeType(System.IO.Path.GetExtension(path));
         }
     }
 
     public class DirectoryNode : BaseFileNode
     {
-        private readonly DateTime _lastModified;
+        public override DateTime LastModified { get; }
 
-        public override DateTime LastModified
-        {
-            get { return _lastModified; }
-        }
-
-        public override bool IsDirectory { get { return true; } }
+        public override bool IsDirectory => true;
 
         public DirectoryNode(string path) : base(path)
         {
-            _lastModified = Directory.GetLastWriteTime(path);
+            LastModified = Directory.GetLastWriteTime(path);
         }
 
         public IEnumerable<BaseFileNode> GetChild()

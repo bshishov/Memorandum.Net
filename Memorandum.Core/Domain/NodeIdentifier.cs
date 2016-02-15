@@ -10,5 +10,18 @@ namespace Memorandum.Core.Domain
             Provider = provider;
             Id = id;
         }
+
+        public override bool Equals(object obj)
+        {
+            var id2 = obj as NodeIdentifier;
+            if (id2 == null)
+                return false;
+            return this.Id.Equals(id2.Id) && this.Provider.Equals(id2.Provider);
+        }
+
+        public override int GetHashCode()
+        {
+            return Provider.GetHashCode() ^ Id.GetHashCode();
+        }
     }
 }

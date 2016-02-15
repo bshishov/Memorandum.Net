@@ -11,7 +11,7 @@
         </div>
         <div class="col col1-3 set text-right">                       
             <a class="system button small" href="#">Download</a>
-            <a class="system button small" href="/{{ Node.Provider }}/{{ Node.NodeId }}/delete">Delete</a>
+            <a class="system button small needconfirm" href="javascript:;" data-action="send('DELETE', '/api/{{ Node.Provider }}/{{ Node.NodeId }}')" title="Delete this url">Delete</a>
         </div> 
     </div>   
 {% endblock %}

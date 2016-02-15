@@ -11,9 +11,10 @@ $(document).ready(function() {
 
   $('.needconfirm').click(function(e) {
     e.preventDefault();
-    var target = $( this ).attr('href');
-    var title = $( this ).attr('title');
-    var text = "";
+    that = $( this );
+    target = $( this ).attr('href');
+    title = $( this ).attr('title');
+    text = "";
     if(title != undefined)
       text = "Are you sure want to " + title + "?";
     else
@@ -22,6 +23,7 @@ $(document).ready(function() {
     {
       confirm(text, function() {
         window.location = target;
+        eval(that.attr('data-action'));
       });    
     }
   });
@@ -66,7 +68,7 @@ $(document).ready(function() {
     formData  = new FormData(formObject[0]);
     if(['text','url','file','search'].indexOf(activeTab) < 0)
       return;    
-    action = '/' + activeTab + '/add';   
+    action = '/api/' + activeTab;
 
     $.ajax({
       url: action,
@@ -152,4 +154,26 @@ function notify(message, type, timeout) {
 
 function confirm(message, okCallback) {
   showNotification(message, "warn", "Yes", okCallback, 1000000);
+}
+
+function send(method, path, args, callback) {
+  if(callback == undefined) {
+    callback = function (data) {
+      notify(data, "success");          
+    };
+  }
+
+  $.ajax({
+    url: path,
+    type: method,
+    data: args,
+    async: true,
+    success: callback,
+    error: function(err) {
+      notify("Error: " + err, "error", 5000)
+    },
+    cache: false,
+    contentType: false,      
+    processData: false
+  });
 }

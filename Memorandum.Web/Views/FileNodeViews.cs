@@ -3,62 +3,16 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Security.AccessControl;
 using Memorandum.Core.Domain;
 using Memorandum.Web.Framework;
-using Memorandum.Web.Framework.Errors;
 using Memorandum.Web.Framework.Responses;
 using Memorandum.Web.Framework.Routing;
-using Memorandum.Web.Properties;
 using Memorandum.Web.Views.Drops;
 
 namespace Memorandum.Web.Views
 {
     internal static class FileNodeViews
     {
-        private static Response FileNodeAdd(Request request)
-        {
-            var user = request.Session.Get<User>("user");
-            if (user == null)
-                return new RedirectResponse("/login");
-            if (request.Method == "POST")
-            {
-                var parentNodeId = new NodeIdentifier(request.PostArgs["parent_provider"], request.PostArgs["parent_id"]);
-                var parentNode = request.UnitOfWork.Nodes.FindById(parentNodeId);
-                if (parentNode == null || !request.Files.Any())
-                    throw new Http500Exception("Incorect parameters");
-
-                var dir = Path.Combine(Settings.Default.FileStorage, user.Username);
-                if (!System.IO.Directory.Exists(dir))
-                    System.IO.Directory.CreateDirectory(dir);
-
-                foreach (var file in request.Files)
-                {
-                    var filePath = Path.Combine(dir, file.FileName);
-                    try
-                    {
-                        using (var fileStream = File.Create(filePath))
-                        {
-                            file.Data.Seek(0, SeekOrigin.Begin);
-                            file.Data.CopyTo(fileStream);
-                        }
-                        var fileNode = new FileNode(filePath);
-                        //request.UnitOfWork.Files.Save(fileNode);
-                        Utilities.MakeRelationForNewNode(request, parentNode, fileNode);
-                        
-                    }
-                    catch (Exception ex)
-                    {
-                        throw new Http500Exception(ex);
-                    }
-                }
-
-                return new RedirectResponse("/" + parentNode.NodeId.Provider + "/" + parentNode.NodeId.Id);
-            }
-
-            throw new Http404Exception("POST expected");
-        }
-
         private static Response FileNodeView(Request request, string[] args)
         {
             var user = request.Session.Get<User>("user");
@@ -136,7 +90,6 @@ namespace Memorandum.Web.Views
 
         public static Router Router = new Router(new List<IRoute>
         {
-            new Route("/add$", FileNodeAdd),
             new RouteWithArg("/raw/(.+)$", RawFileNode),
             new RouteWithArg("/download/(.+)$", DownloadFileNode),
             new RouteWithArg("/(.+)$", FileNodeView)

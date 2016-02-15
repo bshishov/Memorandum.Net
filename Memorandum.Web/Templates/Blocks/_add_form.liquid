@@ -14,7 +14,8 @@
       </div>
     </div>
     <div class="row form-section {{ group.Name }}tab active" data-tab="text">
-      <textarea id="form-text-field" name="text" class="formatted-text"></textarea>
+      <input type="hidden" name="text" />
+      <textarea id="form-text-field{{ group.Name }}" class="formatted-text"></textarea>
     </div>
     <div class="row form-section {{ group.Name }}tab" style="display:none;" data-tab="url">
       <div class="row field">
@@ -27,7 +28,7 @@
       </div>
     </div>
     <div class="row form-section {{ group.Name }}tab" style="display:none;" data-tab="file">
-      <!--<input type="file" name="file" multiple="" />-->
+      <input type="file" name="file" multiple="" />
     </div>
     <div class="row form-section {{ group.Name }}tab" style="display:none;" data-tab="search">
       <div class="row field">
@@ -42,7 +43,7 @@
     </div>
   </form>
   <script type="text/javascript">
-    initEditor('#form-text-field');
+    initEditor('#form-text-field{{ group.Name }}');
   </script>
 </div>
 

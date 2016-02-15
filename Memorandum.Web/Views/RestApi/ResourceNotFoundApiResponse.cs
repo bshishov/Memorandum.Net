@@ -1,9 +1,9 @@
 namespace Memorandum.Web.Views.RestApi
 {
-    class ResourceNotFoundApiResponse : ApiResponse
+    internal class ResourceNotFoundApiResponse : ApiResponse
     {
         public ResourceNotFoundApiResponse(string errmsg = "Resource not found")
-            : base(new { Error = errmsg }, 404)
+            : base(new {Error = errmsg}, 404)
         {
         }
     }

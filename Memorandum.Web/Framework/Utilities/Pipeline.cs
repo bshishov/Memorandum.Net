@@ -2,7 +2,7 @@
 
 namespace Memorandum.Web.Framework.Utilities
 {
-    class Pipeline : List<IHandler>
+    internal class Pipeline : List<IHandler>
     {
         public void Run()
         {
@@ -11,7 +11,7 @@ namespace Memorandum.Web.Framework.Utilities
         }
     }
 
-    class Pipeline<T> : List<IHandler<T>>
+    internal class Pipeline<T> : List<IHandler<T>>
     {
         public void Run(T input)
         {
@@ -20,7 +20,7 @@ namespace Memorandum.Web.Framework.Utilities
         }
     }
 
-    class Pipeline<T1, T2> : List<IHandler<T1, T2>>
+    internal class Pipeline<T1, T2> : List<IHandler<T1, T2>>
     {
         public void Run(T1 arg1, T2 arg2)
         {
@@ -29,17 +29,17 @@ namespace Memorandum.Web.Framework.Utilities
         }
     }
 
-    interface IHandler
+    internal interface IHandler
     {
         void Handle();
     }
 
-    interface IHandler<in T>
+    internal interface IHandler<in T>
     {
         void Handle(T input);
     }
 
-    interface IHandler<in T1, in T2>
+    internal interface IHandler<in T1, in T2>
     {
         void Handle(T1 arg1, T2 arg2);
     }

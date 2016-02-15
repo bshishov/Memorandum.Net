@@ -3,7 +3,7 @@ using Memorandum.Core.Domain;
 
 namespace Memorandum.Web.Views.Drops
 {
-    class UrlNodeDrop : NodeDrop
+    internal class UrlNodeDrop : NodeDrop
     {
         private readonly URLNode _node;
 
@@ -12,10 +12,14 @@ namespace Memorandum.Web.Views.Drops
             _node = node;
         }
 
-        public int Id { get { return _node.Id; } }
-        public string Name { get { return _node.Name; } }
-        public string Url { get { return _node.URL; } }
-        public string Image { get { return _node.Image; } }
-        public DateTime DateAdded { get { return _node.DateAdded; } }
+        public int Id => _node.Id;
+
+        public string Name => _node.Name;
+
+        public string Url => _node.URL;
+
+        public string Image => _node.Image;
+
+        public DateTime DateAdded => _node.DateAdded;
     }
 }

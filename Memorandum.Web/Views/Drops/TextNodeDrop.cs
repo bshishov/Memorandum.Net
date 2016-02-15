@@ -7,14 +7,16 @@ namespace Memorandum.Web.Views.Drops
     {
         private readonly TextNode _node;
 
-        public int Id { get { return _node.Id; } }
-        public string Text { get { return _node.Text; } }
-        public DateTime DateAdded { get { return _node.DateAdded; } }
-
         public TextNodeDrop(TextNode node)
             : base(node)
         {
             _node = node;
         }
+
+        public int Id => _node.Id;
+
+        public string Text => _node.Text;
+
+        public DateTime DateAdded => _node.DateAdded;
     }
 }

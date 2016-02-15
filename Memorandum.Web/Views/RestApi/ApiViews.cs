@@ -11,29 +11,12 @@ using Memorandum.Web.Views.Drops;
 
 namespace Memorandum.Web.Views.RestApi
 {
-    static class ApiViews
+    internal static class ApiViews
     {
-        private static readonly Dictionary<string, User> Tokens = new Dictionary<string, User>();
-
-        public static Router Router = new Router(new List<IRoute>()
-        {
-            new Route("/$", ApiHome),
-            new Route("/auth$", Auth),
-            new Route("/search$", Search),
-            new RouteWithArg("/([a-z]+)/(.+)/links$", LinksView),
-            new RouteWithArg("/([a-z]+)/([^/.]+)$", NodeView),
-        });
-
-        public class SearchResult
-        {
-            public NodeDrop Node { get; set; }
-            public String Rendered { get; set; }
-        }
-
         private static Response Search(Request request)
         {
             const string searchQueryKey = "q";
-            
+
             var user = UserAuth(request, true);
             if (user == null)
                 return new NonAuthorizedApiResponse();
@@ -49,23 +32,18 @@ namespace Memorandum.Web.Views.RestApi
             }
 
             var tpl = Template.Parse(File.ReadAllText("Templates/Blocks/_link.liquid"));
-            var results = new List<SearchResult>();
-            foreach (var node in nodes)
-            {
-                var l = new LinkDrop(new Link(node, node), node);
-                var r = new SearchResult()
+            var results = (from node in nodes
+                let l = new LinkDrop(new Link(node, node), node)
+                select new SearchResult
                 {
-                    Node = NodeDropFactory.Create(node),
-                    Rendered = tpl.Render(Hash.FromAnonymousObject(new { link = l })),
-                };
-                results.Add(r);
-            }
+                    Node = NodeDropFactory.Create(node), Rendered = tpl.Render(Hash.FromAnonymousObject(new {link = l}))
+                }).ToList();
 
             return new ApiResponse(results);
         }
 
         /// <summary>
-        /// TODO: Implement OAuth
+        ///     TODO: Implement OAuth
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
@@ -80,18 +58,18 @@ namespace Memorandum.Web.Views.RestApi
                 if (request.PostArgs["username"] == null || request.PostArgs["password"] == null)
                     return new BadRequestApiResponse("Invalid creditentials");
                 var user = request.UnitOfWork.Users.Auth(request.PostArgs["username"], request.PostArgs["password"]);
-                if(user == null)
+                if (user == null)
                     return new BadRequestApiResponse("Invalid creditentials");
                 var token = Guid.NewGuid().ToString();
                 Tokens.Add(token, user);
-                return new ApiResponse(new { Token = token });
+                return new ApiResponse(new {Token = token});
             }
 
             return new BadRequestApiResponse();
         }
 
         /// <summary>
-        /// Returns userobject by request token, if useCommonAuth eq 'true', then common auth (via sessions) would be preferred
+        ///     Returns userobject by request token, if useCommonAuth eq 'true', then common auth (via sessions) would be preferred
         /// </summary>
         /// <param name="request"></param>
         /// <param name="useCommonAuth"></param>
@@ -127,7 +105,7 @@ namespace Memorandum.Web.Views.RestApi
 
             if (node.User.Id != user.Id)
                 return new ForbiddenApiResponse();
-            
+
             return new ApiResponse(NodeDropFactory.Create(node));
         }
 
@@ -136,7 +114,7 @@ namespace Memorandum.Web.Views.RestApi
             var user = UserAuth(request, true);
             if (user == null)
                 return new NonAuthorizedApiResponse();
-            
+
             var node = request.UnitOfWork.Nodes.FindById(new NodeIdentifier(args[0], args[1]));
 
             if (node == null)
@@ -144,11 +122,11 @@ namespace Memorandum.Web.Views.RestApi
 
             if (node.User.Id != user.Id)
                 return new ForbiddenApiResponse();
-            
+
             return new ApiResponse(Utilities.GetLinks(request.UnitOfWork, node));
         }
 
-        static Response ApiHome(Request request)
+        private static Response ApiHome(Request request)
         {
             return new ApiResponse(new
             {
@@ -156,5 +134,22 @@ namespace Memorandum.Web.Views.RestApi
                 NodeLinks = "/:provider/:id/links"
             });
         }
+
+        public class SearchResult
+        {
+            public NodeDrop Node { get; set; }
+            public String Rendered { get; set; }
+        }
+
+        private static readonly Dictionary<string, User> Tokens = new Dictionary<string, User>();
+
+        public static Router Router = new Router(new List<IRoute>
+        {
+            new Route("/$", ApiHome),
+            new Route("/auth$", Auth),
+            new Route("/search$", Search),
+            new RouteWithArg("/([a-z]+)/(.+)/links$", LinksView),
+            new RouteWithArg("/([a-z]+)/([^/.]+)$", NodeView)
+        });
     }
 }

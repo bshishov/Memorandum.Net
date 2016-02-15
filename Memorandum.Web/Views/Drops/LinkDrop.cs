@@ -7,52 +7,51 @@ using Memorandum.Core.Domain;
 namespace Memorandum.Web.Views.Drops
 {
     [DataContract]
-    class LinkDrop : Drop
+    internal class LinkDrop : Drop
     {
         private readonly Link _link;
-        private readonly NodeDrop _endnode;
-
-        [DataMember]
-        public int Id { get { return _link.Id; } }
-
-        [DataMember]
-        public string Comment { get { return _link.Comment; } }
-
-        [DataMember]
-        public string StartNode { get { return _link.StartNode; } }
-
-        [DataMember]
-        public string StartNodeProvider { get { return _link.StartNodeProvider; } }
-
-        [DataMember]
-        public string EndNode { get { return _link.EndNode; } }
-
-        [DataMember]
-        public string EndNodeProvider { get { return _link.EndNodeProvider; } }
-
-        [DataMember]
-        public NodeDrop Node { get { return _endnode; } }
 
         public LinkDrop(Link link, Node endnode)
         {
             _link = link;
-            _endnode = NodeDropFactory.Create(endnode);
+            Node = NodeDropFactory.Create(endnode);
         }
 
         public LinkDrop(Link link, NodeDrop endnode)
         {
             _link = link;
-            _endnode = endnode;
+            Node = endnode;
         }
+
+        [DataMember]
+        public int Id => _link.Id;
+
+        [DataMember]
+        public string Comment => _link.Comment;
+
+        [DataMember]
+        public string StartNode => _link.StartNode;
+
+        [DataMember]
+        public string StartNodeProvider => _link.StartNodeProvider;
+
+        [DataMember]
+        public string EndNode => _link.EndNode;
+
+        [DataMember]
+        public string EndNodeProvider => _link.EndNodeProvider;
+
+        [DataMember]
+        public NodeDrop Node { get; }
     }
 
-    class DropGroup<T> : Drop
+    internal class DropGroup<T> : Drop
     {
         public string Name { get; protected set; }
         public List<T> Items { get; protected set; }
     }
 
-    class LinksGroupDrop : DropGroup<LinkDrop>
+    internal class LinksGroupDrop : DropGroup<LinkDrop>
     {
         public LinksGroupDrop()
         {
@@ -66,9 +65,6 @@ namespace Memorandum.Web.Views.Drops
             Name = Items.First().Comment;
         }
 
-        public bool HasItems
-        {
-            get { return Items != null && Items.Count > 0; }
-        }
+        public bool HasItems => Items != null && Items.Count > 0;
     }
 }

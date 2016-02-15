@@ -1,9 +1,8 @@
-using FastCGI;
 using Memorandum.Web.Framework.Responses;
 
 namespace Memorandum.Web.Framework.Routing
 {
-    class RouteContext : IRouteContext
+    internal class RouteContext : IRouteContext
     {
         private readonly Route _route;
 

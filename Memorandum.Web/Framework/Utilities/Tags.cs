@@ -4,7 +4,7 @@ using DotLiquid;
 
 namespace Memorandum.Web.Framework.Utilities
 {
-    class Tags
+    internal class Tags
     {
         public class StaticTag : Tag
         {

@@ -1,9 +1,8 @@
-using FastCGI;
 using Memorandum.Web.Framework.Responses;
 
 namespace Memorandum.Web.Framework.Routing
 {
-    class RouteContextWithArg : IRouteContext
+    internal class RouteContextWithArg : IRouteContext
     {
         private readonly string[] _args;
         private readonly RouteWithArg _route;
@@ -13,6 +12,7 @@ namespace Memorandum.Web.Framework.Routing
             _args = args;
             _route = route;
         }
+
         public Response Proceed(Request request)
         {
             return _route.Proceed(request, _args);

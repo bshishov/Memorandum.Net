@@ -4,40 +4,40 @@ using System.Text;
 
 namespace Memorandum.Web.Framework.Responses
 {
-    class HttpResponse : Response
+    internal class HttpResponse : Response
     {
-        protected byte[] Content;
-        private readonly int _status;
-        private readonly string _statusReason;
-        private readonly string _contentType;
-
-        public int StatusCode { get { return _status; } }
-
         public Dictionary<string, string> Attributes;
+        protected byte[] Content;
+        private readonly string _contentType;
+        private readonly string _statusReason;
 
-        public HttpResponse(byte[] content, int status = 200, string statusReason = "OK", string contenttype = "text/html", Dictionary<string, string> attributes = null)
+        public HttpResponse(byte[] content, int status = 200, string statusReason = "OK",
+            string contenttype = "text/html", Dictionary<string, string> attributes = null)
         {
-            _status = status;
+            StatusCode = status;
             _contentType = contenttype;
             Attributes = attributes;
             _statusReason = statusReason;
             Content = content;
         }
 
-        public HttpResponse(string content = "", int status = 200, string statusReason = "OK", string contenttype = "text/html", Dictionary<string, string> attributes = null)
+        public HttpResponse(string content = "", int status = 200, string statusReason = "OK",
+            string contenttype = "text/html", Dictionary<string, string> attributes = null)
         {
-            _status = status;
+            StatusCode = status;
             _contentType = contenttype;
             Attributes = attributes;
             _statusReason = statusReason;
             Content = Encoding.UTF8.GetBytes(content);
         }
 
+        public int StatusCode { get; }
+
         public override void Write(Request request)
         {
             try
             {
-                var header = string.Format("HTTP/1.1 {0} {1}", _status, _statusReason);
+                var header = string.Format("HTTP/1.1 {0} {1}", StatusCode, _statusReason);
                 request.RawRequest.WriteResponseUtf8(header);
 
                 if (!string.IsNullOrEmpty(_contentType))

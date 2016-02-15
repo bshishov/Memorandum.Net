@@ -3,7 +3,7 @@ using System.Net;
 
 namespace Memorandum.Web.Framework.Utilities
 {
-    class HttpUtilities
+    internal class HttpUtilities
     {
         public static NameValueCollection ParseQueryString(string queryString)
         {
@@ -13,7 +13,7 @@ namespace Memorandum.Web.Framework.Utilities
             {
                 var parts = segment.Split('=');
                 if (parts.Length <= 1) continue;
-                var key = parts[0].Trim(new[] { '?', ' ' });
+                var key = parts[0].Trim('?', ' ');
                 var val = WebUtility.UrlDecode(parts[1].Trim());
 
                 queryParameters.Add(key, val);

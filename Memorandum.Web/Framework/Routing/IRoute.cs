@@ -2,7 +2,7 @@
 
 namespace Memorandum.Web.Framework.Routing
 {
-    interface IRoute
+    internal interface IRoute
     {
         Regex Regex { get; }
     }

@@ -1,4 +1,3 @@
-using FastCGI;
 using Memorandum.Web.Framework.Responses;
 
 namespace Memorandum.Web.Framework.Routing

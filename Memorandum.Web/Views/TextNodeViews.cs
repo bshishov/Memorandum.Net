@@ -9,35 +9,29 @@ using Memorandum.Web.Views.Drops;
 
 namespace Memorandum.Web.Views
 {
-    static class TextNodeViews
+    internal static class TextNodeViews
     {
-        public static Router Router = new Router(new List<IRoute>
-        {
-            new Route("/add$", TextNodeAdd),
-            new RouteWithArg("/([0-9]+)$", TextNode),
-            new RouteWithArg("/([0-9]+)/delete$", TextNodeDelete),
-        });
-
         private static Response TextNode(Request request, string[] args)
         {
             var user = request.Session.Get<User>("user");
-            if(user == null)
+            if (user == null)
                 return new RedirectResponse("/login");
-            
+
             var node = request.UnitOfWork.Text.FindById(Convert.ToInt32(args[0]));
-            if(node == null)
+            if (node == null)
                 throw new Http404Exception("Node not found");
 
-            if(node.User.Id != user.Id)
+            if (node.User.Id != user.Id)
                 throw new Http404Exception("Access denied :)");
-         
+
             if (request.Method == "POST")
             {
                 node.Text = request.PostArgs["text"];
                 request.UnitOfWork.Text.Save(node);
             }
 
-            return new TemplatedResponse("text_node", new {
+            return new TemplatedResponse("text_node", new
+            {
                 Title = "Home",
                 Node = new TextNodeDrop(node),
                 Links = Utilities.GetGroupedLinks(request.UnitOfWork, node)
@@ -75,15 +69,19 @@ namespace Memorandum.Web.Views
             {
                 var parentNodeId = new NodeIdentifier(request.PostArgs["parent_provider"], request.PostArgs["parent_id"]);
                 var parentNode = request.UnitOfWork.Nodes.FindById(parentNodeId);
-                if (parentNode == null || request.PostArgs["text"] == null || request.PostArgs["comment"] == null)
+                if (parentNode == null || request.PostArgs["text"] == null)
                     throw new Http500Exception("Incorect parameters");
 
                 var newNode = new TextNode
                 {
                     DateAdded = DateTime.Now,
-                    Text = request.PostArgs["text"], 
+                    Text = request.PostArgs["text"],
                     User = user
                 };
+
+                if(string.IsNullOrEmpty(newNode.Text))
+                    throw new Http500Exception("Empty text");
+
                 request.UnitOfWork.Text.Save(newNode);
                 Utilities.MakeRelationForNewNode(request, parentNode, newNode);
                 return new RedirectResponse("/" + parentNode.NodeId.Provider + "/" + parentNode.NodeId.Id);
@@ -91,5 +89,12 @@ namespace Memorandum.Web.Views
 
             throw new Http404Exception("POST expected");
         }
+
+        public static Router Router = new Router(new List<IRoute>
+        {
+            new Route("/add$", TextNodeAdd),
+            new RouteWithArg("/([0-9]+)$", TextNode),
+            new RouteWithArg("/([0-9]+)/delete$", TextNodeDelete)
+        });
     }
 }

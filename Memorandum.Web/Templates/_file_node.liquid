@@ -5,18 +5,17 @@
     <div class="card">
     {% block file_content %}{% endblock %}
     </div>
-    <div class="row">
-        <div class="col m5 s12"> 
+    <div class="row details">
+        <div class="col col2-3 set"> 
 			{% if Node.IsDirectory != true %}
-            <div class="chip">{{ Node.Size|filesizeformat }}</div>
-            <div class="chip tooltipped" data-tooltip="{{ Node.Mime }}">{{ Node.Mime|Truncate:20 }}</div>
+            <span class="system">{{ Node.Size|filesizeformat }}</span>
+            <span class="system tooltipped" data-tooltip="{{ Node.Mime }}">{{ Node.Mime|Truncate:20 }}</span>
 			{% endif %}
-			<div class="chip">{{ Node.LastModified }}</div>       
+			<span class="system">{{ Node.LastModified }}</span>       
         </div>
-        <div class="col m7 s12 right-align">           
-            <a class="waves-effect btn-flat" href="/file/raw/{{Node.Path|Urlencode}}"><i class="material-icons left">remove_red_eye</i> Raw</a>
-            <a class="waves-effect btn-flat" href="/file/download/{{Node.Path|Urlencode}}"><i class="material-icons left">file_download</i> Download</a>
-            <a class="waves-effect btn-flat" href="javascript://"><i class="material-icons left">delete</i> Delete</a>
+        <div class="col col1-3 set text-right">           
+            <a class="system button small" href="/file/raw/{{Node.Path|Urlencode}}">Raw</a>
+            <a class="system button small" href="/file/download/{{Node.Path|Urlencode}}">Download</a>
         </div> 
     </div>
     <script type="text/javascript">

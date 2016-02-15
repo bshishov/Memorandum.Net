@@ -1,0 +1,4 @@
+[submodule "Memorandum.Web/External/FastCGI"]
+	path = Memorandum.Web/External/FastCGI
+	url = https://github.com/LukasBoersma/FastCGI.git
+	branch = body-stream

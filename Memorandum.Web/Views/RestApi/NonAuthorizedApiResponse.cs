@@ -1,7 +1,9 @@
 namespace Memorandum.Web.Views.RestApi
 {
-    class NonAuthorizedApiResponse : ApiResponse
+    internal class NonAuthorizedApiResponse : ApiResponse
     {
-        public NonAuthorizedApiResponse() : base(new { Error = "Non authorized, Authorize using POST to /api/auth" }, 401) { }
+        public NonAuthorizedApiResponse() : base(new {Error = "Non authorized, Authorize using POST to /api/auth"}, 401)
+        {
+        }
     }
 }

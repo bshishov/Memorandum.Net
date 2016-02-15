@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Mime;
+using System.Text;
 using System.Text.RegularExpressions;
 using Memorandum.Core;
 using Memorandum.Core.Domain;
@@ -11,17 +12,23 @@ using Memorandum.Web.Views.Drops;
 
 namespace Memorandum.Web.Views
 {
-    static class Utilities
+    internal static class Utilities
     {
         public static List<LinkDrop> GetLinks(UnitOfWork unit, Node node)
         {
-            var links = unit.Links.Where(l => l.StartNode == node.NodeId.Id && l.StartNodeProvider == node.NodeId.Provider).ToList();
-            var linkDrops = links.Select(link => new LinkDrop(link, unit.Nodes.FindById(link.GetEndIdentifier()))).ToList();
-            
+            var links =
+                unit.Links.Where(l => l.StartNode == node.NodeId.Id && l.StartNodeProvider == node.NodeId.Provider)
+                    .ToList();
+            var linkDrops =
+                links.Select(link => new LinkDrop(link, unit.Nodes.FindById(link.GetEndIdentifier()))).ToList();
+
             var dir = node as DirectoryNode;
             if (dir != null)
             {
-                linkDrops.AddRange(dir.GetChild().Select(ch => new LinkDrop(new Link(node, ch), ch)));
+                linkDrops.AddRange(dir.GetChild().Select(ch => new LinkDrop(new Link(node, ch)
+                {
+                    Comment = ch is DirectoryNode ? "Folder" : "File"
+                }, ch)));
             }
             return linkDrops;
         }
@@ -30,7 +37,7 @@ namespace Memorandum.Web.Views
         {
             var linkDrops = GetLinks(unit, node);
             if (linkDrops.Count == 0)
-                return new List<LinksGroupDrop>{ new LinksGroupDrop() };
+                return new List<LinksGroupDrop> {new LinksGroupDrop()};
 
             var groups = new List<LinksGroupDrop>();
             var unnamedGroup = new LinksGroupDrop();
@@ -38,7 +45,9 @@ namespace Memorandum.Web.Views
 
             foreach (var link in linkDrops)
             {
-                var sameRealtionLink = unnamedGroup.Items.FirstOrDefault(l => l.Comment.Equals(link.Comment, StringComparison.CurrentCultureIgnoreCase));
+                var sameRealtionLink =
+                    unnamedGroup.Items.FirstOrDefault(
+                        l => l.Comment != null && l.Comment.Equals(link.Comment, StringComparison.CurrentCultureIgnoreCase));
                 if (sameRealtionLink != null)
                 {
                     unnamedGroup.Items.Remove(sameRealtionLink);
@@ -47,13 +56,14 @@ namespace Memorandum.Web.Views
                     continue;
                 }
 
-                var groupWithSameRelation = groups.FirstOrDefault(g => g.Name.Equals(link.Comment, StringComparison.CurrentCultureIgnoreCase));
+                var groupWithSameRelation =
+                    groups.FirstOrDefault(g => g.Name.Equals(link.Comment, StringComparison.CurrentCultureIgnoreCase));
                 if (groupWithSameRelation != null)
                 {
                     groupWithSameRelation.Items.Add(link);
                     continue;
                 }
-                
+
                 unnamedGroup.Items.Add(link);
             }
 
@@ -72,7 +82,7 @@ namespace Memorandum.Web.Views
                 unit.Links.Delete(inLink);
 
             foreach (var outLink in outLinks)
-                unit.Links.Delete(outLink);  
+                unit.Links.Delete(outLink);
         }
 
         public static string GetWebPageTitle(string url)
@@ -88,8 +98,14 @@ namespace Memorandum.Web.Views
 
             // Obtain a response from the server, if there was an error, return nothing
             HttpWebResponse response = null;
-            try { response = request.GetResponse() as HttpWebResponse; }
-            catch (WebException) { return null; }
+            try
+            {
+                response = request.GetResponse() as HttpWebResponse;
+            }
+            catch (WebException)
+            {
+                return null;
+            }
 
             if (response == null)
                 return null;
@@ -108,7 +124,7 @@ namespace Memorandum.Web.Views
                     var web = new WebClient
                     {
                         UseDefaultCredentials = true,
-                        Encoding = System.Text.Encoding.UTF8
+                        Encoding = Encoding.UTF8
                     };
 
                     var page = web.DownloadString(url);
@@ -140,7 +156,7 @@ namespace Memorandum.Web.Views
             {
                 Comment = request.PostArgs["comment"],
                 DateAdded = DateTime.Now,
-                User = newNode.User
+                User = request.Session.Get<User>("user")
             };
             request.UnitOfWork.Links.Save(link);
         }

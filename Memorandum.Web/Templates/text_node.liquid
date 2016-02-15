@@ -32,11 +32,11 @@
                   url: "",
                   data: data,
                   success: function() { 
-                    Materialize.toast('Saved', 1000);
+                    notify('Saved', 1000);
                     saved = true;
                   },                  
                   error: function() { 
-                    Materialize.toast('Error', 1000);
+                    notify('Error', 1000);
                     console.log(data);
                   },        
                 });

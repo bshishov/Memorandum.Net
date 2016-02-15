@@ -3,38 +3,41 @@ using Memorandum.Core.Domain;
 
 namespace Memorandum.Web.Views.Drops
 {
-    abstract class BaseFileNodeDrop : NodeDrop
+    internal abstract class BaseFileNodeDrop : NodeDrop
     {
         protected BaseFileNode Node;
-        public string Name { get { return Node.Name; } }
-        public bool IsDirectory { get { return Node.IsDirectory; } }
-        public string Path { get { return Node.Path; } }
-        public DateTime LastModified { get { return Node.LastModified; } }
 
         protected BaseFileNodeDrop(BaseFileNode node) : base(node)
         {
             Node = node;
         }
+
+        public string Name => Node.Name;
+
+        public bool IsDirectory => Node.IsDirectory;
+
+        public string Path => Node.Path;
+
+        public DateTime LastModified => Node.LastModified;
     }
 
-    class FileNodeDrop : BaseFileNodeDrop
+    internal class FileNodeDrop : BaseFileNodeDrop
     {
-        public long Size { get { return ((FileNode)Node).Size; } }
-        public string Mime { get { return ((FileNode)Node).Mime; } }
-
         public FileNodeDrop(BaseFileNode node)
             : base(node)
         {
-
         }
+
+        public long Size => ((FileNode) Node).Size;
+
+        public string Mime => ((FileNode) Node).Mime;
     }
 
-    class DirectoryNodeDrop : BaseFileNodeDrop
+    internal class DirectoryNodeDrop : BaseFileNodeDrop
     {
         public DirectoryNodeDrop(BaseFileNode node)
             : base(node)
         {
-
         }
     }
 }

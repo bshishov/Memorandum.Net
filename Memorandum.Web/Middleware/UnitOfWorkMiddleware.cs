@@ -5,7 +5,7 @@ using Memorandum.Web.Framework.Responses;
 
 namespace Memorandum.Web.Middleware
 {
-    class UnitOfWorkMiddleware : IMiddleware
+    internal class UnitOfWorkMiddleware : IMiddleware
     {
         public void Handle(Request request)
         {

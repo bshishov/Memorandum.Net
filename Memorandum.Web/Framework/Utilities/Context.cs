@@ -3,9 +3,9 @@
 namespace Memorandum.Web.Framework.Utilities
 {
     /// <summary>
-    /// SImple key-value storage
+    ///     SImple key-value storage
     /// </summary>
-    class Context
+    internal class Context
     {
         private readonly Dictionary<string, object> _data = new Dictionary<string, object>();
 

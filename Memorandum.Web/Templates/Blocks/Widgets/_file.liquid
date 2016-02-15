@@ -1,12 +1,10 @@
-<strong><a href="/{{ link.EndNodeProvider }}/{{ link.EndNode|Urlencode }}" class="link-title">
 {{ link.Node.Name }}
-</a></strong>
 {% if link.Node.IsDirectory == false %}
 {{ link.Node.Size }}
-<div>
-    <a href="/{{ link.EndNodeProvider }}/raw/{{ link.EndNode }}">Raw</a>&nbsp;
-    <a href="/{{ link.EndNodeProvider }}/download/{{ link.EndNode }}">Download</a>
+<div class="row set">
+    <a class="system" href="/{{ link.EndNodeProvider }}/raw/{{ link.EndNode }}">Raw</a>&nbsp;
+    <a class="system" href="/{{ link.EndNodeProvider }}/download/{{ link.EndNode }}">Download</a>
 </div>
 {% else %}
-Folder
+<div class="system">Folder</div>
 {% endif %}

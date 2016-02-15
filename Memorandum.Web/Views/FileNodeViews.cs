@@ -3,31 +3,68 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Security.AccessControl;
 using Memorandum.Core.Domain;
 using Memorandum.Web.Framework;
+using Memorandum.Web.Framework.Errors;
 using Memorandum.Web.Framework.Responses;
 using Memorandum.Web.Framework.Routing;
+using Memorandum.Web.Properties;
 using Memorandum.Web.Views.Drops;
 
 namespace Memorandum.Web.Views
 {
-    static class FileNodeViews
+    internal static class FileNodeViews
     {
-        public static Router Router = new Router(new List<IRoute>()
-        {
-            new Route("/add$", FileNodeAdd),
-            new RouteWithArg("/raw/(.+)$", RawFileNode),
-            new RouteWithArg("/download/(.+)$", DownloadFileNode),
-            new RouteWithArg("/(.+)$", FileNodeView),
-        });
-
         private static Response FileNodeAdd(Request request)
         {
-            throw new NotImplementedException();
+            var user = request.Session.Get<User>("user");
+            if (user == null)
+                return new RedirectResponse("/login");
+            if (request.Method == "POST")
+            {
+                var parentNodeId = new NodeIdentifier(request.PostArgs["parent_provider"], request.PostArgs["parent_id"]);
+                var parentNode = request.UnitOfWork.Nodes.FindById(parentNodeId);
+                if (parentNode == null || !request.Files.Any())
+                    throw new Http500Exception("Incorect parameters");
+
+                var dir = Path.Combine(Settings.Default.FileStorage, user.Username);
+                if (!System.IO.Directory.Exists(dir))
+                    System.IO.Directory.CreateDirectory(dir);
+
+                foreach (var file in request.Files)
+                {
+                    var filePath = Path.Combine(dir, file.FileName);
+                    try
+                    {
+                        using (var fileStream = File.Create(filePath))
+                        {
+                            file.Data.Seek(0, SeekOrigin.Begin);
+                            file.Data.CopyTo(fileStream);
+                        }
+                        var fileNode = new FileNode(filePath);
+                        //request.UnitOfWork.Files.Save(fileNode);
+                        Utilities.MakeRelationForNewNode(request, parentNode, fileNode);
+                        
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new Http500Exception(ex);
+                    }
+                }
+
+                return new RedirectResponse("/" + parentNode.NodeId.Provider + "/" + parentNode.NodeId.Id);
+            }
+
+            throw new Http404Exception("POST expected");
         }
 
-        static Response FileNodeView(Request request, string[] args)
+        private static Response FileNodeView(Request request, string[] args)
         {
+            var user = request.Session.Get<User>("user");
+            if (user == null)
+                return new RedirectResponse("/login");
+
             var node = request.UnitOfWork.Files.FindById(WebUtility.UrlDecode(args[0]));
             if (node.IsDirectory)
             {
@@ -41,7 +78,7 @@ namespace Memorandum.Web.Views
 
             var template = "_file_node";
             var fileNode = node as FileNode;
-            if(fileNode == null)
+            if (fileNode == null)
                 throw new Exception("Incorrect file node");
 
             if (EditableFileTypes.Contains(fileNode.Mime))
@@ -56,24 +93,32 @@ namespace Memorandum.Web.Views
             return new TemplatedResponse(template, new
             {
                 Title = node.Name,
-                Node =  new FileNodeDrop(node),
+                Node = new FileNodeDrop(node),
                 Links = Utilities.GetGroupedLinks(request.UnitOfWork, node)
             });
         }
 
-        static Response RawFileNode(Request request, string[] args)
+        private static Response RawFileNode(Request request, string[] args)
         {
+            var user = request.Session.Get<User>("user");
+            if (user == null)
+                return new RedirectResponse("/login");
+
             var node = request.UnitOfWork.Files.FindById(args[0]);
-            if(node.IsDirectory)
+            if (node.IsDirectory)
                 throw new InvalidOperationException("Not a file");
             var fileNode = node as FileNode;
-            if(fileNode == null)
+            if (fileNode == null)
                 throw new InvalidOperationException("Not a file");
             return new HttpResponse(File.ReadAllBytes(node.Path), contenttype: fileNode.Mime);
         }
 
-        static Response DownloadFileNode(Request request, string[] args)
+        private static Response DownloadFileNode(Request request, string[] args)
         {
+            var user = request.Session.Get<User>("user");
+            if (user == null)
+                return new RedirectResponse("/login");
+
             var node = request.UnitOfWork.Files.FindById(args[0]);
             if (node.IsDirectory)
                 throw new InvalidOperationException("Not a file");
@@ -81,14 +126,23 @@ namespace Memorandum.Web.Views
             if (fileNode == null)
                 throw new InvalidOperationException("Not a file");
 
-            return new HttpResponse(File.ReadAllBytes(node.Path), contenttype: "application/force-download", attributes: new Dictionary<string, string>()
-            {
-                {"Content-Disposition", string.Format("attachment; filename=\"{0}\"", fileNode.Name)}, 
-                {"X-Sendfile", fileNode.Name }, 
-            });
+            return new HttpResponse(File.ReadAllBytes(node.Path), contenttype: "application/force-download",
+                attributes: new Dictionary<string, string>
+                {
+                    {"Content-Disposition", string.Format("attachment; filename=\"{0}\"", fileNode.Name)},
+                    {"X-Sendfile", fileNode.Name}
+                });
         }
 
-        public static string[] EditableFileTypes = new[]
+        public static Router Router = new Router(new List<IRoute>
+        {
+            new Route("/add$", FileNodeAdd),
+            new RouteWithArg("/raw/(.+)$", RawFileNode),
+            new RouteWithArg("/download/(.+)$", DownloadFileNode),
+            new RouteWithArg("/(.+)$", FileNodeView)
+        });
+
+        public static string[] EditableFileTypes =
         {
             "application/javascript",
             "application/json",
@@ -132,7 +186,7 @@ namespace Memorandum.Web.Views
             "text/x-uuencode",
             "text/x-vcalendar",
             "text/x-vcard",
-            "text/yaml",
+            "text/yaml"
         };
     }
 }

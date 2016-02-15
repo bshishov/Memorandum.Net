@@ -30,11 +30,17 @@ $(document).ready(function() {
     tabgroup = $( this ).data("tabgroup");
     target = $( this ).data("target");
     $('.'+tabgroup+'tab').removeClass('active').hide();
-    $('.'+tabgroup+'tab[data-tab="'+target+'"]').addClass('active').show();    
+
+    tab = $('.'+tabgroup+'tab[data-tab="'+target+'"]');
+    tab.addClass('active').show();
+    tab.find('input')[0].focus();
+    tab.find('.formatted-text')[0].focus();
   });
 
-  $('.toggle').click(function() {        
-    $('#'+$( this ).data("target")).slideToggle();    
+  $('.toggle').click(function() {  
+    target = $('#'+$( this ).data("target"))      
+    target.slideToggle();
+    target.find('.formatted-text')[0].focus();
   });
 
   $('.searchinput').change(function() {            
@@ -53,13 +59,13 @@ $(document).ready(function() {
   });
 
   $('.submitform').click(function() { 
-    formObject = $('#'+$( this ).data("target"));
-    formData  = new FormData(formObject[0]);
+    formObject = $('#'+$( this ).data("target"));    
     activeTab = formObject.find(".active").data("tab");
-    
+    editor = formObject.find(".formatted-text");
+    formObject.find("input[name='text']").val(editor.html());
+    formData  = new FormData(formObject[0]);
     if(['text','url','file','search'].indexOf(activeTab) < 0)
-      return;
-    
+      return;    
     action = '/' + activeTab + '/add';   
 
     $.ajax({
@@ -68,7 +74,7 @@ $(document).ready(function() {
       data: formData,
       async: false,
       success: function (data) {
-        notify(data, "info");          
+        notify("Added", "info");          
       },
       cache: false,
       contentType: false,      
@@ -85,6 +91,9 @@ var initEditor = function(selector)
     },
     placeholder: { text: 'Type your text here...' },
     autoLink: true,
+    paste: {
+      cleanPastedHTML: true
+    },
     anchorPreview: {        
         hideDelay: 200,
         previewValueSelector: 'a'

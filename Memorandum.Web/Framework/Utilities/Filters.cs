@@ -2,7 +2,7 @@
 
 namespace Memorandum.Web.Framework.Utilities
 {
-    static class Filters
+    internal static class Filters
     {
         public static string UrlEncode(string input)
         {

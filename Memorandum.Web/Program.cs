@@ -6,68 +6,46 @@ using Memorandum.Web.Framework;
 using Memorandum.Web.Framework.Middleware;
 using Memorandum.Web.Framework.Routing;
 using Memorandum.Web.Middleware;
+using Memorandum.Web.Properties;
+using Memorandum.Web.Views;
 using Memorandum.Web.Views.RestApi;
 
 namespace Memorandum.Web
 {
-    class Program
+    internal class Program
     {
-        [Verb("runserver", HelpText = "Run server")]
-        class RunServerOptions 
+        private static int Main(string[] args)
         {
-        }
-
-        [Verb("createschema", HelpText = "Creates database schema")]
-        class CreateSchemaOptions
-        {
-        }
-
-        [Verb("adduser", HelpText = "Create new user")]
-        class CreateUserOptions
-        {
-            [Option('u', "username", Required = true, HelpText = "Username")]
-            public string Username { get; set; }
-
-            [Option('p', "password", Required = true, HelpText = "Password")]
-            public string Password { get; set; }
-
-            [Option('e', "email", Required = true, HelpText = "Email")]
-            public string Email { get; set; }
-        }
-
-
-        static int Main(string[] args)
-        {
-            var result = CommandLine.Parser.Default.ParseArguments<RunServerOptions, CreateSchemaOptions>(args);
+            var result = Parser.Default.ParseArguments<RunServerOptions, CreateSchemaOptions>(args);
             var exitCode = result.MapResult(
                 (RunServerOptions opts) => Runserver(opts),
-                (CreateSchemaOptions opts) => CreateSchema(opts), 
+                (CreateSchemaOptions opts) => CreateSchema(opts),
                 errors => 1);
             return exitCode;
         }
 
-        static int Runserver(RunServerOptions options)
+        private static int Runserver(RunServerOptions options)
         {
             var router = new Router();
-            router.Bind("", Views.GeneralViews.Router);
-            router.Bind("^/text", Views.TextNodeViews.Router);
-            router.Bind("^/url", Views.UrlNodeViews.Router);
-            router.Bind("^/file", Views.FileNodeViews.Router);
+            router.Bind("", GeneralViews.Router);
+            router.Bind("^/text", TextNodeViews.Router);
+            router.Bind("^/url", UrlNodeViews.Router);
+            router.Bind("^/file", FileNodeViews.Router);
             router.Bind("^/api", ApiViews.Router);
 
             var app = new App(router);
             app.RegisterMiddleware(new SessionMiddleware());
             app.RegisterMiddleware(new UnitOfWorkMiddleware());
-            app.Listen(Properties.Settings.Default.Port);
+            app.Listen(Settings.Default.Port);
             return 0;
         }
 
-        static int AddUser(CreateUserOptions options)
+        private static int AddUser(CreateUserOptions options)
         {
             using (var unit = new UnitOfWork())
             {
                 var password = unit.Users.CreateNewPasswordString(options.Password);
-                var user = new User()
+                var user = new User
                 {
                     DateJoined = DateTime.Now,
                     Email = options.Email,
@@ -75,7 +53,7 @@ namespace Memorandum.Web
                     Username = options.Username
                 };
                 unit.Users.Save(user);
-                var node = new TextNode()
+                var node = new TextNode
                 {
                     DateAdded = DateTime.Now,
                     Text = "Home",
@@ -89,7 +67,7 @@ namespace Memorandum.Web
             return 0;
         }
 
-        static int CreateSchema(CreateSchemaOptions options)
+        private static int CreateSchema(CreateSchemaOptions options)
         {
             try
             {
@@ -102,6 +80,29 @@ namespace Memorandum.Web
             }
 
             return 0;
+        }
+
+        [Verb("runserver", HelpText = "Run server")]
+        private class RunServerOptions
+        {
+        }
+
+        [Verb("createschema", HelpText = "Creates database schema")]
+        private class CreateSchemaOptions
+        {
+        }
+
+        [Verb("adduser", HelpText = "Create new user")]
+        private class CreateUserOptions
+        {
+            [Option('u', "username", Required = true, HelpText = "Username")]
+            public string Username { get; set; }
+
+            [Option('p', "password", Required = true, HelpText = "Password")]
+            public string Password { get; set; }
+
+            [Option('e', "email", Required = true, HelpText = "Email")]
+            public string Email { get; set; }
         }
     }
 }

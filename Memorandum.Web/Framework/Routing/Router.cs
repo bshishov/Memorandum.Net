@@ -3,10 +3,10 @@ using System.Text.RegularExpressions;
 
 namespace Memorandum.Web.Framework.Routing
 {
-    class Router
+    internal class Router
     {
+        private readonly Dictionary<string, Router> _routers = new Dictionary<string, Router>();
         private readonly List<IRoute> _routes = new List<IRoute>();
-        private readonly Dictionary<string, Router>  _routers = new Dictionary<string, Router>();
 
         public Router(List<IRoute> routes)
         {
@@ -32,13 +32,13 @@ namespace Memorandum.Web.Framework.Routing
             foreach (var route in _routes)
             {
                 var match = route.Regex.Match(documentUri);
-                if (match.Length> 0)
+                if (match.Length > 0)
                 {
                     if (match.Groups.Count > 1)
                     {
                         var vals = new string[match.Groups.Count - 1];
                         for (var i = 1; i < match.Groups.Count; i++)
-                            vals[i-1] = match.Groups[i].Value;
+                            vals[i - 1] = match.Groups[i].Value;
 
                         var rarg = route as RouteWithArg;
                         if (rarg != null)

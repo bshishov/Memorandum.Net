@@ -2,6 +2,7 @@
 using System.IO;
 using DotLiquid;
 using DotLiquid.FileSystems;
+using DotLiquid.NamingConventions;
 using FastCGI;
 using Memorandum.Web.Framework.Errors;
 using Memorandum.Web.Framework.Middleware;
@@ -11,13 +12,12 @@ using Memorandum.Web.Framework.Utilities;
 
 namespace Memorandum.Web.Framework
 {
-    class App
+    internal class App
     {
-        private readonly Pipeline<Request> _beforeView = new Pipeline<Request>();
         private readonly Pipeline<Request, Response> _afterView = new Pipeline<Request, Response>();
-
-        private readonly Router _rootRouter;
+        private readonly Pipeline<Request> _beforeView = new Pipeline<Request>();
         private readonly FCGIApplication _fcgiApplication;
+        private readonly Router _rootRouter;
 
         public App(Router router)
         {
@@ -25,14 +25,17 @@ namespace Memorandum.Web.Framework
 
             // Template engine initialization
 #if DEBUG
-            var templatesDir = Path.Combine(Directory.GetParent(Directory.GetParent(Directory.GetCurrentDirectory()).FullName).FullName, "Templates");
+            var templatesDir =
+                Path.Combine(
+                    Directory.GetParent(Directory.GetParent(Directory.GetCurrentDirectory()).FullName).FullName,
+                    "Templates");
 #else
             var templatesDir = Path.Combine(Directory.GetCurrentDirectory(), "Templates");
 #endif
             Template.RegisterTag<Tags.StaticTag>("static");
             Template.FileSystem = new LocalFileSystem(templatesDir);
-            Template.NamingConvention = new DotLiquid.NamingConventions.CSharpNamingConvention();
-            Template.RegisterFilter(typeof(Filters));
+            Template.NamingConvention = new CSharpNamingConvention();
+            Template.RegisterFilter(typeof (Filters));
 
             _fcgiApplication = new FCGIApplication();
             _fcgiApplication.OnRequestReceived += FcgiApplicationOnOnRequestReceived;

@@ -1,19 +1,33 @@
-﻿using System.Collections.Specialized;
+﻿using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.Text;
+using HttpMultipartParser;
 using Memorandum.Core;
 using Memorandum.Web.Framework.Middleware;
 using Memorandum.Web.Framework.Utilities;
 
 namespace Memorandum.Web.Framework
 {
-    class Request
+    internal class Request
     {
-        public string Method { get { return RawRequest.GetParameterASCII("REQUEST_METHOD"); } }
-        public string Path { get { return RawRequest.GetParameterUTF8("DOCUMENT_URI"); } }
+        private NameValueCollection _cookies;
+        private NameValueCollection _postArgs;
+        private NameValueCollection _querySet;
+        private MultipartFormDataParser _parser;
+
+        public Request(FastCGI.Request rawRequest)
+        {
+            RawRequest = rawRequest;
+        }
+
+        public string Method => RawRequest.GetParameterASCII("REQUEST_METHOD");
+        public string Path => RawRequest.GetParameterUTF8("DOCUMENT_URI");
+        public string ContentType => RawRequest.GetParameterASCII("CONTENT_TYPE");
         public Session Session { get; set; }
         public UnitOfWork UnitOfWork { get; set; }
 
         /// <summary>
-        /// Lazy loaded cookies from request
+        ///     Lazy loaded cookies from request
         /// </summary>
         public NameValueCollection Cookies
         {
@@ -29,7 +43,7 @@ namespace Memorandum.Web.Framework
         }
 
         /// <summary>
-        /// Lazy loaded query arguments from QUERY_STRING
+        ///     Lazy loaded query arguments from QUERY_STRING
         /// </summary>
         public NameValueCollection QuerySet
         {
@@ -44,31 +58,37 @@ namespace Memorandum.Web.Framework
             }
         }
 
+        private MultipartFormDataParser MultipartParser => _parser ?? (_parser = new MultipartFormDataParser(RawRequest.RequestBodyStream));
+
         /// <summary>
-        /// Lazy loaded post arguments
+        ///     Lazy loaded post arguments
         /// </summary>
         public NameValueCollection PostArgs
         {
             get
             {
-                if (_postArgs == null && Method.Equals("POST") && !string.IsNullOrEmpty(RawRequest.Body))
+                if (_postArgs == null && Method.Equals("POST") && RawRequest.RequestBodyStream.Length > 0)
                 {
-                    _postArgs = HttpUtilities.ParseQueryString(RawRequest.Body);
+                    if (ContentType.Contains("multipart"))
+                    {
+                        _postArgs = new NameValueCollection();
+                        foreach (var par in MultipartParser.Parameters)
+                        {
+                            _postArgs.Add(par.Name, par.Data);
+                        }
+                    }
+                    else
+                    {
+                        _postArgs = HttpUtilities.ParseQueryString(Encoding.UTF8.GetString(RawRequest.GetBody()));
+                    }
                 }
 
                 return _postArgs;
             }
         }
 
-        public FastCGI.Request RawRequest { get; private set; }
+        public IEnumerable<FilePart> Files => MultipartParser.Files;
 
-        private NameValueCollection _cookies;
-        private NameValueCollection _querySet;
-        private NameValueCollection _postArgs;
-
-        public Request(FastCGI.Request rawRequest)
-        {
-            RawRequest = rawRequest;
-        }
+        public FastCGI.Request RawRequest { get; }
     }
 }

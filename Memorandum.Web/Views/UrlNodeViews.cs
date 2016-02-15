@@ -9,15 +9,8 @@ using Memorandum.Web.Views.Drops;
 
 namespace Memorandum.Web.Views
 {
-    static class UrlNodeViews
+    internal static class UrlNodeViews
     {
-        public static Router Router = new Router(new List<IRoute>()
-        {
-            new Route("/add$", UrlNodeAdd),
-            new RouteWithArg("/([0-9]+)$", UrlNode),
-            new RouteWithArg("/([0-9]+)/delete$", UrlNodeDelete),
-        });
-
         private static Response UrlNodeDelete(Request request, string[] args)
         {
             var user = request.Session.Get<User>("user");
@@ -50,7 +43,7 @@ namespace Memorandum.Web.Views
                     throw new Http500Exception("Incorect parameters");
 
                 var name = Utilities.GetWebPageTitle(request.PostArgs["url"]);
-                var newNode = new URLNode()
+                var newNode = new URLNode
                 {
                     DateAdded = DateTime.Now,
                     URL = request.PostArgs["url"],
@@ -66,7 +59,7 @@ namespace Memorandum.Web.Views
             throw new Http404Exception("POST expected");
         }
 
-        static Response UrlNode(Request request, string[] args)
+        private static Response UrlNode(Request request, string[] args)
         {
             var user = request.Session.Get<User>("user");
             if (user == null)
@@ -87,5 +80,12 @@ namespace Memorandum.Web.Views
                 Links = Utilities.GetGroupedLinks(request.UnitOfWork, node)
             });
         }
+
+        public static Router Router = new Router(new List<IRoute>
+        {
+            new Route("/add$", UrlNodeAdd),
+            new RouteWithArg("/([0-9]+)$", UrlNode),
+            new RouteWithArg("/([0-9]+)/delete$", UrlNodeDelete)
+        });
     }
 }

@@ -6,15 +6,8 @@ using Memorandum.Web.Framework.Routing;
 
 namespace Memorandum.Web.Views
 {
-    static class GeneralViews
+    internal static class GeneralViews
     {
-        public static Router Router = new Router(new List<IRoute>()
-        {
-            new Route("^/$", Home),
-            new Route("^/login$", Login),
-            new Route("^/logout$", Logout),
-        });
-        
         public static Response Home(Request request)
         {
             var user = request.Session.Get<User>("user");
@@ -22,7 +15,7 @@ namespace Memorandum.Web.Views
             {
                 return new RedirectResponse("/text/" + user.Home.Id);
             }
-            
+
             return new RedirectResponse("/login");
         }
 
@@ -36,7 +29,7 @@ namespace Memorandum.Web.Views
 
                 return new TemplatedResponse("login", new
                 {
-                    Title = "Login",
+                    Title = "Login"
                 });
             }
 
@@ -63,5 +56,12 @@ namespace Memorandum.Web.Views
 
             return new RedirectResponse("/");
         }
+
+        public static Router Router = new Router(new List<IRoute>
+        {
+            new Route("^/$", Home),
+            new Route("^/login$", Login),
+            new Route("^/logout$", Logout)
+        });
     }
 }

@@ -9,6 +9,23 @@ $(document).ready(function() {
         window.location = path;    
   });
 
+  $('.needconfirm').click(function(e) {
+    e.preventDefault();
+    var target = $( this ).attr('href');
+    var title = $( this ).attr('title');
+    var text = "";
+    if(title != undefined)
+      text = "Are you sure want to " + title + "?";
+    else
+      text = "Are you sure?";
+    if(target != undefined)
+    {
+      confirm(text, function() {
+        window.location = target;
+      });    
+    }
+  });
+
   $('.tab-switch').click(function() {
     tabgroup = $( this ).data("tabgroup");
     target = $( this ).data("target");
@@ -51,7 +68,7 @@ $(document).ready(function() {
       data: formData,
       async: false,
       success: function (data) {
-          alert(data);
+        notify(data, "info");          
       },
       cache: false,
       contentType: false,      
@@ -59,11 +76,6 @@ $(document).ready(function() {
     });
   });
 });
-
-var setRelation = function(relation) {
-    $( "input[name='relation']" ).val(relation);
-    $( "input[name='relation']" ).trigger('autoresize');
-};
 
 var initEditor = function(selector) 
 {
@@ -79,3 +91,56 @@ var initEditor = function(selector)
     }
   });
 };
+
+function showNotification(message, type, buttonName, buttonCallback, timeout) { 
+  message = typeof message !== 'undefined' ? message : 'Hello!';
+  type = typeof type !== 'undefined' ? type : 'success';
+  timeout = typeof timeout !== 'undefined' ? timeout : 3000;      
+    
+  if ($('#notification').length < 1) {
+    markup = '<div id="notification" style="display:none;" class="information"><span class="text">Hello!</span><span class="set text-right"><a class="close system button small" href="javascript:;">X</a></div>';
+    $('body').append(markup);
+  }
+  
+  $notification = $('#notification');
+  if(buttonName != undefined) {
+    $('#notification .set').html(
+      "<a href='javascript:;' class='button small yes'>" + buttonName + "</a>" +
+      "<a href='javascript:;' class='system button small no'>Cancel</a>"
+    )    
+
+    $('#notification .button.yes').click(function (e) {
+      buttonCallback();
+      e.preventDefault();
+      $notification.slideUp();
+    }); 
+
+    $('#notification .button.no').click(function (e) {
+      e.preventDefault();
+      $notification.slideUp();
+    }); 
+  }
+  
+  // set the message
+  $('#notification .text').text(message);
+  
+  // setup click event
+  $('#notification a.close').click(function (e) {
+    e.preventDefault();
+    $notification.slideUp();
+  });  
+  
+  $notification.removeClass().addClass(type);
+  $notification.slideDown();  
+  setTimeout(function() {
+    $notification.slideUp();
+  }, timeout);  
+}
+
+function notify(message, type, timeout) {
+  showNotification(message, type, undefined, undefined, timeout);
+}
+
+function confirm(message, okCallback) {
+  showNotification(message, "warn", "Yes", okCallback, 1000000);
+}

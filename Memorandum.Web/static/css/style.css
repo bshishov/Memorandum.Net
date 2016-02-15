@@ -229,3 +229,48 @@ button.small, .button.small {
     display: inline-block;   
 }
 /* END OF FILE NODE*/
+
+
+
+/* NOTIFICATIONS */
+#notification {
+    width:  100%;
+    position:  fixed;
+    z-index:  9999999999;    
+    left:  0;
+    top:  0px;
+    padding-top:  10px;
+    padding-bottom:  10px;
+    text-align:  center;
+    font-size:  1.2em;    
+    -moz-box-shadow:  0px 2px 2px rgba(0,  0,  0,  0.15);
+    -webkit-box-shadow:  0px 2px 2px rgba(0,  0,  0,  0.15);
+    -o-box-shadow:  0px 2px 2px rgba(0,  0,  0,  0.15);
+    box-shadow:  0px 2px 2px rgba(0,  0,  0,  0.15);    
+}
+.ie6 #notification {
+    position: absolute;
+}
+#notification .close {
+    position:  absolute;
+    right:  7px;
+    top:  7px;
+    display:  block;        
+}
+.success {
+    background:  #D4FFCD;    
+    color:  #258815;
+}
+.info {
+    background:  #DBECFF;    
+    color:  #2850C1;
+}
+.warn {
+    background:  #FEFCCB;    
+    color:  #878314;
+}
+.error {
+    background:  #FFD2D3;    
+    color:  #871414;
+}
+/* END OF NOTIFICATIONS*/

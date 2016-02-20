@@ -1,14 +1,14 @@
-﻿<div class="row link {{link.EndNodeProvider}}" data-path="/{{ link.EndNodeProvider }}/{{ link.EndNode|UrlEncode }}">
-	<div class="link-content">
+﻿<div class="row link {{link.EndNodeProvider}}" data-path="/{{ link.EndNodeProvider }}/{{ link.EndNode|UrlEncode }}" {% if link.Id %}data-id="{{ link.Id }}"{% endif %} >
+  {% if link.Comment and group.Name == "" %}
+  <div class="link-comment">
+    {{ link.Comment }}
+  </div>
+  {% endif %}
+  
+  <div class="link-content">
 		{% assign tpl = "Blocks/Widgets/"|Append:link.EndNodeProvider %}
 		{% include tpl %}
 	</div>  
-				
-	{% if link.Comment and group.Name == "" %}
-	<div class="link-comment">
-		{{ link.Comment }}
-	</div>
-	{% endif %}
 
 	{% if link.Id %}
 	<div class="link-tools-container">

@@ -2,7 +2,7 @@ namespace Memorandum.Web.Views.RestApi
 {
     internal class BadRequestApiResponse : ApiResponse
     {
-        public BadRequestApiResponse(string error = "Bad request") : base(new {Error = error}, 400)
+        public BadRequestApiResponse(string error = "Bad request") : base(null, 400, error)
         {
         }
     }

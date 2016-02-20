@@ -150,7 +150,7 @@ namespace Memorandum.Web.Views
             return null;
         }
 
-        public static void MakeRelationForNewNode(Request request, Node parentNode, Node newNode)
+        public static Link MakeRelationForNewNode(Request request, Node parentNode, Node newNode)
         {
             var link = new Link(parentNode, newNode)
             {
@@ -159,6 +159,7 @@ namespace Memorandum.Web.Views
                 User = request.Session.Get<User>("user")
             };
             request.UnitOfWork.Links.Save(link);
+            return link;
         }
     }
 }

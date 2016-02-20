@@ -8,7 +8,7 @@
     <div class="row details">
         <div class="col col2-3 set"> 
 			{% if Node.IsDirectory != true %}
-            <span class="system">{{ Node.Size|filesizeformat }}</span>
+            <span class="system">{{ Node.Size|ReadableSize }}</span>
             <span class="system tooltipped" data-tooltip="{{ Node.Mime }}">{{ Node.Mime|Truncate:20 }}</span>
 			{% endif %}
 			<span class="system">{{ Node.LastModified }}</span>       

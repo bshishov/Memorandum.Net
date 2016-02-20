@@ -2,8 +2,8 @@ namespace Memorandum.Web.Views.RestApi
 {
     internal class ForbiddenApiResponse : ApiResponse
     {
-        public ForbiddenApiResponse(string errmsg = "Forbidden")
-            : base(new {Error = errmsg}, 403)
+        public ForbiddenApiResponse(string error = "Forbidden")
+            : base(null, 403, error)
         {
         }
     }

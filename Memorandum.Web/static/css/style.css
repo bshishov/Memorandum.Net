@@ -37,6 +37,7 @@ body {
 }
 /* END OF GRID */
 
+
 /* HELPERS */
 .right { float: right; }
 .text-right { text-align: right; }
@@ -64,7 +65,6 @@ body {
     background: white;
     padding: 20px 40px;
 }
-.modal {display: none;}
 .details {
     padding: 20px 25px;
 }
@@ -77,20 +77,9 @@ a.dashed {
 }
 a.system:visited { color : #b6b6b6; }
 a.system:hover { color : black; }
-.set a { 
-    margin-right: 10px;
-}
-.set.text-right a {
-    margin-right: 0;
-    margin-left: 10px;
-}
-.set span { 
-    margin-right: 10px;
-}
-.set.text-right span {
-    margin-right: 0;
-    margin-left: 10px;
-}
+.set *:not(:last-child) { margin-right: 10px; }
+.set.text-right * { margin-right: 0; }
+.set.text-right *:not(:first-child) { margin-left: 10px; }
 input { margin: 0; padding: 0; }
 textarea:focus, input:focus{
     outline: none;
@@ -122,13 +111,20 @@ button.small, .button.small {
 .field label {
   float: left;
   width: 15%;
-  box-sizing: border-box;
 }
 
 .field input {
   display: block;
   width: 85%;
   box-sizing: border-box;
+}
+
+#tooltip1 {
+    position: absolute;
+    padding: 5px 10px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    background: #eee;  
 }
 /* END OF LAYOUT */
 
@@ -160,6 +156,10 @@ button.small, .button.small {
 .link-content {
     display: inline-block;    
     word-wrap: break-word;
+}
+
+.link-comment + .link-content{
+    width: 80%;
 }
 
 .link-comment {

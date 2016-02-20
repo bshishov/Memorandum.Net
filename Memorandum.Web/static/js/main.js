@@ -1,4 +1,18 @@
 $(document).ready(function() {
+  $('.tooltipped').hover(function(event){
+      markup = '<div id="tooltip1">' + $( this ).attr('data-tooltip') + '</div>';
+      that = $( this );
+      that.append(markup);    
+      tooltip = $( "#tooltip1" );
+      tooltip.offset({
+        left: (that.position().left + that.width()/2) - tooltip.outerWidth(true)/2,
+        top: that.position().top - tooltip.outerHeight(true),
+      });
+    },
+    function(event){    
+      $('#tooltip1').remove();
+  }); 
+
   $('.link a').click(function(event){
     event.stopPropagation();
   });
@@ -53,8 +67,9 @@ $(document).ready(function() {
       dataType: "JSON",
       data: { q: $( this ).val(), mode: "templated" },      
       success: function(data) {        
-        for (var i = 0; i < data.length; i++) {          
-          results.append(data[i].Rendered);
+        console.log(data);
+        for (var i = 0; i < data.Data.length; i++) {          
+          results.append(data.Data[i].Rendered);
         };
       }
     });
@@ -69,19 +84,9 @@ $(document).ready(function() {
     if(['text','url','file','search'].indexOf(activeTab) < 0)
       return;    
     action = '/api/' + activeTab;
-
-    $.ajax({
-      url: action,
-      type: 'POST',
-      data: formData,
-      async: false,
-      success: function (data) {
-        notify("Added", "info");          
-      },
-      cache: false,
-      contentType: false,      
-      processData: false
-    });
+    fc = $('#' + $( this ).data("target") + 'container');
+    fc.after('keke');
+    send('POST', action, formData);
   });
 });
 
@@ -109,7 +114,7 @@ function showNotification(message, type, buttonName, buttonCallback, timeout) {
   timeout = typeof timeout !== 'undefined' ? timeout : 3000;      
     
   if ($('#notification').length < 1) {
-    markup = '<div id="notification" style="display:none;" class="information"><span class="text">Hello!</span><span class="set text-right"><a class="close system button small" href="javascript:;">X</a></div>';
+    markup = '<div id="notification" style="display:none;" class="information"><span class="text">Hello!</span>&nbsp;<span class="set text-right"></span><a class="close system button small" href="javascript:;">X</a></div>';
     $('body').append(markup);
   }
   
@@ -159,7 +164,8 @@ function confirm(message, okCallback) {
 function send(method, path, args, callback) {
   if(callback == undefined) {
     callback = function (data) {
-      notify(data, "success");          
+      alert(data);
+      notify(data.StatusMessage, "success");          
     };
   }
 
@@ -168,9 +174,10 @@ function send(method, path, args, callback) {
     type: method,
     data: args,
     async: true,
+    dataType: 'JSON',
     success: callback,
     error: function(err) {
-      notify("Error: " + err, "error", 5000)
+      notify(data.StatusMessage, "error", 5000)
     },
     cache: false,
     contentType: false,      

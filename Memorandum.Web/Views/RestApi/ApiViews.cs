@@ -32,12 +32,13 @@ namespace Memorandum.Web.Views.RestApi
                 return new ApiResponse(drops);
             }
 
-            var tpl = Template.Parse(File.ReadAllText("Templates/Blocks/_link.liquid"));
+            // TODO: remove link object creations
+            var tpl = Template.Parse(File.ReadAllText(Path.Combine("Templates", "Blocks", "_link.liquid")));
             var results = (from node in nodes
-                let l = new LinkDrop(new Link(node, node), node)
                 select new SearchResult
                 {
-                    Node = NodeDropFactory.Create(node), Rendered = tpl.Render(Hash.FromAnonymousObject(new {link = l}))
+                    Node = NodeDropFactory.Create(node),
+                    Rendered = tpl.Render(Hash.FromAnonymousObject(new {link = new AnonymousLinkDrop(node)}))
                 }).ToList();
 
             return new ApiResponse(results);
@@ -223,7 +224,7 @@ namespace Memorandum.Web.Views.RestApi
                 if (provider == "text")
                 {
                     if (string.IsNullOrEmpty(request.PostArgs["text"]))
-                        return new BadRequestApiResponse("text is not specified");
+                        return new BadRequestApiResponse("Text is not specified");
 
                     var newNode = new TextNode
                     {
@@ -234,13 +235,13 @@ namespace Memorandum.Web.Views.RestApi
 
                     request.UnitOfWork.Text.Save(newNode);
                     Utilities.MakeRelationForNewNode(request, parentNode, newNode);
-                    return new ApiResponse(NodeDropFactory.Create(newNode), 201);
+                    return new ApiResponse(NodeDropFactory.Create(newNode), 201, "Note added");
                 }
 
                 if (provider == "url")
                 {
                     if (string.IsNullOrEmpty(request.PostArgs["url"]))
-                        return new BadRequestApiResponse("url is not specified");
+                        return new BadRequestApiResponse("Url is not specified");
 
                     var name = Utilities.GetWebPageTitle(request.PostArgs["url"]);
                     var newNode = new URLNode
@@ -253,7 +254,7 @@ namespace Memorandum.Web.Views.RestApi
 
                     request.UnitOfWork.URL.Save(newNode);
                     Utilities.MakeRelationForNewNode(request, parentNode, newNode);
-                    return new ApiResponse(NodeDropFactory.Create(newNode), 201);
+                    return new ApiResponse(NodeDropFactory.Create(newNode), 201, "Url added");
                 }
 
                 if (provider == "file")
@@ -265,8 +266,12 @@ namespace Memorandum.Web.Views.RestApi
                     if (!System.IO.Directory.Exists(dir))
                         System.IO.Directory.CreateDirectory(dir);
 
+                    var nodes = new List<Node>();
                     foreach (var file in request.Files)
                     {
+                        // TODO: Implement repository save from binary stream like
+                        // request.UnitOfWork.Files.Fromstream(file.Data);
+
                         var filePath = Path.Combine(dir, file.FileName);
                         try
                         {
@@ -276,7 +281,7 @@ namespace Memorandum.Web.Views.RestApi
                                 file.Data.CopyTo(fileStream);
                             }
                             var fileNode = new FileNode(filePath);
-                            //request.UnitOfWork.Files.Save(fileNode);
+                            nodes.Add(fileNode);
                             Utilities.MakeRelationForNewNode(request, parentNode, fileNode);
                         }
                         catch (Exception ex)
@@ -284,7 +289,7 @@ namespace Memorandum.Web.Views.RestApi
                             return new BadRequestApiResponse(ex.Message);
                         }
                     }
-                    return new ApiResponse(new { staus = "Multiple files uploaded"}, 201);
+                    return new ApiResponse(nodes, 201, "Multiple files added");
                 }
             }
 

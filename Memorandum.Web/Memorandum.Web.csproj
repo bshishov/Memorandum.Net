@@ -87,6 +87,12 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
+    <Compile Include="Views\Drops\AnonymousLinkDrop.cs" />
+    <Compile Include="Views\Drops\DropGroup.cs" />
+    <Compile Include="Views\Drops\ILinkDrop.cs" />
+    <Compile Include="Views\Drops\LinksGroupDrop.cs" />
+    <Compile Include="Views\Drops\AnonymousRenderedLinkDrop.cs" />
+    <Compile Include="Views\Drops\RenderedLinkDrop.cs" />
     <Compile Include="Views\RestApi\ApiResponse.cs" />
     <Compile Include="Views\RestApi\ApiViews.cs" />
     <Compile Include="Views\RestApi\BadRequestApiResponse.cs" />

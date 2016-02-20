@@ -1,6 +1,6 @@
 {{ link.Node.Name }}
 {% if link.Node.IsDirectory == false %}
-{{ link.Node.Size }}
+{{ link.Node.Size|ReadableSize }}
 <div class="row set">
     <a class="system" href="/{{ link.EndNodeProvider }}/raw/{{ link.EndNode }}">Raw</a>&nbsp;
     <a class="system" href="/{{ link.EndNodeProvider }}/download/{{ link.EndNode }}">Download</a>

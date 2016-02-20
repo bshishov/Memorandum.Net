@@ -11,7 +11,12 @@ namespace Memorandum.Web.Views.RestApi
             ReferenceLoopHandling = ReferenceLoopHandling.Ignore
         };
 
-        public ApiResponse(object o, int statusCode = 200) : base(JsonConvert.SerializeObject(o, Settings),
+        public ApiResponse(object payload = null, int statusCode = 200, string statusMessage = "") : base(JsonConvert.SerializeObject(new
+        {
+            StatusCode = statusCode,
+            StatusMessage = statusMessage,
+            Data = payload
+        }, Settings),
             statusCode,
             contenttype: "text/plain; charset=utf-8")
         {

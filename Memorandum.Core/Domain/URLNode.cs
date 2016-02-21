@@ -11,7 +11,7 @@ namespace Memorandum.Core.Domain
         public virtual string Image { get; set; }
         public virtual DateTime DateAdded { get; set; }
 
-        public override NodeIdentifier NodeId => new NodeIdentifier("url", Id.ToString(CultureInfo.InvariantCulture));
+        public override NodeIdentifier NodeId => new NodeIdentifier("url", Id);
 
         public override User User { get; set; }
        

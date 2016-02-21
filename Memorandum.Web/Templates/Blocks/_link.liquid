@@ -1,11 +1,11 @@
 ﻿<div class="row link {{link.EndNodeProvider}}" data-path="/{{ link.EndNodeProvider }}/{{ link.EndNode|UrlEncode }}" {% if link.Id %}data-id="{{ link.Id }}"{% endif %} >
-  {% if link.Comment and group.Name == "" %}
-  <div class="link-comment">
-    {{ link.Comment }}
-  </div>
-  {% endif %}
-  
-  <div class="link-content">
+	{% if link.Comment and group.Name == "" %}
+	<div class="link-comment">
+		{{ link.Comment }}
+	</div>
+	{% endif %}
+
+	<div class="link-content">
 		{% assign tpl = "Blocks/Widgets/"|Append:link.EndNodeProvider %}
 		{% include tpl %}
 	</div>  
@@ -13,7 +13,7 @@
 	{% if link.Id %}
 	<div class="link-tools-container">
 		<div class="link-tools">
-			<a href="javascript:;" data-action="send('DELETE', '/api/links/{{ link.Id }}')" title="Unlink" class="system button small needconfirm">Unlink</a>
+			<a href="javascript:;" title="Unlink" class="system button small unlink">Unlink</a>
 		</div>
 	</div>                
 	{% endif %} 

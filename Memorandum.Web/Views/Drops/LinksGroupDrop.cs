@@ -5,14 +5,18 @@ namespace Memorandum.Web.Views.Drops
 {
     internal class LinksGroupDrop : DropGroup<LinkDrop>
     {
-        public LinksGroupDrop()
+        public int Id { get; private set; }
+
+        public LinksGroupDrop(int id)
         {
+            Id = id;
             Items = new List<LinkDrop>();
             Name = "";
         }
 
-        public LinksGroupDrop(IEnumerable<LinkDrop> linkDrops)
+        public LinksGroupDrop(int id, IEnumerable<LinkDrop> linkDrops)
         {
+            Id = id;
             Items = linkDrops.ToList();
             Name = Items.First().Comment;
         }

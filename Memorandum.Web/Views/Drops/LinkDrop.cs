@@ -1,4 +1,5 @@
-﻿using DotLiquid;
+﻿using System;
+using DotLiquid;
 using Memorandum.Core.Domain;
 
 namespace Memorandum.Web.Views.Drops
@@ -30,6 +31,8 @@ namespace Memorandum.Web.Views.Drops
         public string EndNode => _link.EndNode;
 
         public string EndNodeProvider => _link.EndNodeProvider;
+
+        public DateTime DateAdded => _link.DateAdded;
 
         public NodeDrop Node { get; }
     }

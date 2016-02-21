@@ -1,20 +1,13 @@
 {% for group in Links %}       
 <div class="row links-group">
-		{% if group.Name != "" %}
-			<div class="links-group-title">{{ group.Name|Capitalize }} &nbsp;
-				<a href="javascript:;" class="system button small toggle" data-target="form{{ group.Name }}container">Add</a>
-			</div>
-		{% else %}
-			<center>
-				<a href="javascript:;" class="system button small toggle" data-target="form{{ group.Name }}container">Add</a>
-			</center>
-			<br />
-		{% endif %}		
-		<div class="links"> 
-		{% include 'Blocks/add_form' %}
-		{% for link in group.Items %}
-			{% include 'Blocks/link' %}
-		{% endfor %}
-		</div>
+	{% if group.Name != "" %}
+		<div class="links-group-title">{{ group.Name|Capitalize }}</div>
+	{% endif %}		
+	<div class="links"> 
+	{% for link in group.Items %}
+		{% include 'Blocks/link' %}
+	{% endfor %}
+	{% include 'Blocks/add_form' %}
+	</div>
 </div>      
 {% endfor %}

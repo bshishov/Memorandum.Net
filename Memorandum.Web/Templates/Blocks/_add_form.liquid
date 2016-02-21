@@ -1,49 +1,55 @@
-<div class="link form" id="form{{ group.Name }}container" style="display:none;">
-  <form id="form{{ group.Name }}">
-    <input type="hidden" name="parent_id" value="{{ Node.NodeId }}" />
-    <input type="hidden" name="parent_provider" value="{{ Node.Provider }}" />
-    <div class="row">
-      <div class="col col2-3 set">
-        <a class="system dashed tab-switch" href="javascript:;" data-target="text" data-tabgroup="{{ group.Name }}">Text</a>
-        <a class="system dashed tab-switch" href="javascript:;" data-target="url" data-tabgroup="{{ group.Name }}">Url</a>
-        <a class="system dashed tab-switch" href="javascript:;" data-target="file" data-tabgroup="{{ group.Name }}">File</a>
-        <a class="system dashed tab-switch" href="javascript:;" data-target="search" data-tabgroup="{{ group.Name }}">Search</a>
-      </div>
-      <div class="col col1-3 text-right">
-        <input type="text" name="comment" class="italic" placeholder="Write comment here" value="{{ group.Name }}"/>
-      </div>
-    </div>
-    <div class="row form-section {{ group.Name }}tab active" data-tab="text">
-      <input type="hidden" name="text" />
-      <textarea id="form-text-field{{ group.Name }}" class="formatted-text"></textarea>
-    </div>
-    <div class="row form-section {{ group.Name }}tab" style="display:none;" data-tab="url">
-      <div class="row field">
-        <label for="url">URL</label>
-        <input type="text" name="url" />
-      </div>
+<form id="form{{ group.Id }}" class="role-linkform">
+  <div class="link form" id="form{{ group.Id }}Container" style="display:none;">
+  
+      <input type="hidden" name="parent_id" value="{{ Node.NodeId }}" />
+      <input type="hidden" name="parent_provider" value="{{ Node.Provider }}" />
       <div class="row">
-        <input type="checkbox" id="download" name="download" />
-        <label for="download">Should download content</label>
+        <div class="col col2-3 set">
+          <a class="system dashed tab-switch" href="javascript:;" data-target="text" data-tabgroup="{{ group.Id }}">Text</a>
+          <a class="system dashed tab-switch" href="javascript:;" data-target="url" data-tabgroup="{{ group.Id }}">Url</a>
+          <a class="system dashed tab-switch" href="javascript:;" data-target="file" data-tabgroup="{{ group.Id }}">File</a>
+          <a class="system dashed tab-switch" href="javascript:;" data-target="links" data-tabgroup="{{ group.Id }}">Search</a>
+        </div>
+        <div class="col col1-3 text-right">
+          <input type="text" name="comment" class="italic" placeholder="Write comment here" value="{{ group.Name }}"/>
+        </div>
       </div>
-    </div>
-    <div class="row form-section {{ group.Name }}tab" style="display:none;" data-tab="file">
-      <input type="file" name="file" multiple="" />
-    </div>
-    <div class="row form-section {{ group.Name }}tab" style="display:none;" data-tab="search">
-      <div class="row field">
-        <label for="search">Search</label>
-        <input type="text" name="search" class="searchinput full-width" data-target="{{ group.Name }}results"/>
+      <div class="row form-section {{ group.Id }}tab active" data-tab="text">
+        <input type="hidden" name="text" />
+        <textarea id="formTextField{{ group.Id }}" class="formatted-text"></textarea>
       </div>
-      <div class="row" id="{{ group.Name }}results"></div>
+      <div class="row form-section {{ group.Id }}tab" style="display:none;" data-tab="url">
+        <div class="row field">
+          <label for="url">URL</label>
+          <input type="text" name="url" />
+        </div>
+        <div class="row">
+          <input type="checkbox" id="download" name="download" />
+          <label for="download">Should download content</label>
+        </div>
+      </div>
+      <div class="row form-section {{ group.Id }}tab" style="display:none;" data-tab="file">
+        <input type="file" name="file" multiple="" />
+      </div>
+      <div class="row form-section {{ group.Id }}tab" style="display:none;" data-tab="links">
+        <div class="row field">
+          <label for="search">Search</label>
+          <input type="hidden" name="end_provider" />
+          <input type="hidden" name="end_id" />
+          <input type="text" class="searchinput"/>
+        </div>
+      </div>
+  </div>
+  <div class="row {{ group.Id }}tab searchresults" id="{{ group.Id }}results" data-tab="links" style="display:none;"></div>
+  <div class="link add toggle">
+    <div class="toggle" id="formAddCaption{{ group.Id }}" data-toggle="#form{{ group.Id }}Container,#formControls{{ group.Id }},#formAddCaption{{ group.Id }}">Add</div>
+    <div class="row set" id="formControls{{ group.Id }}" style="display:none;">
+      <a href="javascript:;" class="system button small primary submitform">Save</a>
+      <a href="javascript:;" class="system dashed toggle" data-toggle="#form{{ group.Id }}Container,#formControls{{ group.Id }},#formAddCaption{{ group.Id }}">Cancel</a>
     </div>
-    <div class="row form-section set text-right">
-      <a href="javascript:;" class="system button small">Cancel</a>
-      <a href="javascript:;" class="system button small submitform" data-target="form{{ group.Name }}">Add</a>
-    </div>
-  </form>
+  </div>
   <script type="text/javascript">
-    initEditor('#form-text-field{{ group.Name }}');
+    initEditor('#formTextField{{ group.Id }}');
   </script>
-</div>
+</form>
 

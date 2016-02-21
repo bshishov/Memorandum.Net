@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using DotLiquid;
 using Memorandum.Core.Domain;
 using Memorandum.Web.Framework;
 using Memorandum.Web.Framework.Responses;
@@ -32,15 +31,7 @@ namespace Memorandum.Web.Views.RestApi
                 return new ApiResponse(drops);
             }
 
-            // TODO: remove link object creations
-            var tpl = Template.Parse(File.ReadAllText(Path.Combine("Templates", "Blocks", "_link.liquid")));
-            var results = (from node in nodes
-                select new SearchResult
-                {
-                    Node = NodeDropFactory.Create(node),
-                    Rendered = tpl.Render(Hash.FromAnonymousObject(new {link = new AnonymousLinkDrop(node)}))
-                }).ToList();
-
+            var results = nodes.Select(n => new RenderedNodeDrop(n)).ToList();
             return new ApiResponse(results);
         }
 
@@ -113,12 +104,12 @@ namespace Memorandum.Web.Views.RestApi
 
             if (request.Method == "DELETE")
             {
-                if (node.NodeId.Id == user.Home.NodeId.Id)
+                if (Equals(node.NodeId, new NodeIdentifier("text", user.Home.Id)))
                     return new ForbiddenApiResponse("Cannot delete own home");
 
                 Utilities.DeleteLinks(request.UnitOfWork, node);
                 request.UnitOfWork.Nodes.Delete(node);
-                return new ApiResponse(new { status = "success" });
+                return new ApiResponse(statusMessage: "Node deleted");
             }
 
             if (request.Method == "PUT")
@@ -133,8 +124,10 @@ namespace Memorandum.Web.Views.RestApi
 
                     ((TextNode)node).Text = request.PostArgs["text"];
                     request.UnitOfWork.Nodes.Save(node);
-                    return new ApiResponse(NodeDropFactory.Create(node));
+                    return new ApiResponse(NodeDropFactory.Create(node), statusMessage: "Saved");
                 }
+
+                // TODO: put for another providers
             }
 
             return new BadRequestApiResponse();
@@ -154,7 +147,10 @@ namespace Memorandum.Web.Views.RestApi
             if (node.User.Id != user.Id)
                 return new ForbiddenApiResponse();
 
-            return new ApiResponse(Utilities.GetLinks(request.UnitOfWork, node));
+            if (!string.IsNullOrEmpty(request.QuerySet["mode"]))
+                return new ApiResponse(Utilities.GetRenderedLinkDrops(request.UnitOfWork, node));
+
+            return new ApiResponse(Utilities.GetLinkDrops(request.UnitOfWork, node));
         }
 
         private static Response LinksView(Request request, string[] args)
@@ -177,12 +173,11 @@ namespace Memorandum.Web.Views.RestApi
             if (request.Method == "DELETE")
             {
                 request.UnitOfWork.Links.Delete(link);
-                return new ApiResponse(new {status = "deleted"});
+                return new ApiResponse(statusMessage: "Link deleted");
             }
 
             return new BadRequestApiResponse();
         }
-
 
         private static Response ApiHome(Request request)
         {
@@ -195,12 +190,6 @@ namespace Memorandum.Web.Views.RestApi
             });
         }
 
-        public class SearchResult
-        {
-            public NodeDrop Node { get; set; }
-            public String Rendered { get; set; }
-        }
-
         private static readonly Dictionary<string, User> Tokens = new Dictionary<string, User>();
         
         private static Response ProviderView(Request request, string[] args)
@@ -210,7 +199,7 @@ namespace Memorandum.Web.Views.RestApi
                 return new NonAuthorizedApiResponse();
             
             if(string.IsNullOrEmpty(args[0]))
-                return new ForbiddenApiResponse();
+                return new BadRequestApiResponse();
 
             var provider = args[0];
 
@@ -218,8 +207,26 @@ namespace Memorandum.Web.Views.RestApi
             {
                 var parentNodeId = new NodeIdentifier(request.PostArgs["parent_provider"], request.PostArgs["parent_id"]);
                 var parentNode = request.UnitOfWork.Nodes.FindById(parentNodeId);
+
                 if (parentNode == null)
                     return new BadRequestApiResponse();
+
+                if (parentNode.User.Id != user.Id)
+                    return new ForbiddenApiResponse();
+
+                var results = new List<NodeWithRenderedLink>();
+
+                if (provider == "links")
+                {
+                    var endNodeId = new NodeIdentifier(request.PostArgs["end_provider"], request.PostArgs["end_id"]);
+                    var endNode = request.UnitOfWork.Nodes.FindById(endNodeId);
+
+                    if(endNode == null)
+                        return new BadRequestApiResponse();
+
+                    results.Add(new NodeWithRenderedLink(endNode,
+                        Utilities.CreateLinkForNode(request, parentNode, endNode)));
+                }
 
                 if (provider == "text")
                 {
@@ -234,8 +241,8 @@ namespace Memorandum.Web.Views.RestApi
                     };
 
                     request.UnitOfWork.Text.Save(newNode);
-                    Utilities.MakeRelationForNewNode(request, parentNode, newNode);
-                    return new ApiResponse(NodeDropFactory.Create(newNode), 201, "Note added");
+                    results.Add(new NodeWithRenderedLink(newNode,
+                        Utilities.CreateLinkForNode(request, parentNode, newNode)));
                 }
 
                 if (provider == "url")
@@ -253,8 +260,8 @@ namespace Memorandum.Web.Views.RestApi
                     };
 
                     request.UnitOfWork.URL.Save(newNode);
-                    Utilities.MakeRelationForNewNode(request, parentNode, newNode);
-                    return new ApiResponse(NodeDropFactory.Create(newNode), 201, "Url added");
+                    results.Add(new NodeWithRenderedLink(newNode,
+                        Utilities.CreateLinkForNode(request, parentNode, newNode)));
                 }
 
                 if (provider == "file")
@@ -263,10 +270,9 @@ namespace Memorandum.Web.Views.RestApi
                         return new BadRequestApiResponse("No files passed");
 
                     var dir = Path.Combine(Settings.Default.FileStorage, user.Username);
-                    if (!System.IO.Directory.Exists(dir))
-                        System.IO.Directory.CreateDirectory(dir);
+                    if (!Directory.Exists(dir))
+                        Directory.CreateDirectory(dir);
 
-                    var nodes = new List<Node>();
                     foreach (var file in request.Files)
                     {
                         // TODO: Implement repository save from binary stream like
@@ -280,22 +286,19 @@ namespace Memorandum.Web.Views.RestApi
                                 file.Data.Seek(0, SeekOrigin.Begin);
                                 file.Data.CopyTo(fileStream);
                             }
+
                             var fileNode = new FileNode(filePath);
-                            nodes.Add(fileNode);
-                            Utilities.MakeRelationForNewNode(request, parentNode, fileNode);
+                            results.Add(new NodeWithRenderedLink(fileNode,
+                                Utilities.CreateLinkForNode(request, parentNode, fileNode)));
                         }
                         catch (Exception ex)
                         {
                             return new BadRequestApiResponse(ex.Message);
                         }
                     }
-                    return new ApiResponse(nodes, 201, "Multiple files added");
                 }
-            }
 
-            if (request.Method == "GET")
-            {
-                throw new NotImplementedException();
+                return new ApiResponse(results, 201, "Nodes added");
             }
 
             return new BadRequestApiResponse();

@@ -93,10 +93,12 @@
     <Compile Include="Views\Drops\LinksGroupDrop.cs" />
     <Compile Include="Views\Drops\AnonymousRenderedLinkDrop.cs" />
     <Compile Include="Views\Drops\RenderedLinkDrop.cs" />
+    <Compile Include="Views\Drops\RenderedNodeDrop.cs" />
     <Compile Include="Views\RestApi\ApiResponse.cs" />
     <Compile Include="Views\RestApi\ApiViews.cs" />
     <Compile Include="Views\RestApi\BadRequestApiResponse.cs" />
     <Compile Include="Views\RestApi\ForbiddenApiResponse.cs" />
+    <Compile Include="Views\Drops\NodeWithRenderedLink.cs" />
     <Compile Include="Views\RestApi\NonAuthorizedApiResponse.cs" />
     <Compile Include="Views\RestApi\ResourceNotFoundApiResponse.cs" />
     <Compile Include="Views\Drops\FileNodeDrop.cs" />
@@ -122,6 +124,7 @@
     </None>
     <None Include="Templates\Blocks\_add_form.liquid">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </None>
     <None Include="Templates\Blocks\_link.liquid">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

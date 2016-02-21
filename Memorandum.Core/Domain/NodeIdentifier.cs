@@ -1,3 +1,5 @@
+using System.Globalization;
+
 namespace Memorandum.Core.Domain
 {
     public class NodeIdentifier
@@ -9,6 +11,10 @@ namespace Memorandum.Core.Domain
         {
             Provider = provider;
             Id = id;
+        }
+
+        public NodeIdentifier(string provider, int id) : this(provider, id.ToString(CultureInfo.InvariantCulture))
+        {
         }
 
         public override bool Equals(object obj)

@@ -15,7 +15,7 @@ namespace Memorandum.Web.Views.RestApi
         {
             StatusCode = statusCode,
             StatusMessage = statusMessage,
-            Data = payload
+            Result = payload
         }, Settings),
             statusCode,
             contenttype: "text/plain; charset=utf-8")

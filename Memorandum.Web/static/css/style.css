@@ -45,7 +45,8 @@ body {
 .text-center { text-align: center; }
 .hidden { display: none; }
 .italic { font-style: italic; }
-.full-width { box-sizing: border-box; width: 100%; }
+.full-width { box-sizing: border-box; width: 100% !important; }
+.valign { vertical-align: middle;}
 /* END OF HELPERS */
 
 
@@ -70,6 +71,7 @@ body {
 }
 .system {
     color : #b6b6b6;
+    border-color: #b6b6b6;
 }
 a.dashed {
     text-decoration: none;
@@ -103,9 +105,17 @@ button.small, .button.small {
     font-size: 14px;
 }
 
+button.primary, .button.primary {
+    background: white;
+}
+
 .field {
   box-sizing: border-box;
-  margin: 10px 0px 15px 0px;
+  margin: 12px 0px 12px 0px;
+}
+
+.field:last-child {
+    margin-bottom: 8px;
 }
 
 .field label {
@@ -119,7 +129,7 @@ button.small, .button.small {
   box-sizing: border-box;
 }
 
-#tooltip1 {
+#memo-tooltip {
     position: absolute;
     padding: 5px 10px;
     border: 1px solid #ddd;
@@ -151,6 +161,19 @@ button.small, .button.small {
     margin-bottom: 1px;
     padding: 10px 25px;
     border-left: 2px solid white;
+}
+
+.link.add {
+    padding: 5px 25px;
+    background: #fafafa;
+    text-align: center;
+    border-left: 0;
+    color: #e0e0e0;
+}
+
+.searchresults .link {
+    background: #fafafa;
+    border-color: #fafafa;
 }
 
 .link-content {
@@ -190,7 +213,8 @@ button.small, .button.small {
 }
 
 .link-tools {
-    padding: 10px 25px;
+    padding-top: 10px;
+    padding-right: 25px;
     text-align: right;
 }
 
@@ -198,7 +222,7 @@ button.small, .button.small {
 .link.text { border-color: green;}
 .link.file { border-color: red;}
 .link.form {    
-    margin-bottom: 10px;
+    margin-top: 10px;
 }
 .form-section {
     border-top: 1px dashed #eee;

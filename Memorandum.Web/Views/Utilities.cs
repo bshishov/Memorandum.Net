@@ -14,7 +14,7 @@ namespace Memorandum.Web.Views
 {
     internal static class Utilities
     {
-        public static List<LinkDrop> GetLinks(UnitOfWork unit, Node node)
+        public static List<LinkDrop> GetLinkDrops(UnitOfWork unit, Node node)
         {
             var links =
                 unit.Links.Where(l => l.StartNode == node.NodeId.Id && l.StartNodeProvider == node.NodeId.Provider)
@@ -33,35 +33,61 @@ namespace Memorandum.Web.Views
             return linkDrops;
         }
 
+        public static List<RenderedLinkDrop> GetRenderedLinkDrops(UnitOfWork unit, Node node)
+        {
+            var links =
+                unit.Links.Where(l => l.StartNode == node.NodeId.Id && l.StartNodeProvider == node.NodeId.Provider)
+                    .ToList();
+            var linkDrops =
+                links.Select(link => new RenderedLinkDrop(link, unit.Nodes.FindById(link.GetEndIdentifier()))).ToList();
+
+            var dir = node as DirectoryNode;
+            if (dir != null)
+            {
+                linkDrops.AddRange(dir.GetChild().Select(ch => new RenderedLinkDrop(new Link(node, ch)
+                {
+                    Comment = ch is DirectoryNode ? "Folder" : "File"
+                }, ch)));
+            }
+            return linkDrops;
+        }
+
         public static IEnumerable<LinksGroupDrop> GetGroupedLinks(UnitOfWork unit, Node node)
         {
-            var linkDrops = GetLinks(unit, node);
+            var gId = 0;
+            var linkDrops = GetLinkDrops(unit, node);
             if (linkDrops.Count == 0)
-                return new List<LinksGroupDrop> {new LinksGroupDrop()};
+                return new List<LinksGroupDrop> {new LinksGroupDrop(gId) };
 
             var groups = new List<LinksGroupDrop>();
-            var unnamedGroup = new LinksGroupDrop();
+            var unnamedGroup = new LinksGroupDrop(gId++);
             groups.Add(unnamedGroup);
 
             foreach (var link in linkDrops)
             {
-                var sameRealtionLink =
-                    unnamedGroup.Items.FirstOrDefault(
-                        l => l.Comment != null && l.Comment.Equals(link.Comment, StringComparison.CurrentCultureIgnoreCase));
-                if (sameRealtionLink != null)
+                if (!string.IsNullOrWhiteSpace(link.Comment))
                 {
-                    unnamedGroup.Items.Remove(sameRealtionLink);
-                    var group = new LinksGroupDrop(new List<LinkDrop> {link, sameRealtionLink});
-                    groups.Add(group);
-                    continue;
-                }
+                    var sameRealtionLink =
+                        unnamedGroup.Items.FirstOrDefault(
+                            l =>
+                                l.Comment != null &&
+                                l.Comment.Equals(link.Comment, StringComparison.CurrentCultureIgnoreCase));
+                    if (sameRealtionLink != null)
+                    {
+                        unnamedGroup.Items.Remove(sameRealtionLink);
+                        var group = new LinksGroupDrop(gId++, new List<LinkDrop> {link, sameRealtionLink});
+                        groups.Add(group);
+                        continue;
+                    }
 
-                var groupWithSameRelation =
-                    groups.FirstOrDefault(g => g.Name.Equals(link.Comment, StringComparison.CurrentCultureIgnoreCase));
-                if (groupWithSameRelation != null)
-                {
-                    groupWithSameRelation.Items.Add(link);
-                    continue;
+                    var groupWithSameRelation =
+                        groups.FirstOrDefault(
+                            g => g.Name.Equals(link.Comment, StringComparison.CurrentCultureIgnoreCase));
+                    if (groupWithSameRelation != null)
+                    {
+                        groupWithSameRelation.Items.Add(link);
+                        continue;
+                    }
                 }
 
                 unnamedGroup.Items.Add(link);
@@ -150,7 +176,7 @@ namespace Memorandum.Web.Views
             return null;
         }
 
-        public static Link MakeRelationForNewNode(Request request, Node parentNode, Node newNode)
+        public static Link CreateLinkForNode(Request request, Node parentNode, Node newNode)
         {
             var link = new Link(parentNode, newNode)
             {

@@ -10,11 +10,7 @@ namespace Memorandum.Core.Repositories
 {
     public class UserRepository : DatabaseRepository<User, int>
     {
-        public UserRepository()
-        {
-        }
-
-         public UserRepository(ISession session)
+        public UserRepository(ISession session)
             : base(session)
         {
         }
@@ -25,7 +21,7 @@ namespace Memorandum.Core.Repositories
             var rfc2898 = new Rfc2898DeriveBytes_sha256(password, Encoding.ASCII.GetBytes(salt), iterations);
             var hash = Convert.ToBase64String(rfc2898.GetBytes(32));
 
-            return string.Format("pbkdf2_sha256${0}${1}${2}", iterations, salt, hash);
+            return $"pbkdf2_sha256${iterations}${salt}${hash}";
         }
 
         private static string CreateSalt(int length = 12)

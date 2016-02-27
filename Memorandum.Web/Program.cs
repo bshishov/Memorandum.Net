@@ -2,6 +2,7 @@
 using CommandLine;
 using Memorandum.Core;
 using Memorandum.Core.Domain;
+using Memorandum.Core.Search;
 using Memorandum.Web.Framework;
 using Memorandum.Web.Framework.Middleware;
 using Memorandum.Web.Framework.Routing;
@@ -33,10 +34,14 @@ namespace Memorandum.Web
             router.Bind("^/file", FileNodeViews.Router);
             router.Bind("^/api", ApiViews.Router);
 
+            if (options.ForceReindex)
+                SearchManager.StartIndexingTask();
+
             var app = new App(router);
             app.RegisterMiddleware(new SessionMiddleware());
             app.RegisterMiddleware(new UnitOfWorkMiddleware());
             app.Listen(Settings.Default.Port);
+
             return 0;
         }
 
@@ -85,6 +90,8 @@ namespace Memorandum.Web
         [Verb("runserver", HelpText = "Run server")]
         private class RunServerOptions
         {
+            [Option("forceindex", Required = false, HelpText = "Forces reindexing")]
+            public bool ForceReindex { get; set; }
         }
 
         [Verb("createschema", HelpText = "Creates database schema")]

@@ -3,7 +3,7 @@
 namespace Memorandum.Web.Framework.Utilities
 {
     /// <summary>
-    ///     SImple key-value storage
+    ///     Simple key-value storage
     /// </summary>
     internal class Context
     {

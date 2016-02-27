@@ -3,7 +3,7 @@
 namespace Memorandum.Web.Framework.Middleware
 {
     /// <summary>
-    ///     Session object, identifies source of incoming request. You may use its datacontainer for attaching any data to
+    ///     Session object, identifies source of incoming request. Used as datacontainer for attaching any data to
     ///     current session e.g. User
     /// </summary>
     internal class Session : Context

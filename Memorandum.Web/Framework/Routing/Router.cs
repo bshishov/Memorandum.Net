@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Net;
 using System.Text.RegularExpressions;
 
 namespace Memorandum.Web.Framework.Routing
@@ -38,7 +39,7 @@ namespace Memorandum.Web.Framework.Routing
                     {
                         var vals = new string[match.Groups.Count - 1];
                         for (var i = 1; i < match.Groups.Count; i++)
-                            vals[i - 1] = match.Groups[i].Value;
+                            vals[i - 1] = WebUtility.UrlDecode(match.Groups[i].Value);
 
                         var rarg = route as RouteWithArg;
                         if (rarg != null)

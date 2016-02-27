@@ -29,5 +29,10 @@ namespace Memorandum.Core.Domain
         {
             return Provider.GetHashCode() ^ Id.GetHashCode();
         }
+
+        public override string ToString()
+        {
+            return string.Format("{0}/{1}", Provider, Id);
+        }
     }
 }

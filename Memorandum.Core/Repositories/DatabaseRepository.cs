@@ -12,44 +12,10 @@ namespace Memorandum.Core.Repositories
         where T : class
     {
         protected ISession Session = null;
-        protected ITransaction Transaction = null;
-
-        public DatabaseRepository()
-        {
-            Session = Database.OpenSession();
-        }
 
         public DatabaseRepository(ISession session)
         {
             Session = session;
-        }
-
-        public void BeginTransaction()
-        {
-            Transaction = Session.BeginTransaction();
-        }
-
-        public void CommitTransaction()
-        {
-            // _transaction will be replaced with a new transaction            
-            // by NHibernate, but we will close to keep a consistent state.
-            Transaction.Commit();
-            CloseTransaction();
-        }
-
-        public void RollbackTransaction()
-        {
-            // _session must be closed and disposed after a transaction            
-            // rollback to keep a consistent state.
-            Transaction.Rollback();
-            CloseTransaction();
-            CloseSession();
-        }
-
-        private void CloseTransaction()
-        {
-            Transaction.Dispose();
-            Transaction = null;
         }
 
         private void CloseSession()
@@ -64,12 +30,12 @@ namespace Memorandum.Core.Repositories
             return Session.CreateCriteria<T>().List<T>();
         }
 
-        public void Delete(T entity)
+        public virtual void Delete(T entity)
         {
             Session.Delete(entity);
         }
 
-        public void Save(T entity)
+        public virtual void Save(T entity)
         {
             Session.SaveOrUpdate(entity);
         }
@@ -96,13 +62,6 @@ namespace Memorandum.Core.Repositories
 
         public void Dispose()
         {
-            if (Transaction != null)
-            {
-                // Commit transaction by default, unless user explicitly rolls it back.
-                // To rollback transaction by default, unless user explicitly commits,                // comment out the line below.
-                CommitTransaction();
-            }
-
             if (Session != null)
             {
                 Session.Flush(); // commit session transactions

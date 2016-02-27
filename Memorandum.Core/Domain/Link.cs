@@ -41,7 +41,7 @@ namespace Memorandum.Core.Domain
 
         public override string ToString()
         {
-            return string.Format("{0}:{1} -> {2}:{3}", StartNodeProvider, StartNode, EndNodeProvider, EndNode);
+            return $"{StartNodeProvider}:{StartNode} -> {EndNodeProvider}:{EndNode}";
         }
     }
 }

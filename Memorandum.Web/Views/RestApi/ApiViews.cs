@@ -2,7 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using Memorandum.Core.Domain;
+using Memorandum.Core.Search;
 using Memorandum.Web.Framework;
 using Memorandum.Web.Framework.Responses;
 using Memorandum.Web.Framework.Routing;
@@ -24,7 +26,10 @@ namespace Memorandum.Web.Views.RestApi
             var query = request.QuerySet[searchQueryKey];
             if (string.IsNullOrEmpty(query))
                 return new BadRequestApiResponse("Empty query");
-            var nodes = request.UnitOfWork.Nodes.Search(query);
+            var nodes = new List<Node>();
+            nodes.AddRange(SearchManager.TextNodeIndex.Search(query));
+            nodes.AddRange(SearchManager.UrlNodeIndex.Search(query));
+            nodes.AddRange(SearchManager.FileNodeIndex.Search(query));
             if (string.IsNullOrEmpty(request.QuerySet["mode"]))
             {
                 var drops = nodes.Select(NodeDropFactory.Create);
@@ -96,7 +101,7 @@ namespace Memorandum.Web.Views.RestApi
             if (node == null)
                 return new ResourceNotFoundApiResponse();
 
-            if (node.User.Id != user.Id)
+            if (node.User != null && node.User.Id != user.Id)
                 return new ForbiddenApiResponse("Access denied");
 
             if(request.Method == "GET")
@@ -127,7 +132,7 @@ namespace Memorandum.Web.Views.RestApi
                     return new ApiResponse(NodeDropFactory.Create(node), statusMessage: "Saved");
                 }
 
-                // TODO: put for another providers
+                // TODO: implement put for another providers
             }
 
             return new BadRequestApiResponse();
@@ -144,7 +149,7 @@ namespace Memorandum.Web.Views.RestApi
             if (node == null)
                 return new ResourceNotFoundApiResponse();
 
-            if (node.User.Id != user.Id)
+            if (node.User != null && node.User.Id != user.Id)
                 return new ForbiddenApiResponse();
 
             if (!string.IsNullOrEmpty(request.QuerySet["mode"]))
@@ -205,7 +210,9 @@ namespace Memorandum.Web.Views.RestApi
 
             if (request.Method == "POST")
             {
-                var parentNodeId = new NodeIdentifier(request.PostArgs["parent_provider"], request.PostArgs["parent_id"]);
+                var parentNodeId = new NodeIdentifier(
+                    WebUtility.UrlDecode(request.PostArgs["parent_provider"]), 
+                    WebUtility.UrlDecode(request.PostArgs["parent_id"]));
                 var parentNode = request.UnitOfWork.Nodes.FindById(parentNodeId);
 
                 if (parentNode == null)
@@ -218,7 +225,9 @@ namespace Memorandum.Web.Views.RestApi
 
                 if (provider == "links")
                 {
-                    var endNodeId = new NodeIdentifier(request.PostArgs["end_provider"], request.PostArgs["end_id"]);
+                    var endNodeId = new NodeIdentifier(
+                         WebUtility.UrlDecode(request.PostArgs["end_provider"]),
+                         WebUtility.UrlDecode(request.PostArgs["end_id"]));
                     var endNode = request.UnitOfWork.Nodes.FindById(endNodeId);
 
                     if(endNode == null)
@@ -311,7 +320,7 @@ namespace Memorandum.Web.Views.RestApi
             new Route("/search$", Search),
             new RouteWithArg("/links/([0-9]+)$", LinksView),
             new RouteWithArg("/([a-z]+)/(.+)/links$", NodeLinksView),
-            new RouteWithArg("/([a-z]+)/([^/.]+)$", NodeView),
+            new RouteWithArg("/([a-z]+)/([^/]+)$", NodeView),
             new RouteWithArg("/([a-z]+)$", ProviderView)
         });
     }

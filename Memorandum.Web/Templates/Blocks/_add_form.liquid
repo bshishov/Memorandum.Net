@@ -42,10 +42,10 @@
   </div>
   <div class="row {{ group.Id }}tab searchresults" id="{{ group.Id }}results" data-tab="links" style="display:none;"></div>
   <div class="link add toggle">
-    <div class="toggle" id="formAddCaption{{ group.Id }}" data-toggle="#form{{ group.Id }}Container,#formControls{{ group.Id }},#formAddCaption{{ group.Id }}">Add</div>
+    <div class="toggle" id="formAddCaption{{ group.Id }}" data-toggle="#form{{ group.Id }}Container,#formControls{{ group.Id }},#{{ group.Id }}results,#formAddCaption{{ group.Id }}">Add</div>
     <div class="row set" id="formControls{{ group.Id }}" style="display:none;">
       <a href="javascript:;" class="system button small primary submitform">Save</a>
-      <a href="javascript:;" class="system dashed toggle" data-toggle="#form{{ group.Id }}Container,#formControls{{ group.Id }},#formAddCaption{{ group.Id }}">Cancel</a>
+      <a href="javascript:;" class="system dashed toggle" data-toggle="#form{{ group.Id }}Container,#formControls{{ group.Id }},#{{ group.Id }}results,#formAddCaption{{ group.Id }}">Cancel</a>
     </div>
   </div>
   <script type="text/javascript">

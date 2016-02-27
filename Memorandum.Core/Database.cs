@@ -1,6 +1,8 @@
-﻿using System.Reflection;
+﻿using System.IO;
+using System.Reflection;
 using NHibernate;
 using NHibernate.Cfg;
+using NHibernate.Cfg.MappingSchema;
 using NHibernate.Tool.hbm2ddl;
 
 namespace Memorandum.Core
@@ -17,10 +19,8 @@ namespace Memorandum.Core
                 if (_sessionFactory == null)
                 {
                     _configuration = new Configuration();
-
                     _configuration.Configure();
                     _configuration.AddAssembly(Assembly.GetExecutingAssembly());
-
                     _sessionFactory = _configuration.BuildSessionFactory();
                 }
 

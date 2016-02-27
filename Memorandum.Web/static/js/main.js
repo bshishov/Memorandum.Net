@@ -65,7 +65,7 @@ $(document).ready(function() {
       event.stopPropagation();
       var row = $(this).closest('.link');                  
       $.ajax({
-        url: "/api" + row.data('path') + "/links",
+        url: "/api" + encodeURIComponent(row.data('path')) + "/links",
         dataType: "JSON",
         data: { mode: "templated" },      
         success: function(data) {         

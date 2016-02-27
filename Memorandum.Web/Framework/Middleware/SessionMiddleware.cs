@@ -13,7 +13,7 @@ namespace Memorandum.Web.Framework.Middleware
         private readonly Dictionary<string, Session> _sessions = new Dictionary<string, Session>();
 
         /// <summary>
-        ///     Befor request
+        ///     Before request
         /// </summary>
         /// <param name="request">Input request</param>
         public void Handle(Request request)
@@ -58,7 +58,7 @@ namespace Memorandum.Web.Framework.Middleware
                 if (httpresponse.Attributes == null)
                     httpresponse.Attributes = new Dictionary<string, string>();
                 httpresponse.Attributes.Add("Set-Cookie",
-                    string.Format("{0}={1}; path=/;", SessionKeyCookieName, request.Session.Key));
+                    $"{SessionKeyCookieName}={request.Session.Key}; path=/;");
             }
         }
 
@@ -72,7 +72,6 @@ namespace Memorandum.Web.Framework.Middleware
         {
             var session = new Session(key) {CookieExist = cookieExists};
             _sessions.Add(session.Key, session);
-            Console.WriteLine("New Session: {0}", session.Key);
             request.Session = session;
         }
     }

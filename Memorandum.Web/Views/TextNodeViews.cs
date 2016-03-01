@@ -13,15 +13,14 @@ namespace Memorandum.Web.Views
     {
         private static Response TextNode(Request request, string[] args)
         {
-            var user = request.Session.Get<User>("user");
-            if (user == null)
+            if (request.UserId == null)
                 return new RedirectResponse("/login");
 
             var node = request.UnitOfWork.Text.FindById(Convert.ToInt32(args[0]));
             if (node == null)
                 throw new Http404Exception("Node not found");
 
-            if (node.User.Id != user.Id)
+            if (node.User.Id != request.UserId)
                 throw new Http404Exception("Access denied :)");
 
             return new TemplatedResponse("text_node", new

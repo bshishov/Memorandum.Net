@@ -58,6 +58,7 @@
   <ItemGroup>
     <Compile Include="Domain\Link.cs" />
     <Compile Include="Domain\FileNode.cs" />
+    <Compile Include="Domain\Session.cs" />
     <Compile Include="Domain\User.cs" />
     <Compile Include="Database.cs" />
     <Compile Include="Repositories\FileNodeRepository.cs" />

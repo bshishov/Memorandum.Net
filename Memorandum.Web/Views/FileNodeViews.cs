@@ -15,8 +15,7 @@ namespace Memorandum.Web.Views
     {
         private static Response FileNodeView(Request request, string[] args)
         {
-            var user = request.Session.Get<User>("user");
-            if (user == null)
+            if (request.UserId == null)
                 return new RedirectResponse("/login");
 
             var node = request.UnitOfWork.Files.FindById(WebUtility.UrlDecode(args[0]));
@@ -54,8 +53,7 @@ namespace Memorandum.Web.Views
 
         private static Response RawFileNode(Request request, string[] args)
         {
-            var user = request.Session.Get<User>("user");
-            if (user == null)
+            if (request.UserId == null)
                 return new RedirectResponse("/login");
 
             var node = request.UnitOfWork.Files.FindById(args[0]);
@@ -69,8 +67,7 @@ namespace Memorandum.Web.Views
 
         private static Response DownloadFileNode(Request request, string[] args)
         {
-            var user = request.Session.Get<User>("user");
-            if (user == null)
+            if (request.UserId == null)
                 return new RedirectResponse("/login");
 
             var node = request.UnitOfWork.Files.FindById(args[0]);
@@ -83,7 +80,7 @@ namespace Memorandum.Web.Views
             return new HttpResponse(File.ReadAllBytes(node.Path), contenttype: "application/force-download",
                 attributes: new Dictionary<string, string>
                 {
-                    {"Content-Disposition", string.Format("attachment; filename=\"{0}\"", fileNode.Name)},
+                    {"Content-Disposition", $"attachment; filename=\"{fileNode.Name}\""},
                     {"X-Sendfile", fileNode.Name}
                 });
         }

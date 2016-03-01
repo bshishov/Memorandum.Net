@@ -182,7 +182,7 @@ namespace Memorandum.Web.Views
             {
                 Comment = request.PostArgs["comment"],
                 DateAdded = DateTime.Now,
-                User = request.Session.Get<User>("user")
+                User = request.User
             };
             request.UnitOfWork.Links.Save(link);
             return link;

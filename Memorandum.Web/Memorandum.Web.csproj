@@ -32,6 +32,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AutoMapper, Version=4.2.1.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
+      <HintPath>..\packages\AutoMapper.4.2.1\lib\net45\AutoMapper.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="CommandLine">
       <HintPath>..\packages\CommandLineParser.2.0.275-beta\lib\net45\CommandLine.dll</HintPath>
     </Reference>
@@ -46,6 +50,7 @@
       <HintPath>..\packages\SharpZipLib.0.86.0\lib\20\ICSharpCode.SharpZipLib.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="MimeTypeMap">
       <HintPath>..\packages\MediaTypeMap.2.1.0.0\lib\net40\MimeTypeMap.dll</HintPath>
     </Reference>
@@ -61,8 +66,9 @@
     <Compile Include="Framework\App.cs" />
     <Compile Include="Framework\Errors\HttpErrorException.cs" />
     <Compile Include="Framework\Middleware\IMiddleware.cs" />
-    <Compile Include="Framework\Middleware\Session.cs" />
-    <Compile Include="Framework\Middleware\SessionMiddleware.cs" />
+    <Compile Include="Framework\Utilities\StringCipher.cs" />
+    <Compile Include="Middleware\SessionContext.cs" />
+    <Compile Include="Middleware\SessionMiddleware.cs" />
     <Compile Include="Framework\Request.cs" />
     <Compile Include="Framework\Responses\RedirectResponse.cs" />
     <Compile Include="Framework\Responses\TemplatedResponse.cs" />

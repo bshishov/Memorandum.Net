@@ -49,5 +49,14 @@ namespace Memorandum.Web.Properties {
                 return ((bool)(this["IndexDotFiles"]));
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("SomeSecretKeyChangeMePlease")]
+        public string Secret {
+            get {
+                return ((string)(this["Secret"]));
+            }
+        }
     }
 }

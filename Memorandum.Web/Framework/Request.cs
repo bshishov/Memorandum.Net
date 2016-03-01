@@ -3,8 +3,9 @@ using System.Collections.Specialized;
 using System.Text;
 using HttpMultipartParser;
 using Memorandum.Core;
-using Memorandum.Web.Framework.Middleware;
+using Memorandum.Core.Domain;
 using Memorandum.Web.Framework.Utilities;
+using Memorandum.Web.Middleware;
 
 namespace Memorandum.Web.Framework
 {
@@ -23,8 +24,24 @@ namespace Memorandum.Web.Framework
         public string Method => RawRequest.GetParameterASCII("REQUEST_METHOD");
         public string Path => RawRequest.GetParameterUTF8("DOCUMENT_URI");
         public string ContentType => RawRequest.GetParameterASCII("CONTENT_TYPE");
-        public Session Session { get; set; }
+        public SessionContext Session { get; set; }
         public UnitOfWork UnitOfWork { get; set; }
+
+        // TODO: move all Core dependent attributes to CustomRequest
+        /// <summary>
+        /// Current User identifier, stored in session
+        /// </summary>
+        public int? UserId
+        {
+            get { return Session.Get<int>("userId"); }
+            set { Session.Set("userId", value); }
+        }
+
+        private User _user;
+        /// <summary>
+        /// Lazy loaded User
+        /// </summary>
+        public User User => _user ?? (_user = UnitOfWork.Users.FindById(UserId.GetValueOrDefault()));
 
         /// <summary>
         ///     Lazy loaded cookies from request

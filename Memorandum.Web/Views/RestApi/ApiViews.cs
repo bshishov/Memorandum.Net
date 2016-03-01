@@ -76,9 +76,9 @@ namespace Memorandum.Web.Views.RestApi
         {
             if (useCommonAuth)
             {
-                var user = request.Session.Get<User>("user");
-                if (user != null)
-                    return user;
+                var userId = request.UserId;
+                if (userId != null)
+                    return request.UnitOfWork.Users.FindById(userId.Value);
             }
 
             const string tokenQueryStrigKey = "token";

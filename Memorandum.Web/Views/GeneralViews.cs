@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using Memorandum.Core.Domain;
+﻿using System;
+using System.Collections.Generic;
 using Memorandum.Web.Framework;
 using Memorandum.Web.Framework.Responses;
 using Memorandum.Web.Framework.Routing;
@@ -10,9 +10,12 @@ namespace Memorandum.Web.Views
     {
         public static Response Home(Request request)
         {
-            var user = request.Session.Get<User>("user");
-            if (user != null)
+            var userId = request.UserId;
+            if (userId != null)
             {
+                var user = request.User;
+                if(user == null)
+                    throw new InvalidOperationException("Invalid user in session");
                 return new RedirectResponse("/text/" + user.Home.Id);
             }
 
@@ -23,8 +26,7 @@ namespace Memorandum.Web.Views
         {
             if (request.Method == "GET")
             {
-                var user = request.Session.Get<User>("user");
-                if (user != null)
+                if (request.UserId != null)
                     return new RedirectResponse("/");
 
                 return new TemplatedResponse("login", new
@@ -38,7 +40,7 @@ namespace Memorandum.Web.Views
                 var user = request.UnitOfWork.Users.Auth(request.PostArgs["username"], request.PostArgs["password"]);
                 if (user != null)
                 {
-                    request.Session.Set("user", user);
+                    request.UserId = user.Id;
                 }
             }
 
@@ -47,10 +49,9 @@ namespace Memorandum.Web.Views
 
         public static Response Logout(Request request)
         {
-            var user = request.Session.Get<User>("user");
-            if (user != null)
+            if (request.UserId != null)
             {
-                request.Session.Remove("user");
+                request.UserId = null;
                 return new RedirectResponse("/");
             }
 

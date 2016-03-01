@@ -153,17 +153,17 @@ $(document).ready(function() {
     $('.'+tabgroup+'tab').removeClass('active').hide();
 
     tab = $('.'+tabgroup+'tab[data-tab="'+target+'"]');
-    tab.addClass('active').show();
-    tab.find('input')[0].focus();
-    tab.find('.formatted-text')[0].focus();
+    tab.addClass('active').show();    
+    tab.find("*:input[type!=hidden]:first").first().focus();
+    tab.find('.formatted-text').focus();
   });
 
   $('.toggle').click(function() {
     targetVal = $( this ).data("toggle");
     target = $(targetVal);    
     target.slideToggle('fast');
-    target.find('input')[0].focus();  
-    target.find('.formatted-text')[0].focus();    
+    target.find("*:input[type!=hidden]:first").first().focus();  
+    target.find('.formatted-text').focus();    
   });  
 });
 

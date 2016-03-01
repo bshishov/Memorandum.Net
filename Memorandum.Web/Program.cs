@@ -4,7 +4,6 @@ using Memorandum.Core;
 using Memorandum.Core.Domain;
 using Memorandum.Core.Search;
 using Memorandum.Web.Framework;
-using Memorandum.Web.Framework.Middleware;
 using Memorandum.Web.Framework.Routing;
 using Memorandum.Web.Middleware;
 using Memorandum.Web.Properties;
@@ -38,8 +37,8 @@ namespace Memorandum.Web
                 SearchManager.StartIndexingTask();
 
             var app = new App(router);
-            app.RegisterMiddleware(new SessionMiddleware());
             app.RegisterMiddleware(new UnitOfWorkMiddleware());
+            app.RegisterMiddleware(new SessionMiddleware());
             app.Listen(Settings.Default.Port);
 
             return 0;

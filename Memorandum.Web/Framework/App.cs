@@ -44,7 +44,7 @@ namespace Memorandum.Web.Framework
         public void RegisterMiddleware(IMiddleware middleware)
         {
             _beforeView.Add(middleware);
-            _afterView.Add(middleware);
+            _afterView.Insert(0, middleware);
         }
 
         private void FcgiApplicationOnOnRequestReceived(object sender, FastCGI.Request rawRequest)

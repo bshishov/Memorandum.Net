@@ -7,7 +7,7 @@
     <property name="DateJoined" column="date_joined" type="DateTime" not-null="true"/>
     <property name="LastLogin" column="last_login" type="DateTime" />
     <property name="Email" column="email" type="String" not-null="true"/>
-    <many-to-one name="Home" class="TextNode">
+    <many-to-one name="Home" class="TextNode" lazy="false">
       <column name="home_id"/>
     </many-to-one>
   </class>
@@ -43,5 +43,11 @@
     <many-to-one name="User" class="User">
       <column name="user_id"/>
     </many-to-one>
+  </class>
+
+  <class name="Session" table="memo_session">
+    <id name="Key" column="session_key" type="String" generator="assigned"></id>
+    <property name="Expires" column="expires" type="DateTime" not-null="true"/>
+    <property name="Data" column="data" type="String" not-null="false"/>
   </class>
 </hibernate-mapping>

@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Memorandum.Core.Domain;
 using Memorandum.Web.Framework;
 using Memorandum.Web.Framework.Errors;
 using Memorandum.Web.Framework.Responses;
@@ -13,8 +12,7 @@ namespace Memorandum.Web.Views
     {
         private static Response UrlNode(Request request, string[] args)
         {
-            var user = request.Session.Get<User>("user");
-            if (user == null)
+            if (request.UserId == null)
                 return new RedirectResponse("/login");
 
             var node = request.UnitOfWork.URL.FindById(Convert.ToInt32(args[0]));
@@ -22,12 +20,12 @@ namespace Memorandum.Web.Views
             if (node == null)
                 throw new Http404Exception("Node not found");
 
-            if (node.User.Id != user.Id)
+            if (node.User.Id != request.UserId)
                 throw new Http404Exception("Access denied :)");
 
             return new TemplatedResponse("url_node", new
             {
-                Title = "Home",
+                Title = node.Name,
                 Node = new UrlNodeDrop(node),
                 Links = Utilities.GetGroupedLinks(request.UnitOfWork, node)
             });

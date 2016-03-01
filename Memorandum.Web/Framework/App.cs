@@ -1,5 +1,5 @@
 ﻿using System;
-using System.IO;
+using System.Reflection;
 using DotLiquid;
 using DotLiquid.FileSystems;
 using DotLiquid.NamingConventions;
@@ -9,6 +9,7 @@ using Memorandum.Web.Framework.Middleware;
 using Memorandum.Web.Framework.Responses;
 using Memorandum.Web.Framework.Routing;
 using Memorandum.Web.Framework.Utilities;
+using System.Diagnostics;
 
 namespace Memorandum.Web.Framework
 {
@@ -23,17 +24,9 @@ namespace Memorandum.Web.Framework
         {
             _rootRouter = router;
 
-            // Template engine initialization
-#if DEBUG
-            var templatesDir =
-                Path.Combine(
-                    Directory.GetParent(Directory.GetParent(Directory.GetCurrentDirectory()).FullName).FullName,
-                    "Templates");
-#else
-            var templatesDir = Path.Combine(Directory.GetCurrentDirectory(), "Templates");
-#endif
+            var assembly = Assembly.GetExecutingAssembly();
             Template.RegisterTag<Tags.StaticTag>("static");
-            Template.FileSystem = new LocalFileSystem(templatesDir);
+            Template.FileSystem = new EmbeddedFileSystem(assembly, "Memorandum.Web.Templates");
             Template.NamingConvention = new CSharpNamingConvention();
             Template.RegisterFilter(typeof (Filters));
 
@@ -49,6 +42,10 @@ namespace Memorandum.Web.Framework
 
         private void FcgiApplicationOnOnRequestReceived(object sender, FastCGI.Request rawRequest)
         {
+#if DEBUG
+            var stopWatch = new Stopwatch();
+            stopWatch.Start();
+#endif
             var request = new Request(rawRequest);
             try
             {
@@ -69,6 +66,10 @@ namespace Memorandum.Web.Framework
                         Console.ResetColor();
                     }
                     response.Write(request);
+#if DEBUG
+                    stopWatch.Stop();
+                    Console.WriteLine("Page build time {0}", stopWatch.Elapsed);
+#endif
                 }
                 else
                     throw new Http404Exception("No route found");

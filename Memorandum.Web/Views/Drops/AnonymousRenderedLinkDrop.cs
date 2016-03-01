@@ -1,6 +1,5 @@
-using System.IO;
-using DotLiquid;
 using Memorandum.Core.Domain;
+using Memorandum.Web.Framework.Utilities;
 
 namespace Memorandum.Web.Views.Drops
 {
@@ -10,16 +9,12 @@ namespace Memorandum.Web.Views.Drops
 
         public AnonymousRenderedLinkDrop(Node endnode) : base(endnode)
         {
-            // TODO: replace "Templates" part with reference to some config field
-            var tpl = Template.Parse(File.ReadAllText(Path.Combine("Templates", "Blocks", "_link.liquid")));
-            Rendered = tpl.Render(Hash.FromAnonymousObject(new { link = this }));
+            Rendered = TemplateUtilities.RenderTemplate("Blocks/link", new { link = this });
         }
 
         public AnonymousRenderedLinkDrop(NodeDrop endnode) : base(endnode)
         {
-            // TODO: replace "Templates" part with reference to some config field
-            var tpl = Template.Parse(File.ReadAllText(Path.Combine("Templates", "Blocks", "_link.liquid")));
-            Rendered = tpl.Render(Hash.FromAnonymousObject(new { link = this }));
+            Rendered = TemplateUtilities.RenderTemplate("Blocks/link", new { link = this });
         }
     }
 }

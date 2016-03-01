@@ -67,6 +67,7 @@
     <Compile Include="Framework\Errors\HttpErrorException.cs" />
     <Compile Include="Framework\Middleware\IMiddleware.cs" />
     <Compile Include="Framework\Utilities\StringCipher.cs" />
+    <Compile Include="Framework\Utilities\TemplateUtilities.cs" />
     <Compile Include="Middleware\SessionContext.cs" />
     <Compile Include="Middleware\SessionMiddleware.cs" />
     <Compile Include="Framework\Request.cs" />
@@ -132,61 +133,26 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
-    <None Include="Templates\Blocks\_add_form.liquid">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    <EmbeddedResource Include="Templates\Blocks\_add_form.liquid">
       <SubType>Designer</SubType>
-    </None>
-    <None Include="Templates\Blocks\_link.liquid">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Templates\Blocks\_links.liquid">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Templates\Blocks\_parent_links.liquid">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Templates\Blocks\Widgets\_file.liquid">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Templates\Blocks\Widgets\_text.liquid">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Templates\Blocks\Widgets\_url.liquid">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Templates\error.liquid">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Templates\Files\_audio.liquid">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Templates\Files\_image.liquid">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Templates\Files\_text.liquid">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Templates\Files\_video.liquid">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Templates\_file_node.liquid">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Templates\_layout.liquid">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Templates\login.liquid">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Templates\_node.liquid">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Templates\text_node.liquid">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Templates\url_node.liquid">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Templates\Blocks\_link.liquid" />
+    <EmbeddedResource Include="Templates\Blocks\_links.liquid" />
+    <EmbeddedResource Include="Templates\Blocks\_parent_links.liquid" />
+    <EmbeddedResource Include="Templates\Blocks\Widgets\_file.liquid" />
+    <EmbeddedResource Include="Templates\Blocks\Widgets\_text.liquid" />
+    <EmbeddedResource Include="Templates\Blocks\Widgets\_url.liquid" />
+    <EmbeddedResource Include="Templates\_error.liquid" />
+    <EmbeddedResource Include="Templates\Files\_audio.liquid" />
+    <EmbeddedResource Include="Templates\Files\_image.liquid" />
+    <EmbeddedResource Include="Templates\Files\_text.liquid" />
+    <EmbeddedResource Include="Templates\Files\_video.liquid" />
+    <EmbeddedResource Include="Templates\_file_node.liquid" />
+    <EmbeddedResource Include="Templates\_layout.liquid" />
+    <EmbeddedResource Include="Templates\_login.liquid" />
+    <EmbeddedResource Include="Templates\_node.liquid" />
+    <EmbeddedResource Include="Templates\_text_node.liquid" />
+    <EmbeddedResource Include="Templates\_url_node.liquid" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Memorandum.Core\Memorandum.Core.csproj">

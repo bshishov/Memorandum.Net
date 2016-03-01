@@ -31,10 +31,7 @@ body {
 .col2-3 { width: 66.5%; }
 .col1-3 { width: 33.5%; }
 
-@media only screen and (max-width: 480px) {
-    /*.col { margin: 1% 0 1% 0%;}*/
-    .span_3_of_3, .span_2_of_3, .span_1_of_3 { width: 100%; }
-}
+
 /* END OF GRID */
 
 
@@ -54,6 +51,11 @@ body {
 .container {    
     max-width: 700px;
     margin: 0 auto;    
+    padding: 0 10px 0 10px;
+}
+
+@media only screen and (max-width: 480px) {
+    .container { padding: 0;}
 }
 .footer {
     margin-top: 30px;
@@ -136,6 +138,10 @@ button.primary, .button.primary {
     border-radius: 10px;
     background: #eee;  
 }
+input[name="comment"] {
+    width: 100%;
+    box-sizing: border-box;
+}
 /* END OF LAYOUT */
 
 
@@ -151,16 +157,26 @@ button.primary, .button.primary {
     display: inline-block;
 }
 
+@media only screen and (max-width: 700px) {
+    .links-group-title {
+        margin-left: 26px;
+        margin-right: 26px;        
+    }    
+}
+
 .links {
 }
 
 .link {    
+    width: inherit;    
     position: relative;
     cursor: pointer;
     background: white;
     margin-bottom: 1px;
     padding: 10px 25px;
     border-left: 2px solid white;
+    word-wrap: break-word;
+    word-break: break-all;
 }
 
 .link.add {

@@ -8,10 +8,10 @@
         <div id="text-content" class="formatted-text">{{ Node.Text }}</div>      
     </div>    
     <div class="row details">
-		<div class="col col2-3">
+		<div class="col col1-3">
 			<div class="system">{{ Node.DateAdded }}</div>                        
 		</div>
-        <div class="col col1-3 set text-right">           
+        <div class="col col2-3 set text-right">           
             <a class="system button small" href="javascript:;" id="save-button">Save</a>
             <a class="system button small needconfirm" href="javascript:;" data-action="send('DELETE', '/api/{{ Node.Provider }}/{{ Node.NodeId }}')" title="Delete this text note">Delete</a>
         </div> 

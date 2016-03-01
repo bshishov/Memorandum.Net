@@ -21,7 +21,7 @@ namespace Memorandum.Web.Views
             var node = request.UnitOfWork.Files.FindById(WebUtility.UrlDecode(args[0]));
             if (node.IsDirectory)
             {
-                return new TemplatedResponse("_file_node", new
+                return new TemplatedResponse("file_node", new
                 {
                     Title = node.Name,
                     Node = new DirectoryNodeDrop(node),
@@ -29,19 +29,19 @@ namespace Memorandum.Web.Views
                 });
             }
 
-            var template = "_file_node";
+            var template = "file_node";
             var fileNode = node as FileNode;
             if (fileNode == null)
                 throw new Exception("Incorrect file node");
 
             if (EditableFileTypes.Contains(fileNode.Mime))
-                template = "FileNodes/_text";
+                template = "Files/text";
             else if (fileNode.Mime.Contains("image/"))
-                template = "FileNodes/_image";
+                template = "Files/image";
             else if (fileNode.Mime.Contains("video/"))
-                template = "FileNodes/_video";
+                template = "Files/video";
             else if (fileNode.Mime.Contains("audio/"))
-                template = "FileNodes/_audio";
+                template = "Files/audio";
 
             return new TemplatedResponse(template, new
             {

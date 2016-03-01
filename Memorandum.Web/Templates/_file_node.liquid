@@ -2,9 +2,9 @@
 
 {% block node_content %}
     <h4 id="path">{{ Node.Path }}</h4>    
-    <div class="card">
+   
     {% block file_content %}{% endblock %}
-    </div>
+    
     <div class="row details">
         <div class="col col2-3 set"> 
 			{% if Node.IsDirectory != true %}

@@ -13,7 +13,7 @@ namespace Memorandum.Web.Views
 {
     internal static class FileNodeViews
     {
-        private static Response FileNodeView(Request request, string[] args)
+        private static Response FileNodeView(IRequest request, string[] args)
         {
             if (request.UserId == null)
                 return new RedirectResponse("/login");
@@ -51,7 +51,7 @@ namespace Memorandum.Web.Views
             });
         }
 
-        private static Response RawFileNode(Request request, string[] args)
+        private static Response RawFileNode(IRequest request, string[] args)
         {
             if (request.UserId == null)
                 return new RedirectResponse("/login");
@@ -62,23 +62,24 @@ namespace Memorandum.Web.Views
             var fileNode = node as FileNode;
             if (fileNode == null)
                 throw new InvalidOperationException("Not a file");
-            return new HttpResponse(File.ReadAllBytes(node.Path), contenttype: fileNode.Mime);
+            
+            return new StreamedHttpResponse(File.OpenRead(node.Path), contenttype: fileNode.Mime);
         }
 
-        private static Response DownloadFileNode(Request request, string[] args)
+        private static Response DownloadFileNode(IRequest fastCGIRequest, string[] args)
         {
-            if (request.UserId == null)
+            if (fastCGIRequest.UserId == null)
                 return new RedirectResponse("/login");
 
-            var node = request.UnitOfWork.Files.FindById(args[0]);
+            var node = fastCGIRequest.UnitOfWork.Files.FindById(args[0]);
             if (node.IsDirectory)
                 throw new InvalidOperationException("Not a file");
             var fileNode = node as FileNode;
             if (fileNode == null)
                 throw new InvalidOperationException("Not a file");
-
-            return new HttpResponse(File.ReadAllBytes(node.Path), contenttype: "application/force-download",
-                attributes: new Dictionary<string, string>
+            
+            return new StreamedHttpResponse(File.OpenRead(node.Path), contenttype: "application/force-download",
+                headers: new Dictionary<string, string>
                 {
                     {"Content-Disposition", $"attachment; filename=\"{fileNode.Name}\""},
                     {"X-Sendfile", fileNode.Name}

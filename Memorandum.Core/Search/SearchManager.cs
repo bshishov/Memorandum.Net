@@ -42,31 +42,26 @@ namespace Memorandum.Core.Search
                 UrlNodeIndex.AddUpdateLuceneIndex(unit.URL.GetAll());
                 LinkIndex.AddUpdateLuceneIndex(unit.Links.GetAll());
 
-                // TODO: index like GetAll();
+                // Index only referenced files/directories
                 var fileLinks = unit.Links.Where(l => l.EndNodeProvider == "file").ToList();
                 var fileNodes = unit.Files.ByIds(fileLinks.Select(l => l.EndNode).ToArray()).ToList();
                 FileNodeIndex.AddUpdateLuceneIndex(fileNodes);
 
+                // Each referenced directory
                 foreach (var dir in fileNodes.OfType<DirectoryNode>())
                 {
-                    IndexFileDirectory(dir);
+                    // Index each child recursively
+                    dir.PerformOnChild(IndexFileNode, true);
                 }
             }
         }
 
-        private static void IndexFileDirectory(DirectoryNode input)
+        private static void IndexFileNode(BaseFileNode node)
         {
-            var child = input.GetChild().ToList();
+            if (!IndexDotFiles && node.Name.StartsWith("."))
+                return;
 
-            if (!IndexDotFiles)
-                child = child.Where(f => !f.Name.StartsWith(".")).ToList();
-
-            FileNodeIndex.AddUpdateLuceneIndex(child);
-
-            foreach (var dir in child.OfType<DirectoryNode>())
-            {
-                IndexFileDirectory(dir);
-            }
+            FileNodeIndex.AddUpdateLuceneIndex(node);
         }
     }
 }

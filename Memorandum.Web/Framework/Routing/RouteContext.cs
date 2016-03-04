@@ -11,7 +11,7 @@ namespace Memorandum.Web.Framework.Routing
             _route = route;
         }
 
-        public Response Proceed(Request request)
+        public Response Proceed(IRequest request)
         {
             return _route.Proceed(request);
         }

@@ -2,5 +2,5 @@ using Memorandum.Web.Framework.Responses;
 
 namespace Memorandum.Web.Framework.Routing
 {
-    internal delegate Response RequestHandlerWithArg(Request request, params string[] args);
+    internal delegate Response RequestHandlerWithArg(IRequest fastCGIRequest, params string[] args);
 }

@@ -15,7 +15,7 @@ namespace Memorandum.Web.Views.RestApi
 {
     internal static class ApiViews
     {
-        private static Response Search(Request request)
+        private static Response Search(IRequest request)
         {
             const string searchQueryKey = "q";
 
@@ -45,7 +45,7 @@ namespace Memorandum.Web.Views.RestApi
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        private static Response Auth(Request request)
+        private static Response Auth(IRequest request)
         {
             if (request.Method == "POST")
             {
@@ -67,12 +67,12 @@ namespace Memorandum.Web.Views.RestApi
         }
 
         /// <summary>
-        ///     Returns userobject by request token, if useCommonAuth eq 'true', then common auth (via sessions) would be preferred
+        ///     Returns userobject by FastCGIRequest token, if useCommonAuth eq 'true', then common auth (via sessions) would be preferred
         /// </summary>
         /// <param name="request"></param>
         /// <param name="useCommonAuth"></param>
         /// <returns></returns>
-        private static User UserAuth(Request request, bool useCommonAuth)
+        private static User UserAuth(IRequest request, bool useCommonAuth)
         {
             if (useCommonAuth)
             {
@@ -90,7 +90,7 @@ namespace Memorandum.Web.Views.RestApi
             return null;
         }
 
-        private static Response NodeView(Request request, string[] args)
+        private static Response NodeView(IRequest request, string[] args)
         {
             var user = UserAuth(request, true);
             if (user == null)
@@ -138,7 +138,7 @@ namespace Memorandum.Web.Views.RestApi
             return new BadRequestApiResponse();
         }
 
-        private static Response NodeLinksView(Request request, string[] args)
+        private static Response NodeLinksView(IRequest request, string[] args)
         {
             var user = UserAuth(request, true);
             if (user == null)
@@ -158,7 +158,7 @@ namespace Memorandum.Web.Views.RestApi
             return new ApiResponse(Utilities.GetLinkDrops(request.UnitOfWork, node));
         }
 
-        private static Response LinksView(Request request, string[] args)
+        private static Response LinksView(IRequest request, string[] args)
         {
             var user = UserAuth(request, true);
             if (user == null)
@@ -183,8 +183,9 @@ namespace Memorandum.Web.Views.RestApi
 
             return new BadRequestApiResponse();
         }
+        
 
-        private static Response ApiHome(Request request)
+        private static Response ApiHome(IRequest request)
         {
             // TODO: describe router | pass Router
             return new ApiResponse(new
@@ -197,7 +198,7 @@ namespace Memorandum.Web.Views.RestApi
 
         private static readonly Dictionary<string, User> Tokens = new Dictionary<string, User>();
         
-        private static Response ProviderView(Request request, string[] args)
+        private static Response ProviderView(IRequest request, string[] args)
         {
             var user = UserAuth(request, true);
             if (user == null)
@@ -284,19 +285,10 @@ namespace Memorandum.Web.Views.RestApi
 
                     foreach (var file in request.Files)
                     {
-                        // TODO: Implement repository save from binary stream like
-                        // request.UnitOfWork.Files.Fromstream(file.Data);
-
                         var filePath = Path.Combine(dir, file.FileName);
                         try
                         {
-                            using (var fileStream = File.Create(filePath))
-                            {
-                                file.Data.Seek(0, SeekOrigin.Begin);
-                                file.Data.CopyTo(fileStream);
-                            }
-
-                            var fileNode = new FileNode(filePath);
+                            var fileNode = request.UnitOfWork.Files.CreateFileFromStream(filePath, file.Data);
                             results.Add(new NodeWithRenderedLink(fileNode,
                                 Utilities.CreateLinkForNode(request, parentNode, fileNode)));
                         }

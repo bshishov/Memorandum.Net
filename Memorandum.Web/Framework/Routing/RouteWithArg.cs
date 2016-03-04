@@ -1,4 +1,5 @@
 using System.Text.RegularExpressions;
+using Memorandum.Web.Framework.Backend.FastCGI;
 using Memorandum.Web.Framework.Responses;
 
 namespace Memorandum.Web.Framework.Routing
@@ -15,7 +16,7 @@ namespace Memorandum.Web.Framework.Routing
 
         public Regex Regex { get; }
 
-        public Response Proceed(Request request, string[] args)
+        public Response Proceed(IRequest request, string[] args)
         {
             if (_handler != null)
                 return _handler(request, args);

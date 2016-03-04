@@ -4,6 +4,6 @@ namespace Memorandum.Web.Framework.Routing
 {
     internal interface IRouteContext
     {
-        Response Proceed(Request request);
+        Response Proceed(IRequest request);
     }
 }

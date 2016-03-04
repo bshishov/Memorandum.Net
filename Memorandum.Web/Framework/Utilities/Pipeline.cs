@@ -36,11 +36,11 @@ namespace Memorandum.Web.Framework.Utilities
 
     internal interface IHandler<in T>
     {
-        void Handle(T input);
+        void Handle(T request);
     }
 
     internal interface IHandler<in T1, in T2>
     {
-        void Handle(T1 arg1, T2 arg2);
+        void Handle(T1 request, T2 arg2);
     }
 }

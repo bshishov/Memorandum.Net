@@ -1,33 +1,33 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.Text;
+using System.Net;
 using HttpMultipartParser;
 using Memorandum.Core;
 using Memorandum.Core.Domain;
 using Memorandum.Web.Framework.Utilities;
 using Memorandum.Web.Middleware;
 
-namespace Memorandum.Web.Framework
+namespace Memorandum.Web.Framework.Backend.HttpListener
 {
-    internal class Request
+    class RequestWrapper : IRequest
     {
         private NameValueCollection _cookies;
         private NameValueCollection _postArgs;
         private NameValueCollection _querySet;
         private MultipartFormDataParser _parser;
 
-        public Request(FastCGI.Request rawRequest)
+        public RequestWrapper(HttpListenerRequest request)
         {
-            RawRequest = rawRequest;
+            _request = request;
         }
 
-        public string Method => RawRequest.GetParameterASCII("REQUEST_METHOD");
-        public string Path => RawRequest.GetParameterUTF8("DOCUMENT_URI");
-        public string ContentType => RawRequest.GetParameterASCII("CONTENT_TYPE");
+        public string Method => _request.HttpMethod;
+        public string Path => _request.RawUrl;
+        public string ContentType => _request.ContentType;
         public SessionContext Session { get; set; }
         public UnitOfWork UnitOfWork { get; set; }
 
-        // TODO: move all Core dependent attributes to CustomRequest
         /// <summary>
         /// Current User identifier, stored in session
         /// </summary>
@@ -38,6 +38,8 @@ namespace Memorandum.Web.Framework
         }
 
         private User _user;
+        private readonly HttpListenerResponse _response;
+
         /// <summary>
         /// Lazy loaded User
         /// </summary>
@@ -50,9 +52,13 @@ namespace Memorandum.Web.Framework
         {
             get
             {
-                if (_cookies == null && RawRequest.Parameters.ContainsKey("HTTP_COOKIE"))
+                if (_cookies == null)
                 {
-                    _cookies = HttpUtilities.ParseQueryString(RawRequest.GetParameterUTF8("HTTP_COOKIE"));
+                    _cookies = new NameValueCollection();
+                    foreach (Cookie cookie in _request.Cookies)
+                    {
+                        _cookies.Add(cookie.Name, cookie.Value);
+                    }
                 }
 
                 return _cookies;
@@ -62,20 +68,9 @@ namespace Memorandum.Web.Framework
         /// <summary>
         ///     Lazy loaded query arguments from QUERY_STRING
         /// </summary>
-        public NameValueCollection QuerySet
-        {
-            get
-            {
-                if (_querySet == null && RawRequest.Parameters.ContainsKey("QUERY_STRING"))
-                {
-                    _querySet = HttpUtilities.ParseQueryString(RawRequest.GetParameterASCII("QUERY_STRING"));
-                }
+        public NameValueCollection QuerySet => _querySet ?? (_querySet = _request.QueryString);
 
-                return _querySet;
-            }
-        }
-
-        private MultipartFormDataParser MultipartParser => _parser ?? (_parser = new MultipartFormDataParser(RawRequest.RequestBodyStream));
+        private MultipartFormDataParser MultipartParser => _parser ?? (_parser = new MultipartFormDataParser(_request.InputStream));
 
         /// <summary>
         ///     Lazy loaded post arguments
@@ -84,7 +79,7 @@ namespace Memorandum.Web.Framework
         {
             get
             {
-                if (_postArgs == null && (Method.Equals("POST") || Method.Equals("PUT")) && RawRequest.RequestBodyStream.Length > 0)
+                if (_postArgs == null && (Method.Equals("POST") || Method.Equals("PUT")) && _request.InputStream.CanRead)
                 {
                     if (ContentType.Contains("multipart"))
                     {
@@ -96,7 +91,15 @@ namespace Memorandum.Web.Framework
                     }
                     else
                     {
-                        _postArgs = HttpUtilities.ParseQueryString(Encoding.UTF8.GetString(RawRequest.GetBody()));
+                        using (System.IO.Stream body = _request.InputStream) // here we have data
+                        {
+                            using (
+                                System.IO.StreamReader reader = new System.IO.StreamReader(body,
+                                    _request.ContentEncoding))
+                            {
+                                _postArgs = HttpUtilities.ParseQueryString(reader.ReadToEnd());
+                            }
+                        }
                     }
                 }
 
@@ -105,7 +108,7 @@ namespace Memorandum.Web.Framework
         }
 
         public IEnumerable<FilePart> Files => MultipartParser.Files;
-
-        public FastCGI.Request RawRequest { get; }
+     
+        private readonly HttpListenerRequest _request;
     }
 }

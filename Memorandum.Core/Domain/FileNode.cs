@@ -60,5 +60,20 @@ namespace Memorandum.Core.Domain
             dirs.AddRange(Directory.GetFiles(Path).Select(p => new FileNode(p)));
             return dirs;
         }
+
+        public void PerformOnChild(Action<BaseFileNode> actionToPerform, bool recursive = false)
+        {
+            if (actionToPerform == null)
+                return;
+
+            var child = GetChild();
+            foreach (var c in child)
+            {
+                if (recursive)
+                    (c as DirectoryNode)?.PerformOnChild(actionToPerform, true);
+
+                actionToPerform(c);
+            }
+        }
     }
 }

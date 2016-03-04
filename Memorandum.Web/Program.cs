@@ -1,10 +1,12 @@
 ﻿using System;
+using System.IO;
 using CommandLine;
 using Memorandum.Core;
 using Memorandum.Core.Domain;
 using Memorandum.Core.Search;
 using Memorandum.Web.Framework;
 using Memorandum.Web.Framework.Routing;
+using Memorandum.Web.Framework.Utilities;
 using Memorandum.Web.Middleware;
 using Memorandum.Web.Properties;
 using Memorandum.Web.Views;
@@ -32,6 +34,7 @@ namespace Memorandum.Web
             router.Bind("^/url", UrlNodeViews.Router);
             router.Bind("^/file", FileNodeViews.Router);
             router.Bind("^/api", ApiViews.Router);
+            router.Bind("^/static", new StaticServeRouter(Path.Combine(Directory.GetCurrentDirectory(), "..", "..", "static")));
 
             if (options.ForceReindex)
                 SearchManager.StartIndexingTask();
@@ -40,7 +43,7 @@ namespace Memorandum.Web
             app.RegisterMiddleware(new UnitOfWorkMiddleware());
             app.RegisterMiddleware(new SessionMiddleware());
             app.Listen(Settings.Default.Port);
-
+            Console.ReadKey();
             return 0;
         }
 

@@ -10,7 +10,7 @@ namespace Memorandum.Web.Views
 {
     internal static class UrlNodeViews
     {
-        private static Response UrlNode(Request request, string[] args)
+        private static Response UrlNode(IRequest request, string[] args)
         {
             if (request.UserId == null)
                 return new RedirectResponse("/login");

@@ -15,7 +15,7 @@ namespace Memorandum.Web.Framework.Routing
 
         public Regex Regex { get; }
 
-        public Response Proceed(Request request)
+        public Response Proceed(IRequest request)
         {
             if (_handler != null)
                 return _handler(request);

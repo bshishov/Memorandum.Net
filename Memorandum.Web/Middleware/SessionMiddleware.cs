@@ -11,7 +11,7 @@ using Memorandum.Web.Properties;
 namespace Memorandum.Web.Middleware
 {
     /// <summary>
-    ///     Middleware that provides basic identification of incoming requests giving each request a session object
+    ///     Middleware that provides basic identification of incoming requests giving each FastCGIRequest a session object
     /// </summary>
     internal class SessionMiddleware : IMiddleware
     {
@@ -20,10 +20,10 @@ namespace Memorandum.Web.Middleware
         private readonly Dictionary<string, SessionContext> _sessions = new Dictionary<string, SessionContext>();
 
         /// <summary>
-        ///     Before request
+        ///     Before FastCGIRequest
         /// </summary>
-        /// <param name="request">Input request</param>
-        public void Handle(Request request)
+        /// <param name="request">Input FastCGIRequest</param>
+        public void Handle(IRequest request)
         {
             string key = null;
 
@@ -60,20 +60,18 @@ namespace Memorandum.Web.Middleware
         }
 
         /// <summary>
-        ///     After request
+        ///     After FastCGIRequest
         /// </summary>
-        /// <param name="request">Input request</param>
-        /// <param name="response">Output request</param>
-        public void Handle(Request request, Response response)
+        /// <param name="request">Input FastCGIRequest</param>
+        /// <param name="response">Output FastCGIRequest</param>
+        public void Handle(IRequest request, Response response)
         {
             if (request.Session != null && !request.Session.CookieExist)
             {
                 var httpresponse = response as HttpResponse;
                 if (httpresponse == null)
                     return;
-                if (httpresponse.Attributes == null)
-                    httpresponse.Attributes = new Dictionary<string, string>();
-                httpresponse.Attributes.Add("Set-Cookie",
+                httpresponse.Headers.Add("Set-Cookie",
                     $"{SessionKeyCookieName}={request.Session.Key}; Expires={request.Session.Expires:R}; Path=/; HttpOnly");
             }
         }
@@ -81,10 +79,10 @@ namespace Memorandum.Web.Middleware
         /// <summary>
         ///     Initialize new session and adds it to the dictionary
         /// </summary>
-        /// <param name="request">Input request</param>
+        /// <param name="request">Input FastCGIRequest</param>
         /// <param name="key">SessionContext key (GUID or existing session key)</param>
         /// <param name="cookieExists">Defines wheter cookie set on client or not</param>
-        private void InitNewSession(Request request, string key, bool cookieExists = false)
+        private void InitNewSession(IRequest request, string key, bool cookieExists = false)
         {
             var session = new SessionContext(key, DateTime.Now + SessionLifeTime) { CookieExist = cookieExists };
             session.ContextChanged += SessionOnContextChanged;
@@ -104,10 +102,10 @@ namespace Memorandum.Web.Middleware
             }
         }
 
-        private void RegisterSession(Request request, SessionContext session)
+        private void RegisterSession(IRequest fastCGIRequest, SessionContext session)
         {
             _sessions.Add(session.Key, session);
-            request.Session = session;
+            fastCGIRequest.Session = session;
         }
 
         private void SaveSession(UnitOfWork unit, SessionContext sessionContext)

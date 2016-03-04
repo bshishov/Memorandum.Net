@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Memorandum.Core.Domain;
 using Memorandum.Web.Framework;
 using Memorandum.Web.Framework.Errors;
 using Memorandum.Web.Framework.Responses;
@@ -11,7 +10,7 @@ namespace Memorandum.Web.Views
 {
     internal static class TextNodeViews
     {
-        private static Response TextNode(Request request, string[] args)
+        private static Response TextNode(IRequest request, string[] args)
         {
             if (request.UserId == null)
                 return new RedirectResponse("/login");

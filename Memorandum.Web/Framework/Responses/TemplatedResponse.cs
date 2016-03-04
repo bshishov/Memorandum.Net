@@ -1,5 +1,4 @@
 using System.Text;
-using DotLiquid;
 using Memorandum.Web.Framework.Utilities;
 
 namespace Memorandum.Web.Framework.Responses

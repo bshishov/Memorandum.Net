@@ -27,7 +27,7 @@ namespace Memorandum.Web.Views
             {
                 linkDrops.AddRange(dir.GetChild().Select(ch => new LinkDrop(new Link(node, ch)
                 {
-                    Comment = ch is DirectoryNode ? "Folder" : "File"
+                    Comment = ch.IsDirectory ? "Folder" : "File"
                 }, ch)));
             }
             return linkDrops;
@@ -46,7 +46,7 @@ namespace Memorandum.Web.Views
             {
                 linkDrops.AddRange(dir.GetChild().Select(ch => new RenderedLinkDrop(new Link(node, ch)
                 {
-                    Comment = ch is DirectoryNode ? "Folder" : "File"
+                    Comment = ch.IsDirectory ? "Folder" : "File"
                 }, ch)));
             }
             return linkDrops;
@@ -113,10 +113,10 @@ namespace Memorandum.Web.Views
 
         public static string GetWebPageTitle(string url)
         {
-            // Create a request to the url
+            // Create a FastCGIRequest to the url
             var request = WebRequest.Create(url) as HttpWebRequest;
 
-            // If the request wasn't an HTTP request (like a file), ignore it
+            // If the FastCGIRequest wasn't an HTTP FastCGIRequest (like a file), ignore it
             if (request == null) return null;
 
             // Use the user's credentials
@@ -176,7 +176,7 @@ namespace Memorandum.Web.Views
             return null;
         }
 
-        public static Link CreateLinkForNode(Request request, Node parentNode, Node newNode)
+        public static Link CreateLinkForNode(IRequest request, Node parentNode, Node newNode)
         {
             var link = new Link(parentNode, newNode)
             {

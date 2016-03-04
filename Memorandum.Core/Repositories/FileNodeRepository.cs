@@ -1,7 +1,9 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Memorandum.Core.Domain;
+using Memorandum.Core.Search;
 
 namespace Memorandum.Core.Repositories
 {
@@ -9,32 +11,70 @@ namespace Memorandum.Core.Repositories
     {
         public IEnumerable<BaseFileNode> GetAll()
         {
-            throw new System.NotImplementedException();
+            throw new InvalidOperationException("Can't get all files specify a root");
         }
 
         public void Delete(BaseFileNode entity)
         {
-            throw new System.NotImplementedException();
+            var dir = entity as DirectoryNode;
+            if(dir != null)
+            { 
+                // Remove each subdirecotry and file from index
+                dir.PerformOnChild(SearchManager.FileNodeIndex.ClearLuceneIndexRecord, true);
+
+                // Remove directory iteslf
+                Directory.Delete(entity.Path, true);
+            }
+            else
+            {
+                File.Delete(entity.Path);
+            }
+
+            SearchManager.FileNodeIndex.ClearLuceneIndexRecord(entity);
         }
 
         public void Save(BaseFileNode entity)
         {
-            throw new System.NotImplementedException();
+            SearchManager.FileNodeIndex.AddUpdateLuceneIndex(entity);
         }
 
         public BaseFileNode FindById(string id)
         {
-            var path = Path.GetFullPath(id);
-            var attr = File.GetAttributes(path);
-            if ((attr & FileAttributes.Directory) == FileAttributes.Directory)
-                return new DirectoryNode(path);
-            
-            return new FileNode(path);
+            try
+            {
+                var path = Path.GetFullPath(id);
+                var attr = File.GetAttributes(path);
+                if ((attr & FileAttributes.Directory) == FileAttributes.Directory)
+                    return new DirectoryNode(path);
+
+                return new FileNode(path);
+            }
+            catch (FileNotFoundException)
+            {
+                return null;
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
         }
 
         public IEnumerable<BaseFileNode> ByIds(string[] ids)
         {
             return ids.Select(FindById);
+        }
+
+        public FileNode CreateFileFromStream(string filePath, Stream stream)
+        {
+            using (var fileStream = File.Create(filePath))
+            {
+                stream.Seek(0, SeekOrigin.Begin);
+                stream.CopyTo(fileStream);
+            }
+
+            var fileNode = new FileNode(filePath);
+            Save(fileNode);
+            return fileNode;
         }
 
         public IEnumerable<Node> SearchFiles(string query)

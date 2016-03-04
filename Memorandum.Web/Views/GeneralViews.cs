@@ -8,7 +8,7 @@ namespace Memorandum.Web.Views
 {
     internal static class GeneralViews
     {
-        public static Response Home(Request request)
+        public static Response Home(IRequest request)
         {
             var userId = request.UserId;
             if (userId != null)
@@ -22,7 +22,7 @@ namespace Memorandum.Web.Views
             return new RedirectResponse("/login");
         }
 
-        public static Response Login(Request request)
+        public static Response Login(IRequest request)
         {
             if (request.Method == "GET")
             {
@@ -47,7 +47,7 @@ namespace Memorandum.Web.Views
             return new RedirectResponse("/");
         }
 
-        public static Response Logout(Request request)
+        public static Response Logout(IRequest request)
         {
             if (request.UserId != null)
             {

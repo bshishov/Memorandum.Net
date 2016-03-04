@@ -1,3 +1,4 @@
+using Memorandum.Web.Framework.Backend.FastCGI;
 using Memorandum.Web.Framework.Responses;
 
 namespace Memorandum.Web.Framework.Routing
@@ -13,7 +14,7 @@ namespace Memorandum.Web.Framework.Routing
             _route = route;
         }
 
-        public Response Proceed(Request request)
+        public Response Proceed(IRequest request)
         {
             return _route.Proceed(request, _args);
         }

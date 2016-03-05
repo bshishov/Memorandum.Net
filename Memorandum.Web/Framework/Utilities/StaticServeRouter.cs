@@ -16,7 +16,7 @@ namespace Memorandum.Web.Framework.Utilities
             this.Bind("/(.+)$", Handler);
         }
 
-        private Response Handler(IRequest request, params string[] args)
+        private Response Handler(IRequest request, string[] args)
         {
             var filePath = args[0];
             var fullPath = Path.Combine(_basePath, filePath);

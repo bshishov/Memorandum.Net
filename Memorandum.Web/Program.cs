@@ -39,10 +39,10 @@ namespace Memorandum.Web
             if (options.ForceReindex)
                 SearchManager.StartIndexingTask();
 
-            var app = new App(router);
+            var app = new App(router, Settings.Default.Port);
             app.RegisterMiddleware(new UnitOfWorkMiddleware());
             app.RegisterMiddleware(new SessionMiddleware());
-            app.Listen(Settings.Default.Port);
+            app.Run();
             Console.ReadKey();
             return 0;
         }

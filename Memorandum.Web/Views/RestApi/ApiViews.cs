@@ -307,13 +307,13 @@ namespace Memorandum.Web.Views.RestApi
 
         public static Router Router = new Router(new List<IRoute>
         {
-            new Route("/$", ApiHome),
-            new Route("/auth$", Auth),
-            new Route("/search$", Search),
-            new RouteWithArg("/links/([0-9]+)$", LinksView),
-            new RouteWithArg("/([a-z]+)/(.+)/links$", NodeLinksView),
-            new RouteWithArg("/([a-z]+)/([^/]+)$", NodeView),
-            new RouteWithArg("/([a-z]+)$", ProviderView)
+            new Route("/auth", Auth),
+            new Route("/search", Search),
+            new RouteWithArg("/links/([0-9]+)", LinksView),
+            new RouteWithArg("/([a-z]+)/(.+)/links", NodeLinksView),
+            new RouteWithArg("/([a-z]+)/([^/]+)", NodeView),
+            new RouteWithArg("/([a-z]+)", ProviderView),
+            new Route("/", ApiHome),
         });
     }
 }

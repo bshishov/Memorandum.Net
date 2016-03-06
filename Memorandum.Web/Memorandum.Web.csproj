@@ -67,6 +67,7 @@
     <Compile Include="Framework\Backend\FastCGI\FastCGIBackend.cs" />
     <Compile Include="Framework\Backend\HttpListener\HttpListenerBackend.cs" />
     <Compile Include="Framework\Backend\HttpListener\RequestWrapper.cs" />
+    <Compile Include="Framework\IAsyncRequestHandler.cs" />
     <Compile Include="Framework\Backend\IBackend.cs" />
     <Compile Include="Framework\Errors\HttpErrorException.cs" />
     <Compile Include="Framework\IRequest.cs" />

@@ -9,20 +9,20 @@ using Memorandum.Web.Framework.Responses;
 using Memorandum.Web.Framework.Routing;
 using Memorandum.Web.Framework.Utilities;
 using System.Diagnostics;
+using System.Threading.Tasks;
 using Memorandum.Web.Framework.Backend;
-using Memorandum.Web.Framework.Backend.FastCGI;
 using Memorandum.Web.Framework.Backend.HttpListener;
 
 namespace Memorandum.Web.Framework
 {
-    internal class App
+    internal class App : IAsyncRequestHandler
     {
+        private readonly IBackend _backend;
         private readonly Pipeline<IRequest, Response> _afterView = new Pipeline<IRequest, Response>();
         private readonly Pipeline<IRequest> _beforeView = new Pipeline<IRequest>();
-        private readonly IBackend _backend;
         private readonly Router _rootRouter;
 
-        public App(Router router)
+        public App(Router router, int port)
         {
             _rootRouter = router;
 
@@ -32,8 +32,8 @@ namespace Memorandum.Web.Framework
             Template.NamingConvention = new CSharpNamingConvention();
             Template.RegisterFilter(typeof (Filters));
 
-            //_backend = new FastCGIBackend();
-            _backend = new HttpListenerBackend(new[] {"http://127.0.0.1:8000/"});
+            //_backend = new FastCGIBackend(port);
+            _backend = new HttpListenerBackend($"http://127.0.0.1:{port}/");
         }
 
         public void RegisterMiddleware(IMiddleware middleware)
@@ -42,7 +42,7 @@ namespace Memorandum.Web.Framework
             _afterView.Insert(0, middleware);
         }
 
-        private Response RequestHandler(IRequest request)
+        public async Task<Response> Execute(IRequest request)
         {
             try
             {
@@ -62,15 +62,12 @@ namespace Memorandum.Web.Framework
                     var httpResponse = response as HttpResponse;
                     if (httpResponse != null)
                     {
-                        Console.ForegroundColor = ConsoleColor.Green;
-
 #if DEBUG
                         stopWatch.Stop();
                         Console.WriteLine("{0} {1} {2} {3}ms", request.Method, httpResponse.StatusCode, request.Path, stopWatch.ElapsedMilliseconds);
 #else
                         Console.WriteLine("{0} {1} {2}", request.Method, httpResponse.StatusCode, request.Path);
 #endif
-                        Console.ResetColor();
                     }
 
                     return response;
@@ -105,9 +102,9 @@ namespace Memorandum.Web.Framework
             }
         }
 
-        public void Listen(int port)
+        public void Run()
         {
-            _backend.Listen(port, RequestHandler);
+            _backend.Run(this);
         }
     }
 }

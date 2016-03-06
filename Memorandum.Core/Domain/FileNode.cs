@@ -32,8 +32,7 @@ namespace Memorandum.Core.Domain
         public string Mime;
 
         public override DateTime LastModified { get; }
-
-
+        
         public FileNode(string path) : base(path)
         {
             var info = new FileInfo(path);

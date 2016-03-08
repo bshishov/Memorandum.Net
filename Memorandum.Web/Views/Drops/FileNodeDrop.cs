@@ -1,5 +1,6 @@
 ﻿using System;
 using Memorandum.Core.Domain;
+using Memorandum.Web.Views.Providers;
 
 namespace Memorandum.Web.Views.Drops
 {
@@ -31,6 +32,8 @@ namespace Memorandum.Web.Views.Drops
         public long Size => ((FileNode) Node).Size;
 
         public string Mime => ((FileNode) Node).Mime;
+
+        public string Extension => FileProvider.GetKnownExtension((FileNode) Node);
     }
 
     internal class DirectoryNodeDrop : BaseFileNodeDrop

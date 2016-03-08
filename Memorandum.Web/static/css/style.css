@@ -176,7 +176,7 @@ input[name="comment"] {
     padding: 10px 25px;
     border-left: 2px solid white;
     word-wrap: break-word;
-    word-break: break-all;
+    /*word-break: break-all;*/
 }
 
 .link.add {
@@ -210,10 +210,11 @@ input[name="comment"] {
     max-width: 20%;
 }
 .link-image {
-    max-width: 50px;  
+    max-width: 48px;      
     display: inline-block; 
     float: left;
-    margin-right: 15px;    
+    margin-right: 15px; 
+    margin-top: 5px;   
 }
 
 .link-tools-container {
@@ -282,6 +283,13 @@ input[name="comment"] {
 /* FILE NODE */
 .image-file div {
     display: inline-block;   
+}
+.responsive-video {
+    width: 100%;
+}
+
+.responsive-img {
+    width: 100%;
 }
 /* END OF FILE NODE*/
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using Memorandum.Core.Domain;
+using Memorandum.Web.Views.Providers;
 
 namespace Memorandum.Web.Views.Drops
 {
@@ -21,5 +22,7 @@ namespace Memorandum.Web.Views.Drops
         public string Image => _node.Image;
 
         public DateTime DateAdded => _node.DateAdded;
+
+        public string Extension => UrlProvider.GetKnownExtension(_node);
     }
 }

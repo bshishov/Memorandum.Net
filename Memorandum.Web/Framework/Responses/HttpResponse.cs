@@ -81,7 +81,7 @@ namespace Memorandum.Web.Framework.Responses
             return Content;
         }
 
-        public override void Close()
+        public override void Dispose()
         {
         }
     }

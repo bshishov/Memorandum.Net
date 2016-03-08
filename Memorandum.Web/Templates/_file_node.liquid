@@ -6,14 +6,15 @@
     {% block file_content %}{% endblock %}
     
     <div class="row details">
-        <div class="col col2-3 set"> 
+        <div class="col col1-3 set"> 
 			{% if Node.IsDirectory != true %}
             <span class="system">{{ Node.Size|ReadableSize }}</span>
             <span class="system tooltipped" data-tooltip="{{ Node.Mime }}">{{ Node.Mime|Truncate:20 }}</span>
 			{% endif %}
 			<span class="system">{{ Node.LastModified }}</span>       
         </div>
-        <div class="col col1-3 set text-right">           
+        <div class="col col2-3 set text-right">           
+			<a class="system button small" href="/file/{{Node.Path|UrlEncode}}/edit">Edit</a>
             <a class="system button small" href="/file/{{Node.Path|UrlEncode}}/raw">Raw</a>
             <a class="system button small" href="/file/{{Node.Path|UrlEncode}}/download">Download</a>
 			<a class="system button small needconfirm" href="javascript:;" data-action="send('DELETE', '/api/{{ Node.Provider }}/{{ Node.NodeId|UrlEncode }}')" title="Delete this file">Delete</a>			

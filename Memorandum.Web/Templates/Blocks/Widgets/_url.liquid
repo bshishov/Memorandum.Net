@@ -1,5 +1,9 @@
 {% if link.Node.Image %}  
-<img class="link-image" src="{{link.Node.Image}}" alt="" />    
+<img class="link-image" src="{{link.Node.Image}}" alt="" />
+{% elseif link.Node.Extension %}	
+<img class="link-image" src="/static/img/file-icons/{{link.Node.Extension}}.png" alt="" /> 
+{% else %}
+<img class="link-image" src="/static/img/file-icons/_blank.png" alt="" /> 		
 {% endif %}
 
 {% if link.Node.Name %}

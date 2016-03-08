@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 
 namespace Memorandum.Web.Framework.Responses
 {
-    class StreamedHttpResponse : HttpResponse, IDisposable
+    class StreamedHttpResponse : HttpResponse
     {
         private const int BufferSize = 64*1024;
         private readonly Stream _stream;
@@ -14,17 +13,13 @@ namespace Memorandum.Web.Framework.Responses
             : base(new byte[0], status, statusReason, contenttype, headers)
         {
             _stream = stream;
-            //_stream.Seek(0, SeekOrigin.Begin);
         }
 
         public override void WriteBody(Stream stream)
         {
-            var buffer = new byte[BufferSize];
-            int read;
-            while (_stream.CanRead && (read = _stream.Read(buffer, 0, buffer.Length)) > 0)
-            {
-                stream.Write(buffer, 0, read);
-            }
+            if (_stream.CanSeek)
+                _stream.Seek(0, SeekOrigin.Begin);
+            _stream.CopyTo(stream, BufferSize);
         }
 
         public override byte[] GetBody()
@@ -36,14 +31,10 @@ namespace Memorandum.Web.Framework.Responses
             }
         }
 
-        public override void Close()
+        public override void Dispose()
         {
             _stream?.Close();
-        }
-
-        public void Dispose()
-        {
-            _stream?.Close();
+            _stream?.Dispose();
         }
     }
 }

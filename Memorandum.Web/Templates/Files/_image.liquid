@@ -3,7 +3,7 @@
 {% block file_content %}
 <div class="image-file center-align">
     <div>
-        <img class="materialboxed responsive-img" src="/file/raw/{{Node.Path|Urlencode}}" data-caption="{{Node.Name}}">
+        <img class="responsive-img" src="/file/{{Node.Path|UrlEncode}}/raw" data-caption="{{Node.Name}}">
     </div>
 </div>
 {% endblock %}

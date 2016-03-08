@@ -40,7 +40,7 @@ namespace Memorandum.Web.Views.Providers
             {
                 using (var info = new UrlInfoParser(urlNode.URL))
                 {
-                    var dir = Path.Combine(Settings.Default.FileStorage, request.User.Username, "Uploads");
+                    var dir = Path.Combine(Settings.Default.FileStorage, request.User.Username);
                     Directory.CreateDirectory(dir);
                     var path = Path.Combine(dir, info.FileName);
                     info.SaveContent(path);
@@ -73,12 +73,13 @@ namespace Memorandum.Web.Views.Providers
 
             using (var info = new UrlInfoParser(request.PostArgs["url"]))
             {
-                var guid = Path.GetRandomFileName();
+                string imageFileName = null;
                 if (!string.IsNullOrEmpty(info.ImageUrl))
                 {
                     var dir = Path.Combine(Settings.Default.FileStorage, "thumbnails");
                     Directory.CreateDirectory(dir);
-                    info.SaveImage(Path.Combine(dir, guid + info.ImageFileName));
+                    imageFileName = Path.GetRandomFileName() + info.ImageFileName;
+                    info.SaveImage(Path.Combine(dir, imageFileName));
                 }
 
                 var newNode = new URLNode
@@ -88,8 +89,9 @@ namespace Memorandum.Web.Views.Providers
                     User = request.User,
                     Name = info.Title,
                 };
-                if (info.ImageFileName != null)
-                    newNode.Image = "/media/thumbnails/" + guid + info.ImageFileName;
+
+                if (!string.IsNullOrEmpty(imageFileName))
+                    newNode.Image = "/media/thumbnails/" + imageFileName;
 
                 request.UnitOfWork.URL.Save(newNode);
                 results.Add(new NodeWithRenderedLink(newNode,
@@ -97,17 +99,21 @@ namespace Memorandum.Web.Views.Providers
 
                 if (!string.IsNullOrEmpty(request.PostArgs["download"]))
                 {
-                    var dir = Path.Combine(Settings.Default.FileStorage, request.User.Username, "Uploads");
+                    var dir = Path.Combine(Settings.Default.FileStorage, request.User.Username);
                     Directory.CreateDirectory(dir);
-                    var path = Path.Combine(dir, info.FileName);
-                    info.SaveContent(path);
-                    var fileNode = new FileNode(path);
-                    request.UnitOfWork.Files.Save(fileNode);
+                    var fileNode = request.UnitOfWork.Files.CreateFileFromStream(Path.Combine(dir, info.FileName), info.ContentStream);
                     Utilities.CreateLinkForNode(request, newNode, fileNode);
                 }
             }
 
             return new ApiResponse(results, 201, "Nodes added");
+        }
+
+        public static string GetKnownExtension(URLNode node)
+        {
+            var uri = new Uri(node.URL);
+            var ext = Path.GetExtension(uri.LocalPath);
+            return FileProvider.KnownExtensions.Contains(ext) ? ext?.Substring(1) : "_page";
         }
     }
 }

@@ -6,7 +6,7 @@
 <script src="/static/js/ace/ext-modelist.js" type="text/javascript" charset="utf-8"></script>
 <script>
     $(document).ready(function(){
-        var path = "/file/raw/{{Node.Path|Urlencode}}";
+        var path = "/file/{{Node.Path|UrlEncode}}/raw";
 
         $.ajax({
           url: path,

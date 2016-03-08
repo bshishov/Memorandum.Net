@@ -16,6 +16,8 @@ namespace Memorandum.Web.Utitlities
         public string ImageUrl { get; }
         public string ImageFileName => ImageUrl != null ? Path.GetFileName(new Uri(ImageUrl).LocalPath) : null;
 
+        public MemoryStream ContentStream => _outputStream;
+
         static readonly Regex TitleRegex = new Regex(@"(?<=<title.*>)([\s\S]*)(?=</title>)", RegexOptions.IgnoreCase);
         static readonly Regex OgImageRegex = new Regex("(?:og:image[^<]+content\\s?=\\s?\")([^\"]*)(?:\")", RegexOptions.IgnoreCase);
         static readonly Regex AppleIconRegex = new Regex("(?:rel[^<]+apple-touch-icon[^<]+href\\s?=\\s?\")([^\"]*)(?:\")", RegexOptions.IgnoreCase);
@@ -65,9 +67,6 @@ namespace Memorandum.Web.Utitlities
                     throw new InvalidOperationException("Can't load URL");
                 responseStream.CopyTo(_outputStream);
             }
-                           
-            // If the correct HTML header exists for HTML text, continue
-            var headers = new List<string>(response.Headers.AllKeys);
 
             // Try to get title from text html
             if (response.ContentType.StartsWith("text/html"))
@@ -79,7 +78,7 @@ namespace Memorandum.Web.Utitlities
                 ImageUrl = new Uri(requestUri, new Uri(imageRelPath, UriKind.RelativeOrAbsolute)).AbsoluteUri;
             }
             // Try to get title from pdf meta
-            else if (response.ContentType.Contains("pdf") || Path.GetExtension(response.ResponseUri.LocalPath).Equals("pdf"))
+            else if (response.ContentType.Contains("pdf") || Path.GetExtension(response.ResponseUri.LocalPath).Equals(".pdf"))
             {
                 var pdf = new PdfReader(_outputStream.ToArray());
                 if (pdf.Info.ContainsKey("Title"))
@@ -91,16 +90,16 @@ namespace Memorandum.Web.Utitlities
                 }
             }
             // Try to get title from content disposition
-            else if (headers.Contains("Content-Disposition"))
+            else
             {
-                var cd = response.Headers["Content-Disposition"];
+                var cd = response.GetResponseHeader("Content-Disposition");
                 if (!string.IsNullOrEmpty(cd))
                 {
                     var filename = new ContentDisposition(cd).FileName;
                     if (!string.IsNullOrEmpty(filename))
                     {
-                        Title = filename;
-                        FileName = filename;
+                        Title = WebUtility.UrlDecode(filename);
+                        FileName = WebUtility.UrlDecode(filename);
                     }
                 }
             }
@@ -149,6 +148,7 @@ namespace Memorandum.Web.Utitlities
         public void Dispose()
         {
             _outputStream?.Close();
+            _outputStream?.Dispose();
         }
     }
 }

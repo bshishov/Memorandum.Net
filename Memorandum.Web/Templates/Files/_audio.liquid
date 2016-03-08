@@ -2,6 +2,6 @@
 
 {% block file_content %}
 <audio controls>
-    <source src="/file/raw/{{Node.Path|Urlencode}}" type="{{Node.Mime}}">
+    <source src="/file/{{Node.Path|UrlEncode}}/raw" type="{{Node.Mime}}">
 </audio>
 {% endblock %}

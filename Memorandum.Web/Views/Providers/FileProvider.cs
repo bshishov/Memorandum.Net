@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Security.AccessControl;
 using Memorandum.Core.Domain;
 using Memorandum.Web.Framework;
 using Memorandum.Web.Framework.Responses;
@@ -93,6 +94,16 @@ namespace Memorandum.Web.Views.Providers
                     });
             }
 
+            if (action.Equals("edit"))
+            {
+                return new TemplatedResponse("Files/text", new
+                {
+                    Title = baseFileNode.Name,
+                    Node = new FileNodeDrop(baseFileNode),
+                    Links = Utilities.GetGroupedLinks(request.UnitOfWork, node)
+                });
+            }
+
             return base.NodeAction(request, node, action);
         }
 
@@ -115,8 +126,7 @@ namespace Memorandum.Web.Views.Providers
                 return new BadRequestApiResponse("No files passed");
 
             var dir = Path.Combine(Settings.Default.FileStorage, request.User.Username);
-            if (!Directory.Exists(dir))
-                Directory.CreateDirectory(dir);
+            Directory.CreateDirectory(dir);
 
             foreach (var file in request.Files)
             {
@@ -135,6 +145,44 @@ namespace Memorandum.Web.Views.Providers
 
             return new ApiResponse(results, 201, "Nodes added");
         }
+
+        public static string GetKnownExtension(FileNode node)
+        {
+            var ext = Path.GetExtension(node.Path);
+            return KnownExtensions.Contains(ext) ? ext?.Substring(1) : null;
+        }
+
+        /// <summary>
+        /// Related to /static/img/file-icons
+        /// </summary>
+        public static readonly List<string> KnownExtensions = new List<string>
+        {
+            ".aac", ".ai", ".aiff", ".avi",
+            ".bmp",
+            ".c", ".cpp", ".css",
+            ".dat", ".dmg", ".doc", ".dotx", ".docx", ".dwg", ".dxf",
+            ".eps", ".exe",
+            ".flv",
+            ".gif",
+            ".h", ".hpp", ".html",
+            ".ics", ".iso",
+            ".java", ".jpg", ".js",
+            ".key",
+            ".less",
+            ".mid", ".mp3", ".mp4", ".mpg",
+            ".odf", ".ods", ".odt", ".otp", ".ots", ".ott",
+            ".pdf", ".php", ".png", ".ppt", ".psd", ".py",
+            ".qt",
+            ".rar", ".rb", ".rtf",
+            ".sass", ".scss", ".sql",
+            ".tga", ".tgz", ".tiff", ".txt",
+            ".wav",
+            ".xls", ".xlsx",
+            ".xml",
+            ".yml",
+            ".zip",
+        };
+
 
         private static readonly string[] EditableFileTypes =
         {

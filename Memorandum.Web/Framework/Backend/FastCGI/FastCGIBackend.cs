@@ -25,22 +25,21 @@ namespace Memorandum.Web.Framework.Backend.FastCGI
             if (response == null)
                 return;
 
-            var httpResponse = response as HttpResponse;
-
-            try
+            using (var httpResponse = response as HttpResponse)
             {
-                if(httpResponse != null)
-                    request.WriteResponse(httpResponse.GetHeader());
-                    
-                request.WriteResponse(response.GetBody());
-                request.Close();
-            }
-            catch (Exception ex)
-            {
-                Trace.WriteLine(ex.ToString());
-            }
+                try
+                {
+                    if (httpResponse != null)
+                        request.WriteResponse(httpResponse.GetHeader());
 
-            response.Close();
+                    request.WriteResponse(response.GetBody());
+                    request.Close();
+                }
+                catch (Exception ex)
+                {
+                    Trace.WriteLine(ex.ToString());
+                }
+            }
         }
 
         public void Run(IAsyncRequestHandler handler)

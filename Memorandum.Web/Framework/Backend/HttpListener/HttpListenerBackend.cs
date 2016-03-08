@@ -92,13 +92,14 @@ namespace Memorandum.Web.Framework.Backend.HttpListener
 
             try
             {
-                var response = await handler.Execute(new RequestWrapper(context.Request)) as HttpResponse;
-                if (response != null)
+                using (var response = await handler.Execute(new RequestWrapper(context.Request)) as HttpResponse)
                 {
-                    context.Response.StatusCode = response.StatusCode;
-                    context.Response.Headers = response.Headers;
-                    response.WriteBody(context.Response.OutputStream);
-                    response.Close();
+                    if (response != null)
+                    {
+                        context.Response.StatusCode = response.StatusCode;
+                        context.Response.Headers = response.Headers;
+                        response.WriteBody(context.Response.OutputStream);
+                    }
                 }
                 context.Response.Close();
             }

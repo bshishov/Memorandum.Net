@@ -18,11 +18,13 @@ namespace Memorandum.Web.Framework.Backend.FastCGI
             _fcgiApplication.OnRequestReceived += FcgiApplicationOnOnRequestReceived;
         }
 
-        private void FcgiApplicationOnOnRequestReceived(object sender, global::FastCGI.Request request)
+        private void FcgiApplicationOnOnRequestReceived(object sender, Request request)
         {
             var response = _handler.Execute(new FastCGIRequest(request)).Result;
 
-            if (response == null) return;
+            if (response == null)
+                return;
+
             var httpResponse = response as HttpResponse;
 
             try
@@ -37,6 +39,8 @@ namespace Memorandum.Web.Framework.Backend.FastCGI
             {
                 Trace.WriteLine(ex.ToString());
             }
+
+            response.Close();
         }
 
         public void Run(IAsyncRequestHandler handler)

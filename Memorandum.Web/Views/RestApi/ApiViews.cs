@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Net;
 using Memorandum.Core.Domain;
@@ -8,19 +7,33 @@ using Memorandum.Core.Search;
 using Memorandum.Web.Framework;
 using Memorandum.Web.Framework.Responses;
 using Memorandum.Web.Framework.Routing;
-using Memorandum.Web.Properties;
+using Memorandum.Web.Middleware;
+using Memorandum.Web.Utitlities;
 using Memorandum.Web.Views.Drops;
+using Memorandum.Web.Views.Providers;
 
 namespace Memorandum.Web.Views.RestApi
 {
     internal static class ApiViews
     {
+        private static Response ApiHome(IRequest request)
+        {
+            // TODO: describe router | pass Router
+            return new ApiResponse(new
+            {
+                Auth = "/auth (POST)",
+                Search = "/search (GET)",
+                NodesCollection = "/{provider} (GET, POST)",
+                Node = "/{provider}/{id} (GET, PUT, DELETE)",
+                NodeAction = "/{provider}/{id}/{action} (GET)"
+            });
+        }
+
         private static Response Search(IRequest request)
         {
             const string searchQueryKey = "q";
 
-            var user = UserAuth(request, true);
-            if (user == null)
+            if (request.UserId == null)
                 return new NonAuthorizedApiResponse();
 
             var query = request.QuerySet[searchQueryKey];
@@ -40,17 +53,11 @@ namespace Memorandum.Web.Views.RestApi
             return new ApiResponse(results);
         }
 
-        /// <summary>
-        ///     TODO: Implement OAuth
-        /// </summary>
-        /// <param name="request"></param>
-        /// <returns></returns>
         private static Response Auth(IRequest request)
         {
             if (request.Method == "POST")
             {
-                var loggineduser = UserAuth(request, true);
-                if (loggineduser == null)
+                if (request.UserId != null)
                     return new BadRequestApiResponse("Already authorized");
 
                 if (request.PostArgs["username"] == null || request.PostArgs["password"] == null)
@@ -59,89 +66,16 @@ namespace Memorandum.Web.Views.RestApi
                 if (user == null)
                     return new BadRequestApiResponse("Invalid creditentials");
                 var token = Guid.NewGuid().ToString();
-                Tokens.Add(token, user);
-                return new ApiResponse(new {Token = token});
+                ApiMiddleware.Tokens.Add(token, user.Id);
+                return new ApiResponse(new { Token = token });
             }
 
             return new BadRequestApiResponse();
         }
-
-        /// <summary>
-        ///     Returns userobject by FastCGIRequest token, if useCommonAuth eq 'true', then common auth (via sessions) would be preferred
-        /// </summary>
-        /// <param name="request"></param>
-        /// <param name="useCommonAuth"></param>
-        /// <returns></returns>
-        private static User UserAuth(IRequest request, bool useCommonAuth)
-        {
-            if (useCommonAuth)
-            {
-                var userId = request.UserId;
-                if (userId != null)
-                    return request.UnitOfWork.Users.FindById(userId.Value);
-            }
-
-            const string tokenQueryStrigKey = "token";
-            var token = request.QuerySet[tokenQueryStrigKey];
-            if (string.IsNullOrEmpty(token))
-                return null;
-            if (Tokens.ContainsKey(token))
-                return Tokens[token];
-            return null;
-        }
-
-        private static Response NodeView(IRequest request, string[] args)
-        {
-            var user = UserAuth(request, true);
-            if (user == null)
-                return new NonAuthorizedApiResponse();
-
-            var node = request.UnitOfWork.Nodes.FindById(new NodeIdentifier(args[0], args[1]));
-
-            if (node == null)
-                return new ResourceNotFoundApiResponse();
-
-            if (node.User != null && node.User.Id != user.Id)
-                return new ForbiddenApiResponse("Access denied");
-
-            if(request.Method == "GET")
-                return new ApiResponse(NodeDropFactory.Create(node));
-
-            if (request.Method == "DELETE")
-            {
-                if (Equals(node.NodeId, new NodeIdentifier("text", user.Home.Id)))
-                    return new ForbiddenApiResponse("Cannot delete own home");
-
-                Utilities.DeleteLinks(request.UnitOfWork, node);
-                request.UnitOfWork.Nodes.Delete(node);
-                return new ApiResponse(statusMessage: "Node deleted");
-            }
-
-            if (request.Method == "PUT")
-            {
-                if (node is TextNode)
-                {
-                    if(request.PostArgs == null)
-                        return new BadRequestApiResponse("No arguments");
-
-                    if (string.IsNullOrEmpty(request.PostArgs["text"]))
-                        return new BadRequestApiResponse();
-
-                    ((TextNode)node).Text = request.PostArgs["text"];
-                    request.UnitOfWork.Nodes.Save(node);
-                    return new ApiResponse(NodeDropFactory.Create(node), statusMessage: "Saved");
-                }
-
-                // TODO: implement put for another providers
-            }
-
-            return new BadRequestApiResponse();
-        }
-
+        
         private static Response NodeLinksView(IRequest request, string[] args)
         {
-            var user = UserAuth(request, true);
-            if (user == null)
+            if (request.UserId == null)
                 return new NonAuthorizedApiResponse();
 
             var node = request.UnitOfWork.Nodes.FindById(new NodeIdentifier(args[0], args[1]));
@@ -149,7 +83,7 @@ namespace Memorandum.Web.Views.RestApi
             if (node == null)
                 return new ResourceNotFoundApiResponse();
 
-            if (node.User != null && node.User.Id != user.Id)
+            if (node.User != null && node.User.Id != request.UserId)
                 return new ForbiddenApiResponse();
 
             if (!string.IsNullOrEmpty(request.QuerySet["mode"]))
@@ -158,13 +92,12 @@ namespace Memorandum.Web.Views.RestApi
             return new ApiResponse(Utilities.GetLinkDrops(request.UnitOfWork, node));
         }
 
-        private static Response LinksView(IRequest request, string[] args)
+        private static Response LinkView(IRequest request, string[] args)
         {
-            var user = UserAuth(request, true);
-            if (user == null)
+            if (request.UserId == null)
                 return new NonAuthorizedApiResponse();
 
-            if(string.IsNullOrEmpty(args[0]))
+            if (string.IsNullOrEmpty(args[0]))
                 return new BadRequestApiResponse();
 
             var link = request.UnitOfWork.Links.FindById(Convert.ToInt32(args[0]));
@@ -172,7 +105,7 @@ namespace Memorandum.Web.Views.RestApi
             if (link == null)
                 return new ResourceNotFoundApiResponse();
 
-            if (link.User.Id != user.Id)
+            if (link.User.Id != request.UserId)
                 return new ForbiddenApiResponse();
 
             if (request.Method == "DELETE")
@@ -184,31 +117,11 @@ namespace Memorandum.Web.Views.RestApi
             return new BadRequestApiResponse();
         }
         
-
-        private static Response ApiHome(IRequest request)
+        private static Response LinksView(IRequest request)
         {
-            // TODO: describe router | pass Router
-            return new ApiResponse(new
-            {
-                NodesCollection = "/:provider (GET, POST)",
-                Node = "/:provider/:id (GET, PUT, DELETE)",
-                NodeLinks = "/:provider/:id/links (GET, POST, DELETE)"
-            });
-        }
-
-        private static readonly Dictionary<string, User> Tokens = new Dictionary<string, User>();
-        
-        private static Response ProviderView(IRequest request, string[] args)
-        {
-            var user = UserAuth(request, true);
-            if (user == null)
+            if (request.UserId == null)
                 return new NonAuthorizedApiResponse();
             
-            if(string.IsNullOrEmpty(args[0]))
-                return new BadRequestApiResponse();
-
-            var provider = args[0];
-
             if (request.Method == "POST")
             {
                 var parentNodeId = new NodeIdentifier(
@@ -219,85 +132,21 @@ namespace Memorandum.Web.Views.RestApi
                 if (parentNode == null)
                     return new BadRequestApiResponse();
 
-                if (parentNode.User.Id != user.Id)
+                if (parentNode.User.Id != request.UserId)
                     return new ForbiddenApiResponse();
 
                 var results = new List<NodeWithRenderedLink>();
+               
+                var endNodeId = new NodeIdentifier(
+                        WebUtility.UrlDecode(request.PostArgs["end_provider"]),
+                        WebUtility.UrlDecode(request.PostArgs["end_id"]));
+                var endNode = request.UnitOfWork.Nodes.FindById(endNodeId);
 
-                if (provider == "links")
-                {
-                    var endNodeId = new NodeIdentifier(
-                         WebUtility.UrlDecode(request.PostArgs["end_provider"]),
-                         WebUtility.UrlDecode(request.PostArgs["end_id"]));
-                    var endNode = request.UnitOfWork.Nodes.FindById(endNodeId);
+                if(endNode == null)
+                    return new BadRequestApiResponse();
 
-                    if(endNode == null)
-                        return new BadRequestApiResponse();
-
-                    results.Add(new NodeWithRenderedLink(endNode,
-                        Utilities.CreateLinkForNode(request, parentNode, endNode)));
-                }
-
-                if (provider == "text")
-                {
-                    if (string.IsNullOrEmpty(request.PostArgs["text"]))
-                        return new BadRequestApiResponse("Text is not specified");
-
-                    var newNode = new TextNode
-                    {
-                        DateAdded = DateTime.Now,
-                        Text = request.PostArgs["text"],
-                        User = user
-                    };
-
-                    request.UnitOfWork.Text.Save(newNode);
-                    results.Add(new NodeWithRenderedLink(newNode,
-                        Utilities.CreateLinkForNode(request, parentNode, newNode)));
-                }
-
-                if (provider == "url")
-                {
-                    if (string.IsNullOrEmpty(request.PostArgs["url"]))
-                        return new BadRequestApiResponse("Url is not specified");
-
-                    var name = Utilities.GetWebPageTitle(request.PostArgs["url"]);
-                    var newNode = new URLNode
-                    {
-                        DateAdded = DateTime.Now,
-                        URL = request.PostArgs["url"],
-                        User = user,
-                        Name = name
-                    };
-
-                    request.UnitOfWork.URL.Save(newNode);
-                    results.Add(new NodeWithRenderedLink(newNode,
-                        Utilities.CreateLinkForNode(request, parentNode, newNode)));
-                }
-
-                if (provider == "file")
-                {
-                    if (!request.Files.Any())
-                        return new BadRequestApiResponse("No files passed");
-
-                    var dir = Path.Combine(Settings.Default.FileStorage, user.Username);
-                    if (!Directory.Exists(dir))
-                        Directory.CreateDirectory(dir);
-
-                    foreach (var file in request.Files)
-                    {
-                        var filePath = Path.Combine(dir, file.FileName);
-                        try
-                        {
-                            var fileNode = request.UnitOfWork.Files.CreateFileFromStream(filePath, file.Data);
-                            results.Add(new NodeWithRenderedLink(fileNode,
-                                Utilities.CreateLinkForNode(request, parentNode, fileNode)));
-                        }
-                        catch (Exception ex)
-                        {
-                            return new BadRequestApiResponse(ex.Message);
-                        }
-                    }
-                }
+                results.Add(new NodeWithRenderedLink(endNode,
+                    Utilities.CreateLinkForNode(request, parentNode, endNode)));
 
                 return new ApiResponse(results, 201, "Nodes added");
             }
@@ -305,14 +154,85 @@ namespace Memorandum.Web.Views.RestApi
             return new BadRequestApiResponse();
         }
 
+        private static Response Provider(IRequest request, params string[] args)
+        {
+            if (string.IsNullOrEmpty(args[0]))
+                return new BadRequestApiResponse();
+
+            if (request.User == null)
+                return new NonAuthorizedApiResponse();
+
+            var provider = ProviderManager.Get(args[0]);
+            if (request.Method == "GET")
+                return provider.ApiProviderViewGet(request);
+
+            if (request.Method == "POST")
+                return provider.ApiProviderViewPost(request);
+
+            return new BadRequestApiResponse("Only GET and POST methods are supported");
+        }
+
+        private static Response ProviderNode(IRequest request, params string[] args)
+        {
+            if (string.IsNullOrEmpty(args[0]) || string.IsNullOrEmpty(args[1]))
+                return new BadRequestApiResponse();
+
+            if (request.User == null)
+                return new NonAuthorizedApiResponse();
+
+            var node = request.UnitOfWork.Nodes.FindById(new NodeIdentifier(args[0], args[1]));
+
+            if (node == null)
+                return new ResourceNotFoundApiResponse();
+
+            if (node.User != null && node.User.Id != request.UserId)
+                return new ForbiddenApiResponse("Access denied");
+
+            var provider = ProviderManager.Get(args[0]);
+
+            if (request.Method == "GET")
+                return provider.ApiNodeViewGet(request, node);
+
+            if (request.Method == "PUT")
+                return provider.ApiNodeViewPut(request, node);
+
+            if (request.Method == "DELETE")
+                return provider.ApiNodeViewDelete(request, node);
+
+            return new BadRequestApiResponse("Only GET, PUT and DELETE methods are supported");
+        }
+
+        private static Response ProviderNodeAction(IRequest request, params string[] args)
+        {
+            if (request.User == null)
+                return new NonAuthorizedApiResponse();
+
+            var node = request.UnitOfWork.Nodes.FindById(new NodeIdentifier(args[0], args[1]));
+
+            if (node == null)
+                return new ResourceNotFoundApiResponse();
+
+            if (node.User != null && node.User.Id != request.UserId)
+                return new ForbiddenApiResponse("Access denied");
+
+            var provider = ProviderManager.Get(args[0]);
+            return provider.ApiNodeAction(request, node, args[2]);
+        }
+
         public static Router Router = new Router(new List<IRoute>
         {
             new Route("/auth", Auth),
             new Route("/search", Search),
-            new RouteWithArg("/links/([0-9]+)", LinksView),
+
+            new RouteWithArg("/links/([0-9]+)", LinkView),
+            new Route("/links", LinksView),
+
+            new RouteWithArg("/([a-z]+)/([^/]+)/([a-z]+)", ProviderNodeAction),
+            new RouteWithArg("/([a-z]+)/([^/]+)", ProviderNode),
+            new RouteWithArg("/([a-z]+)", Provider),
+
             new RouteWithArg("/([a-z]+)/(.+)/links", NodeLinksView),
-            new RouteWithArg("/([a-z]+)/([^/]+)", NodeView),
-            new RouteWithArg("/([a-z]+)", ProviderView),
+
             new Route("/", ApiHome),
         });
     }

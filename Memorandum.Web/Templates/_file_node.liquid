@@ -14,8 +14,9 @@
 			<span class="system">{{ Node.LastModified }}</span>       
         </div>
         <div class="col col1-3 set text-right">           
-            <a class="system button small" href="/file/raw/{{Node.Path|Urlencode}}">Raw</a>
-            <a class="system button small" href="/file/download/{{Node.Path|Urlencode}}">Download</a>
+            <a class="system button small" href="/file/{{Node.Path|UrlEncode}}/raw">Raw</a>
+            <a class="system button small" href="/file/{{Node.Path|UrlEncode}}/download">Download</a>
+			<a class="system button small needconfirm" href="javascript:;" data-action="send('DELETE', '/api/{{ Node.Provider }}/{{ Node.NodeId|UrlEncode }}')" title="Delete this file">Delete</a>			
         </div> 
     </div>
     <script type="text/javascript">

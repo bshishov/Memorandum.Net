@@ -1,16 +1,18 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Mime;
 using System.Text;
 using System.Text.RegularExpressions;
+using iTextSharp.text.pdf;
 using Memorandum.Core;
 using Memorandum.Core.Domain;
 using Memorandum.Web.Framework;
 using Memorandum.Web.Views.Drops;
 
-namespace Memorandum.Web.Views
+namespace Memorandum.Web.Utitlities
 {
     internal static class Utilities
     {
@@ -113,55 +115,60 @@ namespace Memorandum.Web.Views
 
         public static string GetWebPageTitle(string url)
         {
-            // Create a FastCGIRequest to the url
+            // Create a request to the url
             var request = WebRequest.Create(url) as HttpWebRequest;
 
-            // If the FastCGIRequest wasn't an HTTP FastCGIRequest (like a file), ignore it
             if (request == null) return null;
 
             // Use the user's credentials
             request.UseDefaultCredentials = true;
 
             // Obtain a response from the server, if there was an error, return nothing
-            HttpWebResponse response = null;
+            HttpWebResponse response;
             try
             {
                 response = request.GetResponse() as HttpWebResponse;
             }
             catch (WebException)
             {
-                return null;
+                return Path.GetFileName(new Uri(url).LocalPath);
             }
 
             if (response == null)
-                return null;
+                return Path.GetFileName(new Uri(url).LocalPath);
 
-            response.Close();
+
             // Regular expression for an HTML title
             const string regex = @"(?<=<title.*>)([\s\S]*)(?=</title>)";
 
             // If the correct HTML header exists for HTML text, continue
             var headers = new List<string>(response.Headers.AllKeys);
-            if (headers.Contains("Content-Type"))
+            
+            // Try to get title from text html
+            if (response.ContentType.StartsWith("text/html"))
             {
-                if (response.Headers["Content-Type"].StartsWith("text/html"))
-                {
-                    // Download the page
-                    var web = new WebClient
-                    {
-                        UseDefaultCredentials = true,
-                        Encoding = Encoding.UTF8
-                    };
-
-                    var page = web.DownloadString(url);
-
-                    // Extract the title
-                    var ex = new Regex(regex, RegexOptions.IgnoreCase);
-                    return ex.Match(page).Value.Trim();
-                }
+                var encoding = Encoding.GetEncoding(response.CharacterSet);
+                var page = encoding.GetString(FromResponseStream(response.GetResponseStream()));
+                var ex = new Regex(regex, RegexOptions.IgnoreCase);
+                response.Close();
+                return ex.Match(page).Value.Trim();
             }
 
-            // If content disposition fails
+            // Try to get title from pdf meta
+            if (response.ContentType.Contains("pdf") || Path.GetExtension(response.ResponseUri.LocalPath).Equals("pdf"))
+            {
+                var pdf = new PdfReader(FromResponseStream(response.GetResponseStream()));
+                if (pdf.Info.ContainsKey("Title"))
+                {
+                    var title = pdf.Info["Title"];
+                    if (!string.IsNullOrWhiteSpace(title) && 
+                        !title.Trim().ToLower().Equals("untitled"))
+                        return title;
+                }
+            }
+            response.Close();
+
+            // Try to get title from content disposition
             if (headers.Contains("Content-Disposition"))
             {
                 var cd = response.Headers["content-disposition"];
@@ -173,7 +180,8 @@ namespace Memorandum.Web.Views
                 }
             }
 
-            return null;
+            // Get from URI finally
+            return Path.GetFileName(response.ResponseUri.LocalPath);
         }
 
         public static Link CreateLinkForNode(IRequest request, Node parentNode, Node newNode)
@@ -186,6 +194,31 @@ namespace Memorandum.Web.Views
             };
             request.UnitOfWork.Links.Save(link);
             return link;
+        }
+
+        public static Link CreateLinkForNode(IRequest request, Node parentNode, Node newNode, string comment)
+        {
+            var link = new Link(parentNode, newNode)
+            {
+                Comment = comment,
+                DateAdded = DateTime.Now,
+                User = request.User
+            };
+            request.UnitOfWork.Links.Save(link);
+            return link;
+        }
+
+
+        public static byte[] FromResponseStream(Stream stream)
+        {
+            var buffer = new byte[16 * 1024];
+            using (var ms = new MemoryStream())
+            {
+                int read;
+                while ((read = stream.Read(buffer, 0, buffer.Length)) > 0)
+                    ms.Write(buffer, 0, read);
+                return ms.ToArray();
+            }
         }
     }
 }

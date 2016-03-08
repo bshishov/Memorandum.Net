@@ -50,6 +50,10 @@
       <HintPath>..\packages\SharpZipLib.0.86.0\lib\20\ICSharpCode.SharpZipLib.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="itextsharp, Version=5.5.8.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\iTextSharp.5.5.8\lib\itextsharp.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="MimeTypeMap">
       <HintPath>..\packages\MediaTypeMap.2.1.0.0\lib\net40\MimeTypeMap.dll</HintPath>
@@ -76,6 +80,7 @@
     <Compile Include="Framework\Utilities\StaticServeRouter.cs" />
     <Compile Include="Framework\Utilities\StringCipher.cs" />
     <Compile Include="Framework\Utilities\TemplateUtilities.cs" />
+    <Compile Include="Middleware\ApiMiddleware.cs" />
     <Compile Include="Middleware\SessionContext.cs" />
     <Compile Include="Middleware\SessionMiddleware.cs" />
     <Compile Include="Framework\Backend\FastCGI\FastCGIRequest.cs" />
@@ -106,6 +111,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
+    <Compile Include="Utitlities\UrlInfo.cs" />
     <Compile Include="Views\Drops\AnonymousLinkDrop.cs" />
     <Compile Include="Views\Drops\DropGroup.cs" />
     <Compile Include="Views\Drops\ILinkDrop.cs" />
@@ -113,6 +119,12 @@
     <Compile Include="Views\Drops\AnonymousRenderedLinkDrop.cs" />
     <Compile Include="Views\Drops\RenderedLinkDrop.cs" />
     <Compile Include="Views\Drops\RenderedNodeDrop.cs" />
+    <Compile Include="Views\Providers\BaseProviderView.cs" />
+    <Compile Include="Views\Providers\FileProvider.cs" />
+    <Compile Include="Views\Providers\IProviderView.cs" />
+    <Compile Include="Views\Providers\ProviderManager.cs" />
+    <Compile Include="Views\Providers\TextNodeProvider.cs" />
+    <Compile Include="Views\Providers\UrlProvider.cs" />
     <Compile Include="Views\RestApi\ApiResponse.cs" />
     <Compile Include="Views\RestApi\ApiViews.cs" />
     <Compile Include="Views\RestApi\BadRequestApiResponse.cs" />
@@ -126,11 +138,8 @@
     <Compile Include="Views\Drops\NodeDropFactory.cs" />
     <Compile Include="Views\Drops\TextNodeDrop.cs" />
     <Compile Include="Views\Drops\UrlNodeDrop.cs" />
-    <Compile Include="Views\Utilities.cs" />
-    <Compile Include="Views\FileNodeViews.cs" />
+    <Compile Include="Utitlities\Utilities.cs" />
     <Compile Include="Views\GeneralViews.cs" />
-    <Compile Include="Views\TextNodeViews.cs" />
-    <Compile Include="Views\UrlNodeViews.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

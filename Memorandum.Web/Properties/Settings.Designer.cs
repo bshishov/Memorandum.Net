@@ -58,5 +58,23 @@ namespace Memorandum.Web.Properties {
                 return ((string)(this["Secret"]));
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool ServeStatic {
+            get {
+                return ((bool)(this["ServeStatic"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("..\\..\\static")]
+        public string StaticPath {
+            get {
+                return ((string)(this["StaticPath"]));
+            }
+        }
     }
 }

@@ -14,5 +14,11 @@
     <Setting Name="Secret" Type="System.String" Scope="Application">
       <Value Profile="(Default)">SomeSecretKeyChangeMePlease</Value>
     </Setting>
+    <Setting Name="ServeStatic" Type="System.Boolean" Scope="Application">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="StaticPath" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">..\..\static</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

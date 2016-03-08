@@ -2,8 +2,8 @@
 {% if link.Node.IsDirectory == false %}
 {{ link.Node.Size|ReadableSize }}
 <div class="row set">
-    <a class="system" href="/{{ link.EndNodeProvider }}/raw/{{ link.EndNode }}">Raw</a>&nbsp;
-    <a class="system" href="/{{ link.EndNodeProvider }}/download/{{ link.EndNode }}">Download</a>
+    <a class="system" href="/{{ link.EndNodeProvider }}/{{link.EndNode|UrlEncode}}/raw">Raw</a>&nbsp;
+    <a class="system" href="/{{ link.EndNodeProvider }}/{{link.EndNode|UrlEncode}}/download">Download</a>
 </div>
 {% else %}
 <div class="system">Folder</div>

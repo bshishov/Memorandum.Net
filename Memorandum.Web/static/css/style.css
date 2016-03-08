@@ -195,6 +195,7 @@ input[name="comment"] {
 .link-content {
     display: inline-block;    
     word-wrap: break-word;
+    width: 100%;
 }
 
 .link-comment + .link-content{
@@ -207,6 +208,12 @@ input[name="comment"] {
     display: inline-block;
     text-align: right;
     max-width: 20%;
+}
+.link-image {
+    max-width: 50px;  
+    display: inline-block; 
+    float: left;
+    margin-right: 15px;    
 }
 
 .link-tools-container {

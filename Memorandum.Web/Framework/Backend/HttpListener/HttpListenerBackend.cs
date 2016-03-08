@@ -98,6 +98,7 @@ namespace Memorandum.Web.Framework.Backend.HttpListener
                     context.Response.StatusCode = response.StatusCode;
                     context.Response.Headers = response.Headers;
                     response.WriteBody(context.Response.OutputStream);
+                    response.Close();
                 }
                 context.Response.Close();
             }

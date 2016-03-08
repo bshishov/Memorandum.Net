@@ -6,5 +6,6 @@ namespace Memorandum.Web.Framework.Responses
     {
         public abstract void WriteBody(Stream stream);
         public abstract byte[] GetBody();
+        public abstract void Close();
     }
 }

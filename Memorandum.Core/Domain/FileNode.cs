@@ -16,7 +16,7 @@ namespace Memorandum.Core.Domain
         protected BaseFileNode(string path)
         {
             this.Path = path;
-            this.Path = this.Path.Replace("\\", "/");
+            //this.Path = this.Path.Replace("\\", "/");
             Name = System.IO.Path.GetFileName(path);
         }
 

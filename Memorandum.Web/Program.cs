@@ -1,10 +1,12 @@
 ﻿using System;
-using System.IO;
 using CommandLine;
 using Memorandum.Core;
 using Memorandum.Core.Domain;
 using Memorandum.Core.Search;
 using Memorandum.Web.Framework;
+using Memorandum.Web.Framework.Backend;
+using Memorandum.Web.Framework.Backend.FastCGI;
+using Memorandum.Web.Framework.Backend.HttpListener;
 using Memorandum.Web.Framework.Routing;
 using Memorandum.Web.Framework.Utilities;
 using Memorandum.Web.Middleware;
@@ -18,10 +20,11 @@ namespace Memorandum.Web
     {
         private static int Main(string[] args)
         {
-            var result = Parser.Default.ParseArguments<RunServerOptions, CreateSchemaOptions>(args);
+            var result = Parser.Default.ParseArguments<RunServerOptions, CreateSchemaOptions, CreateUserOptions> (args);
             var exitCode = result.MapResult(
                 (RunServerOptions opts) => Runserver(opts),
                 (CreateSchemaOptions opts) => CreateSchema(opts),
+                (CreateUserOptions opts) => AddUser(opts),
                 errors => 1);
             return exitCode;
         }
@@ -29,19 +32,29 @@ namespace Memorandum.Web
         private static int Runserver(RunServerOptions options)
         {
             var router = new Router();
-            router.Bind("", GeneralViews.Router);
-            router.Bind("^/text", TextNodeViews.Router);
-            router.Bind("^/url", UrlNodeViews.Router);
-            router.Bind("^/file", FileNodeViews.Router);
+
+            if (Settings.Default.ServeStatic)
+            {
+                router.Bind("^/static", new StaticServeRouter(Settings.Default.StaticPath));
+                router.Bind("^/media", new StaticServeRouter(Settings.Default.FileStorage));
+            }
+
             router.Bind("^/api", ApiViews.Router);
-            router.Bind("^/static", new StaticServeRouter(Path.Combine(Directory.GetCurrentDirectory(), "..", "..", "static")));
+            router.Bind("", GeneralViews.Router);
 
             if (options.ForceReindex)
                 SearchManager.StartIndexingTask();
 
-            var app = new App(router, Settings.Default.Port);
+            IBackend backend;
+            if (options.FastCGI)
+                backend = new FastCGIBackend(Settings.Default.Port);
+            else
+                backend = new HttpListenerBackend($"http://127.0.0.1:{Settings.Default.Port}/");
+
+            var app = new App(backend, router);
             app.RegisterMiddleware(new UnitOfWorkMiddleware());
             app.RegisterMiddleware(new SessionMiddleware());
+            app.RegisterMiddleware(new ApiMiddleware("/api"));
             app.Run();
             Console.ReadKey();
             return 0;
@@ -94,6 +107,9 @@ namespace Memorandum.Web
         {
             [Option("forceindex", Required = false, HelpText = "Forces reindexing")]
             public bool ForceReindex { get; set; }
+
+            [Option("fastcgi", Required = false, HelpText = "Use fastcgi backend")]
+            public bool FastCGI { get; set; }
         }
 
         [Verb("createschema", HelpText = "Creates database schema")]

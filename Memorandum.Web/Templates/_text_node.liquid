@@ -12,8 +12,9 @@
 			<div class="system">{{ Node.DateAdded }}</div>                        
 		</div>
         <div class="col col2-3 set text-right">           
-            <a class="system button small" href="javascript:;" id="save-button">Save</a>
-            <a class="system button small needconfirm" href="javascript:;" data-action="send('DELETE', '/api/{{ Node.Provider }}/{{ Node.NodeId }}')" title="Delete this text note">Delete</a>
+            <a class="system button small" href="/{{ Node.Provider }}/{{ Node.NodeId|UrlEncode }}/pdf" title="View as pdf">PDF</a>
+			<a class="system button small" href="javascript:;" id="save-button">Save</a>
+            <a class="system button small needconfirm" href="javascript:;" data-action="send('DELETE', '/api/{{ Node.Provider }}/{{ Node.NodeId }}')" title="Delete this text note">Delete</a>			
         </div> 
     </div>
     <script type="text/javascript">

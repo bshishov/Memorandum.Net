@@ -7,9 +7,9 @@ namespace Memorandum.Web.Middleware
 {
     internal class UnitOfWorkMiddleware : IMiddleware
     {
-        public void Handle(IRequest fastCGIRequest)
+        public void Handle(IRequest request)
         {
-            fastCGIRequest.UnitOfWork = new UnitOfWork();
+            request.UnitOfWork = new UnitOfWork();
         }
 
         public void Handle(IRequest request, Response response)

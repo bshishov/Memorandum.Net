@@ -1,9 +1,10 @@
 ﻿<div class="row link {{link.EndNodeProvider}}" data-path="/{{ link.EndNodeProvider }}/{{ link.EndNode|UrlEncode }}" {% if link.Id %}data-id="{{ link.Id }}"{% endif %} >
 	
 	{% if group %}
-		{% if link.Comment and group.Name == "" %}
+		{% if link.Comment != "" and group.Name == "" %}
 		<div class="link-comment">
 			{{ link.Comment }}
+			{{group.Name}}			
 		</div>
 		{% endif %}
 	{% else %}

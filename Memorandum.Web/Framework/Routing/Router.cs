@@ -7,7 +7,7 @@ namespace Memorandum.Web.Framework.Routing
     internal class Router
     {
         private readonly Dictionary<string, Router> _routers = new Dictionary<string, Router>();
-        private readonly List<IRoute> _routes = new List<IRoute>();
+        private readonly List<IRoute> _routes;
 
         public Router(List<IRoute> routes)
         {

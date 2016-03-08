@@ -75,7 +75,6 @@ namespace Memorandum.Core
 
         public T UnProxy<T>(object o) where T : class 
         {
-            
             if (!NHibernateUtil.IsInitialized(o))
             {
                 NHibernateUtil.Initialize(o);

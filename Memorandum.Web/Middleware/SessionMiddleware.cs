@@ -11,7 +11,7 @@ using Memorandum.Web.Properties;
 namespace Memorandum.Web.Middleware
 {
     /// <summary>
-    ///     Middleware that provides basic identification of incoming requests giving each FastCGIRequest a session object
+    ///     Middleware that provides basic identification of incoming requests giving each request a session object
     /// </summary>
     internal class SessionMiddleware : IMiddleware
     {
@@ -20,9 +20,9 @@ namespace Memorandum.Web.Middleware
         private readonly Dictionary<string, SessionContext> _sessions = new Dictionary<string, SessionContext>();
 
         /// <summary>
-        ///     Before FastCGIRequest
+        ///     Before request
         /// </summary>
-        /// <param name="request">Input FastCGIRequest</param>
+        /// <param name="request">Input request</param>
         public void Handle(IRequest request)
         {
             string key = null;
@@ -60,10 +60,10 @@ namespace Memorandum.Web.Middleware
         }
 
         /// <summary>
-        ///     After FastCGIRequest
+        ///     After request
         /// </summary>
-        /// <param name="request">Input FastCGIRequest</param>
-        /// <param name="response">Output FastCGIRequest</param>
+        /// <param name="request">Input request</param>
+        /// <param name="response">Output response</param>
         public void Handle(IRequest request, Response response)
         {
             if (request.Session != null && !request.Session.CookieExist)
@@ -79,7 +79,7 @@ namespace Memorandum.Web.Middleware
         /// <summary>
         ///     Initialize new session and adds it to the dictionary
         /// </summary>
-        /// <param name="request">Input FastCGIRequest</param>
+        /// <param name="request">Input request</param>
         /// <param name="key">SessionContext key (GUID or existing session key)</param>
         /// <param name="cookieExists">Defines wheter cookie set on client or not</param>
         private void InitNewSession(IRequest request, string key, bool cookieExists = false)
@@ -102,10 +102,10 @@ namespace Memorandum.Web.Middleware
             }
         }
 
-        private void RegisterSession(IRequest fastCGIRequest, SessionContext session)
+        private void RegisterSession(IRequest request, SessionContext session)
         {
             _sessions.Add(session.Key, session);
-            fastCGIRequest.Session = session;
+            request.Session = session;
         }
 
         private void SaveSession(UnitOfWork unit, SessionContext sessionContext)

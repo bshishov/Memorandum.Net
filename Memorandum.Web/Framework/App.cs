@@ -9,9 +9,9 @@ using Memorandum.Web.Framework.Responses;
 using Memorandum.Web.Framework.Routing;
 using Memorandum.Web.Framework.Utilities;
 using System.Diagnostics;
+using System.Net;
 using System.Threading.Tasks;
 using Memorandum.Web.Framework.Backend;
-using Memorandum.Web.Framework.Backend.HttpListener;
 
 namespace Memorandum.Web.Framework
 {
@@ -22,8 +22,9 @@ namespace Memorandum.Web.Framework
         private readonly Pipeline<IRequest> _beforeView = new Pipeline<IRequest>();
         private readonly Router _rootRouter;
 
-        public App(Router router, int port)
+        public App(IBackend backend, Router router)
         {
+            _backend = backend;
             _rootRouter = router;
 
             var assembly = Assembly.GetExecutingAssembly();
@@ -32,8 +33,7 @@ namespace Memorandum.Web.Framework
             Template.NamingConvention = new CSharpNamingConvention();
             Template.RegisterFilter(typeof (Filters));
 
-            //_backend = new FastCGIBackend(port);
-            _backend = new HttpListenerBackend($"http://127.0.0.1:{port}/");
+            ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
         }
 
         public void RegisterMiddleware(IMiddleware middleware)

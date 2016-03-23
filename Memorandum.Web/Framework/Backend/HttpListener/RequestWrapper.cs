@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Net;
+using System.Text;
 using HttpMultipartParser;
 using Memorandum.Core;
 using Memorandum.Core.Domain;
@@ -68,7 +69,7 @@ namespace Memorandum.Web.Framework.Backend.HttpListener
         /// <summary>
         ///     Lazy loaded query arguments from QUERY_STRING
         /// </summary>
-        public NameValueCollection QuerySet => _querySet ?? (_querySet = _request.QueryString);
+        public NameValueCollection QuerySet => _querySet ?? (_querySet = HttpUtilities.ParseQueryString(_request.Url.Query));
 
         private MultipartFormDataParser MultipartParser => _parser ?? (_parser = new MultipartFormDataParser(_request.InputStream));
 

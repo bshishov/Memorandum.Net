@@ -82,7 +82,7 @@ $(document).ready(function() {
     });
 
     formObject.find('.searchinput').change(function(){ 
-      searchResults.empty(); 
+      searchResults.empty();       
       $.ajax({
         url: "/api/search",
         dataType: "JSON",
@@ -180,7 +180,7 @@ var initEditor = function(selector)
     },
     anchorPreview: {        
         hideDelay: 200,
-        previewValueSelector: 'a'
+        // previewValueSelector: 'a'
     }
   });
 };

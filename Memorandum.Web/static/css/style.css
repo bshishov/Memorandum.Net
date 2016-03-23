@@ -67,6 +67,7 @@ body {
 .card {
     background: white;
     padding: 20px 40px;
+    word-wrap: break-word;
 }
 .details {
     padding: 20px 25px;

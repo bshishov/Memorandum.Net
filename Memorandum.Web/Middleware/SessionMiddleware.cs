@@ -128,7 +128,6 @@ namespace Memorandum.Web.Middleware
                 // If session expired
                 if (DateTime.Now > existingSession.Expires)
                 {
-                    // Delete sesssion if it is expired
                     unit.Sessions.Delete(existingSession);
                     return null;
                 }

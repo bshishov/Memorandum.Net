@@ -6,7 +6,6 @@ namespace Memorandum.Core
 {
     public class UnitOfWork : IDisposable
     {
-        private ITransaction _transaction;
         private readonly ISession _session;
         private NodeRepository _nodes;
         private TextNodeRepository _text;
@@ -41,28 +40,7 @@ namespace Memorandum.Core
         {
             _session = Database.OpenSession();
         }
-
-        public void BeginTransaction()
-        {
-            _transaction = _session.BeginTransaction();
-        }
-
-        public void Commit()
-        {
-            try
-            {
-                _transaction.Commit();
-            }
-            catch
-            {
-                _transaction.Rollback();
-                throw;
-            }
-            finally
-            {
-                _session.Close();
-            }
-        }
+        
 
         public void Dispose()
         {

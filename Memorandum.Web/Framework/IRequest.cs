@@ -1,9 +1,7 @@
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using HttpMultipartParser;
-using Memorandum.Core;
-using Memorandum.Core.Domain;
-using Memorandum.Web.Middleware;
+using Memorandum.Web.Framework.Middleware.Session;
 
 namespace Memorandum.Web.Framework
 {
@@ -30,24 +28,6 @@ namespace Memorandum.Web.Framework
 
         IEnumerable<FilePart> Files { get; }
 
-        /// <summary>
-        /// TODO: MOVE TO CUSTOM REQUEST OR WHATEVER
-        /// </summary>
-        SessionContext Session { get; set; }
-
-        /// <summary>
-        /// TODO: MOVE TO CUSTOM REQUEST OR WHATEVER
-        /// </summary>
-        UnitOfWork UnitOfWork { get; set; }
-
-        /// <summary>
-        /// TODO: MOVE TO CUSTOM REQUEST OR WHATEVER
-        /// </summary>
-        int? UserId { get; set; }
-
-        /// <summary>
-        /// TODO: MOVE TO CUSTOM REQUEST OR WHATEVER
-        /// </summary>
-        User User { get; }
+        ISessionContext Session { get; set; }
     }
 }

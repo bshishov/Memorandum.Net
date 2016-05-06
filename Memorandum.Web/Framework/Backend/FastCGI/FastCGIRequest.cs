@@ -2,10 +2,8 @@
 using System.Collections.Specialized;
 using System.Text;
 using HttpMultipartParser;
-using Memorandum.Core;
-using Memorandum.Core.Domain;
+using Memorandum.Web.Framework.Middleware.Session;
 using Memorandum.Web.Framework.Utilities;
-using Memorandum.Web.Middleware;
 
 namespace Memorandum.Web.Framework.Backend.FastCGI
 {
@@ -24,24 +22,8 @@ namespace Memorandum.Web.Framework.Backend.FastCGI
         public string Method => RawRequest.GetParameterASCII("REQUEST_METHOD");
         public string Path => RawRequest.GetParameterUTF8("DOCUMENT_URI");
         public string ContentType => RawRequest.GetParameterASCII("CONTENT_TYPE");
-        public SessionContext Session { get; set; }
-        public UnitOfWork UnitOfWork { get; set; }
+        public ISessionContext Session { get; set; }
         
-        /// <summary>
-        /// Current User identifier, stored in session
-        /// </summary>
-        public int? UserId
-        {
-            get { return Session.Get<int>("userId"); }
-            set { Session.Set("userId", value); }
-        }
-
-        private User _user;
-        /// <summary>
-        /// Lazy loaded User
-        /// </summary>
-        public User User => _user ?? (_user = UnitOfWork.Users.FindById(UserId.GetValueOrDefault()));
-
         /// <summary>
         ///     Lazy loaded cookies from request
         /// </summary>

@@ -67,6 +67,18 @@
     <Reference Include="System.Runtime.Serialization" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Creators\MarkdownCreator.cs" />
+    <Compile Include="Creators\TextCreator.cs" />
+    <Compile Include="Creators\UploaderCreator.cs" />
+    <Compile Include="Creators\URLCreator.cs" />
+    <Compile Include="Editors\CodeFileEditor.cs" />
+    <Compile Include="Editors\DefaultFileEditor.cs" />
+    <Compile Include="Creators\DirectoryCreator.cs" />
+    <Compile Include="Editors\EditorManager.cs" />
+    <Compile Include="Creators\ICreator.cs" />
+    <Compile Include="Editors\MarkdownFileEditor.cs" />
+    <Compile Include="Creators\FileCreator.cs" />
+    <Compile Include="Editors\UrlEditor.cs" />
     <Compile Include="Framework\App.cs" />
     <Compile Include="Framework\Backend\FastCGI\FastCGIBackend.cs" />
     <Compile Include="Framework\Backend\HttpListener\HttpListenerBackend.cs" />
@@ -76,13 +88,16 @@
     <Compile Include="Framework\Errors\HttpErrorException.cs" />
     <Compile Include="Framework\IRequest.cs" />
     <Compile Include="Framework\Middleware\IMiddleware.cs" />
+    <Compile Include="Framework\Middleware\Session\ISessionContext.cs" />
+    <Compile Include="Framework\Middleware\Session\ISessionFactory.cs" />
     <Compile Include="Framework\Responses\StreamedResponse.cs" />
+    <Compile Include="Framework\Utilities\DebugFileSystem.cs" />
     <Compile Include="Framework\Utilities\StaticServeRouter.cs" />
     <Compile Include="Framework\Utilities\StringCipher.cs" />
     <Compile Include="Framework\Utilities\TemplateUtilities.cs" />
     <Compile Include="Middleware\ApiMiddleware.cs" />
-    <Compile Include="Middleware\SessionContext.cs" />
-    <Compile Include="Middleware\SessionMiddleware.cs" />
+    <Compile Include="Framework\Middleware\Session\SessionContext.cs" />
+    <Compile Include="Framework\Middleware\Session\SessionMiddleware.cs" />
     <Compile Include="Framework\Backend\FastCGI\FastCGIRequest.cs" />
     <Compile Include="Framework\Responses\RedirectResponse.cs" />
     <Compile Include="Framework\Responses\TemplatedResponse.cs" />
@@ -90,7 +105,8 @@
     <Compile Include="Framework\Responses\HttpResponse.cs" />
     <Compile Include="Framework\Utilities\Context.cs" />
     <Compile Include="Framework\Utilities\Pipeline.cs" />
-    <Compile Include="Middleware\UnitOfWorkMiddleware.cs" />
+    <Compile Include="Framework\Middleware\Session\SessionStorage.cs" />
+    <Compile Include="Middleware\CustomSessionMiddleware.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Framework\Routing\IRouteContext.cs" />
@@ -112,64 +128,49 @@
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
     <Compile Include="Utitlities\UrlInfo.cs" />
-    <Compile Include="Views\Drops\AnonymousLinkDrop.cs" />
-    <Compile Include="Views\Drops\DropGroup.cs" />
-    <Compile Include="Views\Drops\ILinkDrop.cs" />
-    <Compile Include="Views\Drops\LinksGroupDrop.cs" />
-    <Compile Include="Views\Drops\AnonymousRenderedLinkDrop.cs" />
-    <Compile Include="Views\Drops\RenderedLinkDrop.cs" />
-    <Compile Include="Views\Drops\RenderedNodeDrop.cs" />
-    <Compile Include="Views\Providers\BaseProviderView.cs" />
-    <Compile Include="Views\Providers\FileProvider.cs" />
-    <Compile Include="Views\Providers\IProviderView.cs" />
-    <Compile Include="Views\Providers\ProviderManager.cs" />
-    <Compile Include="Views\Providers\TextNodeProvider.cs" />
-    <Compile Include="Views\Providers\UrlProvider.cs" />
+    <Compile Include="Views\Drops\CreatorDrop.cs" />
+    <Compile Include="Views\Drops\DirectoryItemDrop.cs" />
+    <Compile Include="Views\Drops\UrlFileItemDrop.cs" />
+    <Compile Include="Views\Drops\UserDrop.cs" />
+    <Compile Include="Editors\FileEditor.cs" />
+    <Compile Include="Editors\IFileEditor.cs" />
     <Compile Include="Views\RestApi\ApiResponse.cs" />
     <Compile Include="Views\RestApi\ApiViews.cs" />
     <Compile Include="Views\RestApi\BadRequestApiResponse.cs" />
     <Compile Include="Views\RestApi\ForbiddenApiResponse.cs" />
-    <Compile Include="Views\Drops\NodeWithRenderedLink.cs" />
     <Compile Include="Views\RestApi\NonAuthorizedApiResponse.cs" />
     <Compile Include="Views\RestApi\ResourceNotFoundApiResponse.cs" />
-    <Compile Include="Views\Drops\FileNodeDrop.cs" />
-    <Compile Include="Views\Drops\LinkDrop.cs" />
-    <Compile Include="Views\Drops\NodeDrop.cs" />
-    <Compile Include="Views\Drops\NodeDropFactory.cs" />
-    <Compile Include="Views\Drops\TextNodeDrop.cs" />
-    <Compile Include="Views\Drops\UrlNodeDrop.cs" />
+    <Compile Include="Views\Drops\FileItemDrop.cs" />
+    <Compile Include="Views\Drops\ItemDrop.cs" />
     <Compile Include="Utitlities\Utilities.cs" />
     <Compile Include="Views\GeneralViews.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
+    <EmbeddedResource Include="Templates\_item_layout.liquid" />
+    <EmbeddedResource Include="Templates\_dir.liquid" />
+    <EmbeddedResource Include="Templates\Blocks\Forms\_text_file.liquid" />
+    <EmbeddedResource Include="Templates\Blocks\Forms\_upload.liquid" />
+    <EmbeddedResource Include="Templates\Blocks\Forms\_url.liquid" />
+    <EmbeddedResource Include="Templates\Files\_default.liquid" />
+    <EmbeddedResource Include="Templates\Files\_md.liquid" />
+    <EmbeddedResource Include="Templates\Files\_url.liquid" />
+    <EmbeddedResource Include="Templates\_file_layout.liquid" />
+    <EmbeddedResource Include="Templates\_page_layout.liquid" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
-    <EmbeddedResource Include="Templates\Blocks\_add_form.liquid">
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Templates\Blocks\_link.liquid" />
-    <EmbeddedResource Include="Templates\Blocks\_links.liquid" />
-    <EmbeddedResource Include="Templates\Blocks\_parent_links.liquid" />
-    <EmbeddedResource Include="Templates\Blocks\Widgets\_file.liquid" />
-    <EmbeddedResource Include="Templates\Blocks\Widgets\_text.liquid" />
-    <EmbeddedResource Include="Templates\Blocks\Widgets\_url.liquid" />
     <EmbeddedResource Include="Templates\_error.liquid" />
     <EmbeddedResource Include="Templates\Files\_audio.liquid" />
     <EmbeddedResource Include="Templates\Files\_image.liquid" />
-    <EmbeddedResource Include="Templates\Files\_text.liquid" />
+    <EmbeddedResource Include="Templates\Files\_code.liquid" />
     <EmbeddedResource Include="Templates\Files\_video.liquid" />
-    <EmbeddedResource Include="Templates\_file_node.liquid" />
     <EmbeddedResource Include="Templates\_layout.liquid" />
     <EmbeddedResource Include="Templates\_login.liquid" />
-    <EmbeddedResource Include="Templates\_node.liquid" />
-    <EmbeddedResource Include="Templates\_text_node.liquid" />
-    <EmbeddedResource Include="Templates\_url_node.liquid" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Memorandum.Core\Memorandum.Core.csproj">
@@ -180,6 +181,12 @@
       <Project>{4e960156-aafa-44e7-9f0e-fb19069710a6}</Project>
       <Name>FastCGI</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Templates\Blocks\_md_editor.liquid" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Templates\Blocks\Forms\_folder.liquid" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

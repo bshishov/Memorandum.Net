@@ -1,12 +1,15 @@
 ﻿using System;
+using System.IO;
 using CommandLine;
 using Memorandum.Core;
 using Memorandum.Core.Domain;
+using Memorandum.Core.Domain.Users;
 using Memorandum.Core.Search;
 using Memorandum.Web.Framework;
 using Memorandum.Web.Framework.Backend;
 using Memorandum.Web.Framework.Backend.FastCGI;
 using Memorandum.Web.Framework.Backend.HttpListener;
+using Memorandum.Web.Framework.Middleware.Session;
 using Memorandum.Web.Framework.Routing;
 using Memorandum.Web.Framework.Utilities;
 using Memorandum.Web.Middleware;
@@ -20,10 +23,9 @@ namespace Memorandum.Web
     {
         private static int Main(string[] args)
         {
-            var result = Parser.Default.ParseArguments<RunServerOptions, CreateSchemaOptions, CreateUserOptions> (args);
+            var result = Parser.Default.ParseArguments<RunServerOptions, CreateUserOptions> (args);
             var exitCode = result.MapResult(
                 (RunServerOptions opts) => Runserver(opts),
-                (CreateSchemaOptions opts) => CreateSchema(opts),
                 (CreateUserOptions opts) => AddUser(opts),
                 errors => 1);
             return exitCode;
@@ -52,8 +54,7 @@ namespace Memorandum.Web
                 backend = new HttpListenerBackend($"http://127.0.0.1:{Settings.Default.Port}/");
 
             var app = new App(backend, router);
-            app.RegisterMiddleware(new UnitOfWorkMiddleware());
-            app.RegisterMiddleware(new SessionMiddleware());
+            app.RegisterMiddleware(new CustomSessionMiddleware(new MemorySessionStorage()));
             app.RegisterMiddleware(new ApiMiddleware("/api"));
             app.Run();
             Console.ReadKey();
@@ -62,45 +63,15 @@ namespace Memorandum.Web
 
         private static int AddUser(CreateUserOptions options)
         {
-            using (var unit = new UnitOfWork())
-            {
-                var password = unit.Users.CreateNewPasswordString(options.Password);
-                var user = new User
-                {
-                    DateJoined = DateTime.Now,
-                    Email = options.Email,
-                    Password = password,
-                    Username = options.Username
-                };
-                unit.Users.Save(user);
-                var node = new TextNode
-                {
-                    DateAdded = DateTime.Now,
-                    Text = "Home",
-                    User = user
-                };
-                unit.Text.Save(node);
-                user.Home = node;
-                unit.Users.Save(user);
-            }
-
-            return 0;
+            var baseDir = options.BaseDirectory;
+            if (string.IsNullOrEmpty(baseDir))
+                baseDir = Path.Combine(Settings.Default.FileStorage, options.Username);
+            var user = UserManager.Create(options.Username, options.Password, baseDir);
+            if(user != null)
+                return 0;
+            return 1;
         }
-
-        private static int CreateSchema(CreateSchemaOptions options)
-        {
-            try
-            {
-                Database.CreateSchema();
-            }
-            catch (Exception exception)
-            {
-                Console.WriteLine(exception);
-                return 1;
-            }
-
-            return 0;
-        }
+      
 
         [Verb("runserver", HelpText = "Run server")]
         private class RunServerOptions
@@ -111,23 +82,19 @@ namespace Memorandum.Web
             [Option("fastcgi", Required = false, HelpText = "Use fastcgi backend")]
             public bool FastCGI { get; set; }
         }
-
-        [Verb("createschema", HelpText = "Creates database schema")]
-        private class CreateSchemaOptions
-        {
-        }
+     
 
         [Verb("adduser", HelpText = "Create new user")]
         private class CreateUserOptions
         {
-            [Option('u', "username", Required = true, HelpText = "Username")]
+            [Option('u', "name", Required = true, HelpText = "Name")]
             public string Username { get; set; }
 
             [Option('p', "password", Required = true, HelpText = "Password")]
             public string Password { get; set; }
 
-            [Option('e', "email", Required = true, HelpText = "Email")]
-            public string Email { get; set; }
+            [Option('b', "base", Required = false, HelpText = "Base Directory")]
+            public string BaseDirectory { get; set; }
         }
     }
 }

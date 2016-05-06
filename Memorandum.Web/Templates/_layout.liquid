@@ -7,25 +7,19 @@
     
     <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}" />
     <link rel="stylesheet" type="text/css" href="{% static 'css/medium-editor.min.css' %}" />
-    <link rel="stylesheet" type="text/css" href="{% static 'css/medium-editor-themes/beagle.min.css' %}" />
-    
+    <link rel="stylesheet" type="text/css" href="{% static 'css/medium-editor-themes/beagle.min.css' %}" />    
+	<link rel="stylesheet" type="text/css" href="{% static 'css/semantic.min.css' %}">
+
     <script src="{% static 'js/jquery-2.1.4.min.js' %}"></script> 	
-    <script src="{% static 'js/main.js' %}"></script> 
+    <script src="{% static 'js/main.js' %}"></script>
     <script src="{% static 'js/medium-editor.min.js' %}"></script> 	
+	<script src="{% static 'js/semantic.min.js' %}"></script>
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 </head>
-<body>   
-    <div class="container">                
-        <div class="row">
-            {% block content %}Nothing here.{% endblock %}    
-        </div>
-		<div class="row footer text-center set">
-			<a class="system" title="Go home" href="/">Home</a>
-			<a class="system" title="Lost notes" href="/lost">Lost</a>
-			<a class="system" title="Project home" href="https://github.com/bshishov/Memorandum.Net">GitHub</a>
-			<a class="system" title="Forget me please" href="/logout">Logout</a>
-        </div>          
-    </div>
+<body>
+	<div class="wrapper">
+	{% block content %}Nothing here.{% endblock %}    
+	</div>
 </body>
 </html>

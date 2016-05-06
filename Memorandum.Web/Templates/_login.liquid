@@ -1,21 +1,24 @@
-{% extends 'layout' %}
+{% extends 'page_layout' %}
 
-{% block content %}
-<div class="row">
-    <div class="card">
-        <form method='post'>                
-            <div class="row field">
-                <label for="username">Login</label>
-                <input type="text" class="validate" name='username' autofocus>
-            </div>
-            <div class="row field">
-				<label for="password">Password</label>
-                <input name="password" type="password" class="validate">
-            </div>
-            <div class="row text-right">
-                <button type="submit" name="action">Sign in</button>
-            </div>
-        </form>        
-    </div>
-</div>
+{% block page_title %}Login{% endblock %}
+
+{% block page_content %}
+    <form class="ui large form" method="post">
+      <div class="ui segment">
+        <div class="field">
+          <div class="ui left icon input">
+            <i class="user icon"></i>
+            <input type="text" name="username" placeholder="Username">
+          </div>
+        </div>
+        <div class="field">
+          <div class="ui left icon input">
+            <i class="lock icon"></i>
+            <input type="password" name="password" placeholder="Password">
+          </div>
+        </div>
+        <input type="submit" class="ui fluid large submit button" value="Login" />
+      </div>
+      <div class="ui error message"></div>
+    </form>
 {% endblock %}

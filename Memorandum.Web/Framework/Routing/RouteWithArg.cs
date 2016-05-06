@@ -17,10 +17,7 @@ namespace Memorandum.Web.Framework.Routing
 
         public Response Proceed(IRequest request, string[] args)
         {
-            if (_handler != null)
-                return _handler(request, args);
-
-            return null;
+            return _handler?.Invoke(request, args);
         }
     }
 }

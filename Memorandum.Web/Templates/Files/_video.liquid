@@ -1,9 +1,7 @@
-{% extends 'file_node' %}
+{% extends 'file_layout' %}
 
 {% block file_content %}
-<div class="center-align">
-    <video class="responsive-video" controls>
-        <source src="/file/{{Node.Path|UrlEncode}}/raw" type="{{Node.Mime}}">
-    </video>
-</div>
+<video controls class="responsive">
+	<source src="/raw/{{Item.FullPath}}" type="{{Node.Mime}}">
+</video>
 {% endblock %}

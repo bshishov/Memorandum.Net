@@ -6,7 +6,7 @@ namespace Memorandum.Web.Framework.Utilities
     /// <summary>
     ///     Simple key-value storage with changed event
     /// </summary>
-    internal class Context
+    public class Context
     {
         protected Dictionary<string, object> Data = new Dictionary<string, object>();
 
@@ -21,10 +21,10 @@ namespace Memorandum.Web.Framework.Utilities
         /// <typeparam name="T">Type of value to store</typeparam>
         /// <param name="key">Key</param>
         /// <returns>Item. Returns null if it doesn't exist in context</returns>
-        public T? Get<T>(string key) where T : struct
+        public T Get<T>(string key)
         {
             if (!Data.ContainsKey(key))
-                return null;
+                return default(T);
             return (T)Convert.ChangeType(Data[key], typeof(T));
         }
 

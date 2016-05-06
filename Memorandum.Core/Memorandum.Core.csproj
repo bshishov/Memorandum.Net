@@ -30,13 +30,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.0.518, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
-      <HintPath>..\packages\SharpZipLib.0.86.0\lib\20\ICSharpCode.SharpZipLib.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Iesi.Collections">
-      <HintPath>..\packages\Iesi.Collections.4.0.1.4000\lib\net40\Iesi.Collections.dll</HintPath>
-    </Reference>
     <Reference Include="Lucene.Net, Version=3.0.3.0, Culture=neutral, PublicKeyToken=85089178b9ac3181, processorArchitecture=MSIL">
       <HintPath>..\packages\Lucene.Net.3.0.3\lib\NET40\Lucene.Net.dll</HintPath>
       <Private>True</Private>
@@ -44,51 +37,36 @@
     <Reference Include="MimeTypeMap">
       <HintPath>..\packages\MediaTypeMap.2.1.0.0\lib\net40\MimeTypeMap.dll</HintPath>
     </Reference>
-    <Reference Include="NHibernate">
-      <HintPath>..\packages\NHibernate.4.0.4.4000\lib\net40\NHibernate.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
+    <Reference Include="YamlDotNet, Version=3.8.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\YamlDotNet.3.8.0\lib\net35\YamlDotNet.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Domain\Link.cs" />
-    <Compile Include="Domain\FileNode.cs" />
-    <Compile Include="Domain\Session.cs" />
-    <Compile Include="Domain\User.cs" />
-    <Compile Include="Database.cs" />
-    <Compile Include="Repositories\FileNodeRepository.cs" />
-    <Compile Include="Repositories\IRepository.cs" />
-    <Compile Include="Domain\Node.cs" />
+    <Compile Include="Domain\Files\DirectoryItem.cs" />
+    <Compile Include="Domain\Files\FileItem.cs" />
+    <Compile Include="Domain\Files\FileManager.cs" />
+    <Compile Include="Domain\Files\IDirectoryItem.cs" />
+    <Compile Include="Domain\Files\IFileItem.cs" />
+    <Compile Include="Domain\Files\IItem.cs" />
+    <Compile Include="Domain\Files\UrlFileItem.cs" />
+    <Compile Include="Domain\Files\YamlFileItem.cs" />
+    <Compile Include="Domain\Permissions\PermissionManager.cs" />
+    <Compile Include="Domain\Users\User.cs" />
+    <Compile Include="Domain\Users\UserInfo.cs" />
+    <Compile Include="Domain\Users\UserManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Domain\TextNode.cs" />
-    <Compile Include="Domain\URLNode.cs" />
-    <Compile Include="Repositories\LinksRepository.cs" />
-    <Compile Include="Repositories\DatabaseRepository.cs" />
-    <Compile Include="Domain\NodeIdentifier.cs" />
-    <Compile Include="Repositories\NodeRepository.cs" />
-    <Compile Include="Repositories\TextNodeRepository.cs" />
-    <Compile Include="Repositories\UrlNodeRepository.cs" />
-    <Compile Include="Repositories\UserRepository.cs" />
     <Compile Include="Search\Mappers\FileNodeMapper.cs" />
     <Compile Include="Search\Mappers\ILuceneMapper.cs" />
-    <Compile Include="Search\Mappers\LinkMapper.cs" />
     <Compile Include="Search\LuceneIndex.cs" />
     <Compile Include="Search\SearchManager.cs" />
-    <Compile Include="Search\Mappers\TextNodeMapper.cs" />
-    <Compile Include="Search\Mappers\UrlNodeMapper.cs" />
-    <Compile Include="UnitOfWork.cs" />
+    <Compile Include="Utilities\DirectoryInfoExtensions.cs" />
     <Compile Include="Utilities\Rfc2898DeriveBytes_sha256.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Mappings.hbm.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

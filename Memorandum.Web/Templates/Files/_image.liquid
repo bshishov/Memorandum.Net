@@ -1,9 +1,9 @@
-{% extends 'file_node' %}
+{% extends 'file_layout' %}
 
 {% block file_content %}
 <div class="image-file center-align">
     <div>
-        <img class="responsive-img" src="/file/{{Node.Path|UrlEncode}}/raw" data-caption="{{Node.Name}}">
+        <img class="responsive-img" src="/raw/{{Item.FullPath}}" data-caption="{{Item.Name}}">
     </div>
 </div>
 {% endblock %}

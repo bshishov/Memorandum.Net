@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Net;
-using System.Text;
 using HttpMultipartParser;
-using Memorandum.Core;
 using Memorandum.Core.Domain;
+using Memorandum.Core.Domain.Users;
+using Memorandum.Web.Framework.Middleware.Session;
 using Memorandum.Web.Framework.Utilities;
-using Memorandum.Web.Middleware;
 
 namespace Memorandum.Web.Framework.Backend.HttpListener
 {
@@ -26,25 +24,9 @@ namespace Memorandum.Web.Framework.Backend.HttpListener
         public string Method => _request.HttpMethod;
         public string Path => _request.RawUrl;
         public string ContentType => _request.ContentType;
-        public SessionContext Session { get; set; }
-        public UnitOfWork UnitOfWork { get; set; }
-
-        /// <summary>
-        /// Current User identifier, stored in session
-        /// </summary>
-        public int? UserId
-        {
-            get { return Session.Get<int>("userId"); }
-            set { Session.Set("userId", value); }
-        }
-
-        private User _user;
-        private readonly HttpListenerResponse _response;
-
-        /// <summary>
-        /// Lazy loaded User
-        /// </summary>
-        public User User => _user ?? (_user = UnitOfWork.Users.FindById(UserId.GetValueOrDefault()));
+        public ISessionContext Session { get; set; }
+        
+        public User User { get; set; }
 
         /// <summary>
         ///     Lazy loaded cookies from request

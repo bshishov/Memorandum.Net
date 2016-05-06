@@ -9,6 +9,7 @@ using Memorandum.Web.Framework.Responses;
 using Memorandum.Web.Framework.Routing;
 using Memorandum.Web.Framework.Utilities;
 using System.Diagnostics;
+using System.IO;
 using System.Net;
 using System.Threading.Tasks;
 using Memorandum.Web.Framework.Backend;
@@ -27,9 +28,14 @@ namespace Memorandum.Web.Framework
             _backend = backend;
             _rootRouter = router;
 
-            var assembly = Assembly.GetExecutingAssembly();
+            
             Template.RegisterTag<Tags.StaticTag>("static");
+#if DEBUG
+            Template.FileSystem = new DebugFileSystem(Path.Combine("..", "..", "Templates"));
+#else
+            var assembly = Assembly.GetExecutingAssembly();
             Template.FileSystem = new EmbeddedFileSystem(assembly, "Memorandum.Web.Templates");
+#endif
             Template.NamingConvention = new CSharpNamingConvention();
             Template.RegisterFilter(typeof (Filters));
 
@@ -84,7 +90,8 @@ namespace Memorandum.Web.Framework
                 {
                     Title = "Server error",
                     ErrorCode = e.StatusCode,
-                    ErrorMessage = e.ToString()
+                    ErrorMessage = e.Message,
+                    Exception = e.ToString()
                 }, e.StatusCode);
             }
             catch (Exception e)
@@ -97,7 +104,8 @@ namespace Memorandum.Web.Framework
                 {
                     Title = "Server error",
                     ErrorCode = 500,
-                    ErrorMessage = e.ToString()
+                    ErrorMessage = e.Message,
+                    Exception = e.ToString()
                 }, 500);
             }
         }

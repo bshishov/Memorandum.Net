@@ -1,8 +1,25 @@
-﻿{% extends 'layout' %}
+﻿{% extends 'page_layout' %}
 
-{% block content %}
-<div class="row card">
-	<h1>{{ ErrorCode }}</h1>
-	{{ ErrorMessage }}
+{% block page_title %}{{ ErrorCode }}{% endblock %}
+
+{% block page_content %}
+<div class="ui center header">{{ ErrorMessage }}</div>
+<div class="ui section center">
+<a class="ui basic button" href="javasctipt:;" onclick="$('.ui.modal').modal('show');">
+  <i class="icon code"></i>
+  Show details
+</a>
+</div>
+
+<div class="ui basic modal">  
+  <div class="header center">{{ ErrorMessage }}</div>
+  <div class="image content">
+    <div class="image">
+      <i class="code icon"></i>
+    </div>
+    <div class="description">
+      <p>{{ Exception }}</p>
+    </div>
+  </div>
 </div>
 {% endblock %}

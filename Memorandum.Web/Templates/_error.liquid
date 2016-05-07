@@ -3,12 +3,22 @@
 {% block page_title %}{{ ErrorCode }}{% endblock %}
 
 {% block page_content %}
-<div class="ui center header">{{ ErrorMessage }}</div>
-<div class="ui section center">
-<a class="ui basic button" href="javasctipt:;" onclick="$('.ui.modal').modal('show');">
-  <i class="icon code"></i>
-  Show details
-</a>
+<div class="ui two column centered grid">
+  <div class="column">
+	<div class="ui basic segment center aligned">
+		<h2 class="ui icon header">
+		  <div class="content">
+			{{ ErrorMessage }}
+		  </div>
+		</h2>
+		<div class="section">
+			<a class="ui basic button" href="javasctipt:;" onclick="$('.ui.modal').modal('show');">
+			  <i class="icon code"></i>
+			  Show details
+			</a>
+		</div>
+	</div>
+  </div>
 </div>
 
 <div class="ui basic modal">  

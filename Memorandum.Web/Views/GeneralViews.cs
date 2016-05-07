@@ -5,13 +5,12 @@ using System.Net;
 using Memorandum.Core.Domain.Files;
 using Memorandum.Core.Domain.Permissions;
 using Memorandum.Core.Domain.Users;
-using Memorandum.Web.Editors;
+using Memorandum.Web.Actions;
 using Memorandum.Web.Framework;
 using Memorandum.Web.Framework.Errors;
 using Memorandum.Web.Framework.Responses;
 using Memorandum.Web.Framework.Routing;
 using Memorandum.Web.Middleware;
-using Memorandum.Web.Views.Drops;
 
 namespace Memorandum.Web.Views
 {
@@ -77,7 +76,14 @@ namespace Memorandum.Web.Views
 
             var path = string.IsNullOrEmpty(args[1]) ? String.Empty : args[1];
             var item = FileManager.Get(UserManager.Get(args[0]), WebUtility.UrlDecode(path));
-            var action = request.QuerySet["action"]?.ToLowerInvariant();
+
+            var action = "view"; // default action
+            if (!string.IsNullOrEmpty(request.QuerySet["action"]))
+                action = request.QuerySet["action"];
+
+            var editor = String.Empty; // default action
+            if (!string.IsNullOrEmpty(request.QuerySet["editor"]))
+                editor = request.QuerySet["editor"];
 
             if (item == null)
                 throw new Http404Exception("Item not found");
@@ -85,123 +91,64 @@ namespace Memorandum.Web.Views
             if (!PermissionManager.CanRead(item, user))
                 throw new InvalidOperationException("Access denied :)");
 
-            if (request.Method == "POST" && !string.IsNullOrEmpty(action))
-            {
-                if (action.Equals("rename"))
-                {
-                    item.Rename(request.PostArgs["name"]);
-                    return new RedirectResponse($"/tree/{item.Owner.Name}/{item.RelativePath}");
-                }
-            }
-
+            
             if (item.IsDirectory)
             {
-                var dir = (IDirectoryItem)item;
+                var dir = item as IDirectoryItem;
+                IItemAction<IDirectoryItem> actionImpl;
+                if(string.IsNullOrEmpty(editor))
+                    actionImpl = DirectoryActions.LastOrDefault(a => a.Action.Equals(action) && a.CanHandle(dir));
+                else
+                    actionImpl = DirectoryActions.LastOrDefault(a => a.Action.Equals(action) && a.Editor.Equals(editor));
 
-                if (request.Method == "POST" && !string.IsNullOrEmpty(action))
-                {
-                    if (action.Equals("create"))
-                    {
-                        var creator =
-                        EditorManager.Creators.FirstOrDefault(
-                            c => c.Id.Equals(request.QuerySet["creator"].ToLowerInvariant()));
-                        if (creator == null)
-                            throw new InvalidOperationException("Creator with this name not found");
-                        var newItem = creator.CreateNew(dir, request);
-                        if (newItem == null)
-                            throw new InvalidOperationException("Failed to create an item");
-                        return new RedirectResponse($"/tree/{newItem.Owner.Name}/{newItem.RelativePath}");
-                    }
-                }
+                if (actionImpl == null)
+                    throw new InvalidOperationException($"Cannot find implementation of action '{action}'");
 
-                var parent = dir.GetParent();
-                var baseDrop = parent == null ? null : new DirectoryItemDrop(parent);
-                return new TemplatedResponse("dir", new
-                {
-                    Title = item.Name,
-                    BaseDirectory = baseDrop,
-                    Item = new DirectoryItemDrop(dir),
-                    User = new UserDrop(user),
-                    Creators = EditorManager.Creators.Select(c => new CreatorDrop(c)).ToList()
-                });
+                return actionImpl.Do(request, user, dir);
             }
-
-            var fileItem = item as IFileItem;
-            if (fileItem == null)
-                throw new InvalidOperationException("Incorrect file Item");
-
-            IFileEditor fileEditor;
-            if (!string.IsNullOrEmpty(request.QuerySet["editor"]))
-                fileEditor = EditorManager.GetEditor(request.QuerySet["editor"]);
             else
-                fileEditor = EditorManager.GetEditor(fileItem);
-
-            return new TemplatedResponse(fileEditor.Template, new
             {
-                Title = item.Name,
-                BaseDirectory = new DirectoryItemDrop(fileItem.GetParent()),
-                Item = fileEditor.GetView(fileItem),
-                User = new UserDrop(user)
-            });
-        }
+                var file = item as IFileItem;
+                IItemAction<IFileItem> actionImpl;
+                if (string.IsNullOrEmpty(editor))
+                    actionImpl = FileActions.LastOrDefault(a => a.Action.Equals(action) && a.CanHandle(file));
+                else
+                    actionImpl = FileActions.LastOrDefault(a => a.Action.Equals(action) && a.Editor.Equals(editor));
 
-        private static Response TreeViewAction(IRequest request, string[] args)
-        {
-            if (((CustomSessionContext)request.Session).User == null)
-                return new RedirectResponse("/login");
+                if (actionImpl == null)
+                    throw new InvalidOperationException($"Cannot find implementation of action '{action}'");
 
-            if (string.IsNullOrEmpty(args[0]) || string.IsNullOrEmpty(args[1]) || string.IsNullOrEmpty(args[2]))
-                throw new InvalidOperationException("Missing args");
-
-            if (((CustomSessionContext)request.Session).User == null)
-                throw new InvalidOperationException("Unauthorized");
-
-            var node = FileManager.Get(UserManager.Get(args[1]), args[2]);
-
-            if (node == null)
-                throw new Http404Exception("Item not found");
-
-            if (!PermissionManager.CanRead(node, ((CustomSessionContext)request.Session).User))
-                throw new InvalidOperationException("Access denied :)");
-
-            if (args[0].Equals("raw") && request.Method == "GET")
-            {
-                var fileNode = node as IFileItem;
-                if (fileNode == null)
-                    throw new InvalidOperationException("Not a file");
-
-                return new StreamedHttpResponse(fileNode.GetStream(), contenttype: fileNode.Mime,
-                    headers: new Dictionary<string, string>
-                    {
-                        {"Content-Disposition", $"inline; filename=\"{Uri.EscapeDataString(fileNode.Name)}\""},
-                        {"X-Sendfile", Uri.EscapeDataString(fileNode.Name)}
-                    });
+                return actionImpl.Do(request, user, file);
             }
-
-            if (args[0].Equals("download") && request.Method == "GET")
-            {
-                var fileNode = node as IFileItem;
-                if (fileNode == null)
-                    throw new InvalidOperationException("Not a file");
-
-                return new StreamedHttpResponse(fileNode.GetStream(), contenttype: "application/force-download",
-                    headers: new Dictionary<string, string>
-                    {
-                        {"Content-Disposition", $"attachment; filename=\"{Uri.EscapeDataString(fileNode.Name)}\""},
-                        {"X-Sendfile", Uri.EscapeDataString(fileNode.Name)}
-                    });
-            }
-
-            throw new NotImplementedException();
         }
-
+     
         public static Router Router = new Router(new List<IRoute>
         {
             new Route("^/?$", Home),
             new Route("^/login$", Login),
             new Route("^/logout$", Logout),
             new RouteWithArg("/tree/([a-z]+)/([^?]+)?", TreeView),
-            new RouteWithArg("/([a-z]+)/([a-z]+)/([^?]+)?", TreeViewAction),
         });
+
+        // TODO: collect using attributes
+        private static readonly List<IItemAction<IFileItem>> FileActions = new List<IItemAction<IFileItem>>
+        {
+            new BinaryFileViewAction(),
+            new FileDownloadAction(),
+            new FileRawAction(),
+            new ItemRenameAction(),
+            new CodeFileViewAction(),
+            new UrlFileViewAction(),
+            new MdFileViewAction(),
+        };
+
+        // TODO: collect using attributes
+        private static readonly List<IItemAction<IDirectoryItem>> DirectoryActions = new List<IItemAction<IDirectoryItem>>
+        {
+            new ItemRenameAction(),
+            new DirectoryCreateFileAction(),
+            new DirectoryViewAction(),
+            new DirectoryUploadAction() // duplicate of create ?
+        };
     }
 }

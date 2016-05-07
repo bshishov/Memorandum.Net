@@ -67,18 +67,25 @@
     <Reference Include="System.Runtime.Serialization" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Actions\BinaryFileViewAction.cs" />
+    <Compile Include="Actions\CodeFileViewAction.cs" />
+    <Compile Include="Actions\DirectoryUploadAction.cs" />
+    <Compile Include="Actions\FileBaseViewAction.cs" />
+    <Compile Include="Actions\DirectoryCreateFileAction.cs" />
+    <Compile Include="Actions\DirectoryViewAction.cs" />
+    <Compile Include="Actions\FileRawAction.cs" />
+    <Compile Include="Actions\ItemRenameAction.cs" />
+    <Compile Include="Actions\MdFileViewAction.cs" />
+    <Compile Include="Actions\UrlFileViewAction.cs" />
     <Compile Include="Creators\MarkdownCreator.cs" />
     <Compile Include="Creators\TextCreator.cs" />
     <Compile Include="Creators\UploaderCreator.cs" />
     <Compile Include="Creators\URLCreator.cs" />
-    <Compile Include="Editors\CodeFileEditor.cs" />
-    <Compile Include="Editors\DefaultFileEditor.cs" />
+    <Compile Include="Actions\FileDownloadAction.cs" />
     <Compile Include="Creators\DirectoryCreator.cs" />
-    <Compile Include="Editors\EditorManager.cs" />
+    <Compile Include="Creators\CreatorManager.cs" />
     <Compile Include="Creators\ICreator.cs" />
-    <Compile Include="Editors\MarkdownFileEditor.cs" />
     <Compile Include="Creators\FileCreator.cs" />
-    <Compile Include="Editors\UrlEditor.cs" />
     <Compile Include="Framework\App.cs" />
     <Compile Include="Framework\Backend\FastCGI\FastCGIBackend.cs" />
     <Compile Include="Framework\Backend\HttpListener\HttpListenerBackend.cs" />
@@ -95,6 +102,7 @@
     <Compile Include="Framework\Utilities\StaticServeRouter.cs" />
     <Compile Include="Framework\Utilities\StringCipher.cs" />
     <Compile Include="Framework\Utilities\TemplateUtilities.cs" />
+    <Compile Include="Actions\IItemAction.cs" />
     <Compile Include="Middleware\ApiMiddleware.cs" />
     <Compile Include="Framework\Middleware\Session\SessionContext.cs" />
     <Compile Include="Framework\Middleware\Session\SessionMiddleware.cs" />
@@ -132,8 +140,6 @@
     <Compile Include="Views\Drops\DirectoryItemDrop.cs" />
     <Compile Include="Views\Drops\UrlFileItemDrop.cs" />
     <Compile Include="Views\Drops\UserDrop.cs" />
-    <Compile Include="Editors\FileEditor.cs" />
-    <Compile Include="Editors\IFileEditor.cs" />
     <Compile Include="Views\RestApi\ApiResponse.cs" />
     <Compile Include="Views\RestApi\ApiViews.cs" />
     <Compile Include="Views\RestApi\BadRequestApiResponse.cs" />

@@ -6,7 +6,7 @@
 <script src="{% static 'js/ace/ext-modelist.js' %}" type="text/javascript" charset="utf-8"></script>
 <script>
     $(document).ready(function(){
-        var path = "/raw/{{Item.FullPath}}";
+        var path = "{{Item.URL}}?action=raw";
 
         $.ajax({
           url: path,

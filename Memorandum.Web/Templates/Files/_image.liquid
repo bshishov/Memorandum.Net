@@ -3,7 +3,7 @@
 {% block file_content %}
 <div class="image-file center-align">
     <div>
-        <img class="responsive-img" src="/raw/{{Item.FullPath}}" data-caption="{{Item.Name}}">
+        <img class="responsive-img" src="{{Item.URL}}?action=raw" data-caption="{{Item.Name}}">
     </div>
 </div>
 {% endblock %}

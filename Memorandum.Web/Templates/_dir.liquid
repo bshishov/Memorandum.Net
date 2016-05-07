@@ -69,7 +69,6 @@ $('.dropdown')
 
 {% block item_notes %}
 	{% if Item.Index %}
-		{{ Item.Index.FullPath }}
 		{% include 'Blocks/md_editor' Item:Item.Index %}
 	{% endif %}
 {% endblock %}

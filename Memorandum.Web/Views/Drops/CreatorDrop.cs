@@ -1,6 +1,5 @@
 ﻿using DotLiquid;
 using Memorandum.Web.Creators;
-using Memorandum.Web.Editors;
 
 namespace Memorandum.Web.Views.Drops
 {

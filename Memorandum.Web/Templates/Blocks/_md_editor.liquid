@@ -18,7 +18,7 @@
 <script src="{% static 'js/me-markdown.standalone.min.js' %}" type="text/javascript" charset="utf-8"></script>
 <script>
     $(document).ready(function(){
-        var path = "/raw/{{Item.FullPath}}";
+        var path = "{{Item.URL}}?action=raw";
 		var md2html = new showdown.Converter();
 		var mediumEditor;
 

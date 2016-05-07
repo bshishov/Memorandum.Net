@@ -2,6 +2,6 @@
 
 {% block file_content %}
 <video controls class="responsive">
-	<source src="/raw/{{Item.FullPath}}" type="{{Node.Mime}}">
+	<source src="{{Item.URL}}?action=raw" type="{{Node.Mime}}">
 </video>
 {% endblock %}

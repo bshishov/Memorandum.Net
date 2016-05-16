@@ -9,6 +9,7 @@ using Memorandum.Web.ViewModels;
 using Memorandum.Web.Views;
 using Memorandum.Web.Views.RestApi;
 using Shine;
+using Shine.FastCGI;
 using Shine.Responses;
 using Shine.Routing;
 using Shine.Server;
@@ -68,14 +69,11 @@ namespace Memorandum.Web
                 Exception = e.ToString()
             }, code);
 
-            /*IServer server;
-            
+            IServer server;
             if (options.FastCGI)
                 server = new FastCGIServer(Settings.Default.Port);
             else
-                server = new HttpListenerServer($"http://127.0.0.1:{Settings.Default.Port}/");*/
-
-            var server = new HttpListenerServer($"http://127.0.0.1:{Settings.Default.Port}/");
+                server = new HttpListenerServer($"http://127.0.0.1:{Settings.Default.Port}/");
             server.Run(app);
             Console.ReadKey();
             return 0;

@@ -17,11 +17,13 @@ namespace Memorandum.Core.Domain.Permissions
 
         public static bool CanRead(IItem item, User user)
         {
+            //return item.Owner.Equals(user);
             return true;
         }
 
         public static bool CanWrite(IItem item, User user)
         {
+            //return item.Owner.Equals(user);
             return true;
         }
     }

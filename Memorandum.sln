@@ -7,8 +7,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Memorandum.Core", "Memorand
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Memorandum.Web", "Memorandum.Web\Memorandum.Web.csproj", "{30DD4420-6808-4F21-A8AF-DBE08EC1B5BC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FastCGI", "Memorandum.Web\External\FastCGI\FastCGI\FastCGI.csproj", "{4E960156-AAFA-44E7-9F0E-FB19069710A6}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,10 +21,6 @@ Global
 		{30DD4420-6808-4F21-A8AF-DBE08EC1B5BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{30DD4420-6808-4F21-A8AF-DBE08EC1B5BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{30DD4420-6808-4F21-A8AF-DBE08EC1B5BC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4E960156-AAFA-44E7-9F0E-FB19069710A6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4E960156-AAFA-44E7-9F0E-FB19069710A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4E960156-AAFA-44E7-9F0E-FB19069710A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4E960156-AAFA-44E7-9F0E-FB19069710A6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

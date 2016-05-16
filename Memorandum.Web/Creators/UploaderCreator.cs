@@ -1,6 +1,6 @@
 ﻿using System.IO;
 using Memorandum.Core.Domain.Files;
-using Memorandum.Web.Framework;
+using Shine;
 
 namespace Memorandum.Web.Creators
 {
@@ -15,7 +15,7 @@ namespace Memorandum.Web.Creators
             // Save passed files
             foreach (var file in request.Files)
             {
-                var fileItem = new FileItem(directory.Owner, Path.Combine(directory.RelativePath, file.FileName));
+                var fileItem = FileItem.Create(directory.Owner, Path.Combine(directory.RelativePath, file.FileName));
                 // if(fileItem.Exists) // TODO: overwrite ?
                 using (var writer = fileItem.GetStream(FileMode.OpenOrCreate))
                 {

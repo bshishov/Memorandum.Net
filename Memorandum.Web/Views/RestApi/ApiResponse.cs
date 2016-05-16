@@ -1,5 +1,5 @@
-using Memorandum.Web.Framework.Responses;
 using Newtonsoft.Json;
+using Shine.Responses;
 
 namespace Memorandum.Web.Views.RestApi
 {

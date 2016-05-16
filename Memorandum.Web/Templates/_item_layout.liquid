@@ -1,7 +1,7 @@
 ﻿{% extends 'layout' %}
 
 {% block content %}
-<div class="ui vertical inverted menu sidebar left visible">		
+<div class="ui vertical inverted left menu sidebar">		
 	<div class="item">
 		<div class="ui transparent icon input inverted">
 			<input type="text" placeholder="Search...">
@@ -30,30 +30,33 @@
 	<a class="item" href="/logout">Logout</a>		
 </div>
 
-
-<div class="main">
-	<div class="header ui grid stackable">	
-		<div class="eight wide column">
-			<div class="ui huge breadcrumb">
-				{% for b in Item.Breadcrumbs %}
-					<a class="section" href="{{b.URL}}">
-						{% if b.IsRoot %}<i class="icon home"></i>{% else %}{{b.Name}}{% endif %}
-					</a>
-					<div class="divider"> / </div>
-				{% endfor %}			
-				<div class="active section">{% if Item.IsRoot %}<i class="icon home"></i> Home{% else %}{{ Item.Name }}{% endif %}</div>
-			</div>
-			{% if Item.IsRoot != true %}
-			<a href="javascript:;" class="ui tiny button" onclick="$('#rename').modal('show');">Rename</a>
-			{% endif %}
-		</div>		
-		
-		<div class="eight wide column right aligned">
-			<div class="ui secondary menu floated right">	
-				{% block item_controls%}{% endblock %}								
-			</div>
+ <div class="ui top fixed stackable small menu">
+	<a class="item icon launch button">
+		<i class="sidebar icon"></i>
+	</a>
+	<div class="item">	
+		<div class="ui big breadcrumb">
+			{% for b in Item.Breadcrumbs %}
+				<a class="section" href="{{b.URL}}">
+					{% if b.IsRoot %}<i class="icon home"></i>{% else %}{{b.Name}}{% endif %}
+				</a>
+				<div class="divider"> / </div>
+			{% endfor %}			
+			<div class="active section">{% if Item.IsRoot %}<i class="icon home"></i> Home{% else %}{{ Item.Name }}{% endif %}</div>
 		</div>
-		
+	</div>				
+
+	{% if Item.IsRoot != true %}
+		<a href="javascript:;" class="ui item" onclick="$('#rename').modal('show');">Rename</a>
+	{% endif %}
+
+	<div class="right menu">	
+		{% block item_controls%}{% endblock %}								
+	</div>	
+ </div>
+
+<div class="pusher main">
+	<div class="header ui grid stackable">
 		<div class="sixteen wide column">
 			{% block item_header %}{% endblock %}					
 		</div>
@@ -62,12 +65,11 @@
 		<div class="content">
 			{% block item_content %}{% endblock %}
 		</div>
-		<div class="notes">
+		<div class="notes transition hidden">
 			{% block item_notes %}{% endblock %}
 		</div>
 	</div>
 </div>
-
 
 <div class="ui small modal" id="rename">
 	<div class="content">
@@ -80,4 +82,12 @@
 		</form>
 	</div>
 </div>
+
+
+<script type="text/javascript">
+$(document).ready(function () {
+    $('.ui.sidebar')
+        .sidebar('attach events', '.launch.button', 'slide out');
+});
+</script>
 {% endblock %}

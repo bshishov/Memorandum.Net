@@ -34,10 +34,10 @@ namespace Memorandum.Web.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("C:\\home")]
-        public string FileStorage {
+        [global::System.Configuration.DefaultSettingValueAttribute(".\\")]
+        public string MediaPath {
             get {
-                return ((string)(this["FileStorage"]));
+                return ((string)(this["MediaPath"]));
             }
         }
         

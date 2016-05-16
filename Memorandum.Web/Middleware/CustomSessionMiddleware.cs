@@ -1,7 +1,7 @@
 ﻿using System;
-using Memorandum.Core.Domain;
 using Memorandum.Core.Domain.Users;
-using Memorandum.Web.Framework.Middleware.Session;
+using Memorandum.Web.Properties;
+using Shine.Middleware.Session;
 
 namespace Memorandum.Web.Middleware
 {
@@ -56,7 +56,11 @@ namespace Memorandum.Web.Middleware
 
     class CustomSessionMiddleware : SessionMiddleware
     {
-        public CustomSessionMiddleware(ISessionStorage storage) : base(storage, new CustomSessionFactory())
+        public CustomSessionMiddleware(ISessionStorage storage) : base(Settings.Default.Secret, storage, new CustomSessionFactory())
+        {
+        }
+
+        public CustomSessionMiddleware() : this(new MemorySessionStorage())
         {
         }
     }

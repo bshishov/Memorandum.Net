@@ -32,18 +32,15 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AutoMapper, Version=4.2.1.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
-      <HintPath>..\packages\AutoMapper.4.2.1\lib\net45\AutoMapper.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="CommandLine">
       <HintPath>..\packages\CommandLineParser.2.0.275-beta\lib\net45\CommandLine.dll</HintPath>
     </Reference>
-    <Reference Include="DotLiquid">
+    <Reference Include="DotLiquid, Version=1.8.0.0, Culture=neutral, PublicKeyToken=82e46016ecf9f07c, processorArchitecture=MSIL">
       <HintPath>..\packages\DotLiquid.1.8.0\lib\NET45\DotLiquid.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="HttpMultipartParser, Version=1.1.5.0, Culture=neutral, PublicKeyToken=6d293681fa6c7a03, processorArchitecture=MSIL">
-      <HintPath>..\packages\HttpMultipartParser.2.1.3\lib\net40\HttpMultipartParser.dll</HintPath>
+    <Reference Include="HttpMultipartParser, Version=2.1.4.0, Culture=neutral, PublicKeyToken=6d293681fa6c7a03, processorArchitecture=MSIL">
+      <HintPath>..\packages\HttpMultipartParser.2.1.4\lib\net40\HttpMultipartParser.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.0.518, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
@@ -59,95 +56,76 @@
       <HintPath>..\packages\MediaTypeMap.2.1.0.0\lib\net40\MimeTypeMap.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Newtonsoft.Json.8.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\packages\Newtonsoft.Json.8.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Shine, Version=0.1.7.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Shine.0.1.7\lib\net45\Shine.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Shine.Templates.DotLiquid, Version=0.1.7.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Shine.Templates.DotLiquid.0.1.7\lib\net45\Shine.Templates.DotLiquid.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.Serialization" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Actions\BinaryFileViewAction.cs" />
-    <Compile Include="Actions\CodeFileViewAction.cs" />
-    <Compile Include="Actions\DirectoryUploadAction.cs" />
-    <Compile Include="Actions\FileBaseViewAction.cs" />
-    <Compile Include="Actions\DirectoryCreateFileAction.cs" />
-    <Compile Include="Actions\DirectoryViewAction.cs" />
-    <Compile Include="Actions\FileRawAction.cs" />
-    <Compile Include="Actions\ItemRenameAction.cs" />
-    <Compile Include="Actions\MdFileViewAction.cs" />
-    <Compile Include="Actions\UrlFileViewAction.cs" />
+    <Compile Include="Editors\Actions\DirectoryUploadAction.cs" />
+    <Compile Include="Editors\Actions\FileBaseViewAction.cs" />
+    <Compile Include="Editors\Actions\DirectoryCreateFileAction.cs" />
+    <Compile Include="Editors\Actions\DirectoryViewAction.cs" />
+    <Compile Include="Editors\Actions\ItemDeleteAction.cs" />
+    <Compile Include="Editors\Actions\FileRawAction.cs" />
+    <Compile Include="Editors\Actions\FileSaveAction.cs" />
+    <Compile Include="Editors\Actions\ItemRenameAction.cs" />
     <Compile Include="Creators\MarkdownCreator.cs" />
     <Compile Include="Creators\TextCreator.cs" />
     <Compile Include="Creators\UploaderCreator.cs" />
     <Compile Include="Creators\URLCreator.cs" />
-    <Compile Include="Actions\FileDownloadAction.cs" />
+    <Compile Include="Editors\Actions\FileDownloadAction.cs" />
     <Compile Include="Creators\DirectoryCreator.cs" />
     <Compile Include="Creators\CreatorManager.cs" />
     <Compile Include="Creators\ICreator.cs" />
     <Compile Include="Creators\FileCreator.cs" />
-    <Compile Include="Framework\App.cs" />
-    <Compile Include="Framework\Backend\FastCGI\FastCGIBackend.cs" />
-    <Compile Include="Framework\Backend\HttpListener\HttpListenerBackend.cs" />
-    <Compile Include="Framework\Backend\HttpListener\RequestWrapper.cs" />
-    <Compile Include="Framework\IAsyncRequestHandler.cs" />
-    <Compile Include="Framework\Backend\IBackend.cs" />
-    <Compile Include="Framework\Errors\HttpErrorException.cs" />
-    <Compile Include="Framework\IRequest.cs" />
-    <Compile Include="Framework\Middleware\IMiddleware.cs" />
-    <Compile Include="Framework\Middleware\Session\ISessionContext.cs" />
-    <Compile Include="Framework\Middleware\Session\ISessionFactory.cs" />
-    <Compile Include="Framework\Responses\StreamedResponse.cs" />
-    <Compile Include="Framework\Utilities\DebugFileSystem.cs" />
-    <Compile Include="Framework\Utilities\StaticServeRouter.cs" />
-    <Compile Include="Framework\Utilities\StringCipher.cs" />
-    <Compile Include="Framework\Utilities\TemplateUtilities.cs" />
-    <Compile Include="Actions\IItemAction.cs" />
+    <Compile Include="Editors\EditorManager.cs" />
+    <Compile Include="Editors\FileCodeEditor.cs" />
+    <Compile Include="Editors\DefaultDirectoryEditor.cs" />
+    <Compile Include="Editors\DefaultDirectoryViewFactory.cs" />
+    <Compile Include="Editors\DefaultFileViewFactory.cs" />
+    <Compile Include="Editors\Editor.cs" />
+    <Compile Include="Editors\FileDefaultEditor.cs" />
+    <Compile Include="Editors\FileEditorBase.cs" />
+    <Compile Include="Editors\FileImageEditor.cs" />
+    <Compile Include="Editors\FileMdEditor.cs" />
+    <Compile Include="Editors\FileUrlEditor.cs" />
+    <Compile Include="Editors\IViewFactory.cs" />
+    <Compile Include="Editors\Actions\IItemAction.cs" />
     <Compile Include="Middleware\ApiMiddleware.cs" />
-    <Compile Include="Framework\Middleware\Session\SessionContext.cs" />
-    <Compile Include="Framework\Middleware\Session\SessionMiddleware.cs" />
-    <Compile Include="Framework\Backend\FastCGI\FastCGIRequest.cs" />
-    <Compile Include="Framework\Responses\RedirectResponse.cs" />
-    <Compile Include="Framework\Responses\TemplatedResponse.cs" />
-    <Compile Include="Framework\Routing\IRoute.cs" />
-    <Compile Include="Framework\Responses\HttpResponse.cs" />
-    <Compile Include="Framework\Utilities\Context.cs" />
-    <Compile Include="Framework\Utilities\Pipeline.cs" />
-    <Compile Include="Framework\Middleware\Session\SessionStorage.cs" />
     <Compile Include="Middleware\CustomSessionMiddleware.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Framework\Routing\IRouteContext.cs" />
-    <Compile Include="Framework\Routing\RequestHandler.cs" />
-    <Compile Include="Framework\Responses\Response.cs" />
-    <Compile Include="Framework\Routing\RequestHandlerWithArg.cs" />
-    <Compile Include="Framework\Routing\Route.cs" />
-    <Compile Include="Framework\Routing\RouteContext.cs" />
-    <Compile Include="Framework\Routing\RouteContextWithArg.cs" />
-    <Compile Include="Framework\Routing\Router.cs" />
-    <Compile Include="Framework\Routing\RouteWithArg.cs" />
-    <Compile Include="Framework\Utilities\Filters.cs" />
-    <Compile Include="Framework\Utilities\HttpUtilities.cs" />
-    <Compile Include="Framework\Utilities\RequestExtensions.cs" />
-    <Compile Include="Framework\Utilities\Tags.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
     <Compile Include="Utitlities\UrlInfo.cs" />
-    <Compile Include="Views\Drops\CreatorDrop.cs" />
-    <Compile Include="Views\Drops\DirectoryItemDrop.cs" />
-    <Compile Include="Views\Drops\UrlFileItemDrop.cs" />
-    <Compile Include="Views\Drops\UserDrop.cs" />
+    <Compile Include="ViewModels\CreatorViewModel.cs" />
+    <Compile Include="ViewModels\DirectoryViewModel.cs" />
+    <Compile Include="ViewModels\FileImageViewModel.cs" />
+    <Compile Include="ViewModels\FileUrlViewModel.cs" />
+    <Compile Include="ViewModels\UserViewModel.cs" />
     <Compile Include="Views\RestApi\ApiResponse.cs" />
     <Compile Include="Views\RestApi\ApiViews.cs" />
     <Compile Include="Views\RestApi\BadRequestApiResponse.cs" />
     <Compile Include="Views\RestApi\ForbiddenApiResponse.cs" />
     <Compile Include="Views\RestApi\NonAuthorizedApiResponse.cs" />
     <Compile Include="Views\RestApi\ResourceNotFoundApiResponse.cs" />
-    <Compile Include="Views\Drops\FileItemDrop.cs" />
-    <Compile Include="Views\Drops\ItemDrop.cs" />
+    <Compile Include="ViewModels\FileItemViewModel.cs" />
+    <Compile Include="ViewModels\ItemViewModel.cs" />
     <Compile Include="Utitlities\Utilities.cs" />
     <Compile Include="Views\GeneralViews.cs" />
   </ItemGroup>
@@ -183,10 +161,6 @@
       <Project>{f4bf3ea8-2436-4bc5-8fb4-8d2c603b77ec}</Project>
       <Name>Memorandum.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="External\FastCGI\FastCGI\FastCGI.csproj">
-      <Project>{4e960156-aafa-44e7-9f0e-fb19069710a6}</Project>
-      <Name>FastCGI</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Templates\Blocks\_md_editor.liquid" />
@@ -194,6 +168,7 @@
   <ItemGroup>
     <EmbeddedResource Include="Templates\Blocks\Forms\_folder.liquid" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

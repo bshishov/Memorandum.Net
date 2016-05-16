@@ -51,7 +51,6 @@
     <Compile Include="Domain\Files\IDirectoryItem.cs" />
     <Compile Include="Domain\Files\IFileItem.cs" />
     <Compile Include="Domain\Files\IItem.cs" />
-    <Compile Include="Domain\Files\UrlFileItem.cs" />
     <Compile Include="Domain\Files\YamlFileItem.cs" />
     <Compile Include="Domain\Permissions\PermissionManager.cs" />
     <Compile Include="Domain\Users\User.cs" />

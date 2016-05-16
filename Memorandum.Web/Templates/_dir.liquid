@@ -12,10 +12,11 @@
 			</div>
 		</div>
 	</div>
+	<a class="ui item" href="javascript:;"onclick="$('#creator-upload').modal('show');"><i class="upload icon"></i> Upload</a>
 	<div class="ui item"><div class="ui label">{{ Item.Modified }}</div></div>   	
-	<a class="ui item" href="/download/{{Item.FullPath}}"><i class="download icon"></i> Download</a>
-	<a class="ui item needconfirm red" href="javascript:;" title="Delete folder and all its contents"><i class="delete icon"></i> Delete</a>			
-	<div class="ui item" href="#"><div class="ui button"><i class="file text icon"></i> Notes</div></div>
+	<a class="ui item" href="{{ Item.URL }}?action=download"><i class="download icon"></i> Download</a>
+	<a class="ui item" href="{{ Item.URL }}?action=delete" title="Delete folder and all its contents"><i class="delete icon"></i> Delete</a>			
+	<div class="ui item" href="javascript:;" onclick="$('.notes').transition('slide left');"><div class="ui button"><i class="file text icon"></i> Notes</div></div>
 <script type="text/javascript">
 $('.popuped').popup();
 $('.dropdown')
@@ -28,29 +29,35 @@ $('.dropdown')
 {% endblock %}
 
 {% block item_content %}
+<div class="ui container">
 	<div class="ui basic segment">
-		<div class="ui cards">
+		<div class="ui five stackable cards">
 			{% for child in Item.ChildDirectories %}
 			<a class="ui card" href="{{ child.URL }}">
+				<div class="image">
+					<img src="http://placehold.it/200x200">
+				</div>
 				<div class="content">
-					<div class="header">{{ child.Name }}</div>
-					<div class="meta" >{{ child.Path }}</div>
+					<div class="ui small header">{{ child.Name }}</div>					
 				</div>
 			</a>
 			{% endfor %}
-		</div>
-	</div>
-	
-	<div class="ui basic segment">
-		<div class="ui cards">
-		{% for child in Item.ChildFiles %}
+			{% for child in Item.ChildFiles %}
 			<a class="ui card" href="{{ child.URL }}">
+				{% if child.ThumbnailPath %}
+				<div class="image">
+					<img src="/media/thumbnails/{{child.ThumbnailPath}}" >
+				</div>
+				{% else %}
+				<div class="image">
+					<img src="http://placehold.it/200x200">
+				</div>
+				{% endif %}
 				<div class="content">
-					<div class="header">{{ child.Name }}</div>
-					<div class="meta" >{{ child.Path }}</div>
+					<div class="ui small header">{{ child.Name }}</div>					
 				</div>
 			</a>
-		{% endfor %}
+			{% endfor %}
 		</div>		
 	</div>
 
@@ -65,6 +72,7 @@ $('.dropdown')
 	  </div>
 	</div>
 	{% endfor %}
+</div>
 {% endblock %}
 
 {% block item_notes %}

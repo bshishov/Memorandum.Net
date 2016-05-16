@@ -1,15 +1,10 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using Memorandum.Core.Domain;
 using Memorandum.Core.Domain.Users;
-using Memorandum.Core.Search;
-using Memorandum.Web.Framework;
-using Memorandum.Web.Framework.Responses;
-using Memorandum.Web.Framework.Routing;
 using Memorandum.Web.Middleware;
-using Memorandum.Web.Utitlities;
+using Shine;
+using Shine.Responses;
+using Shine.Routing;
 
 namespace Memorandum.Web.Views.RestApi
 {

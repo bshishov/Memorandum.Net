@@ -1,5 +1,8 @@
 using System;
 using System.IO;
+using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 using Memorandum.Core.Domain.Users;
 using MimeTypes;
 
@@ -22,7 +25,7 @@ namespace Memorandum.Core.Domain.Files
         public FileItem(User user, string relativePath)
         {
             Owner = user;
-            RelativePath = relativePath.Replace('\\', '/');
+            RelativePath = relativePath;
             _info = new FileInfo(Path.Combine(user.BaseDirectory, relativePath));
         }
 
@@ -49,7 +52,7 @@ namespace Memorandum.Core.Domain.Files
 
         public void Delete()
         {
-            throw new NotImplementedException();
+            _info.Delete();
         }
 
         public string NameWithoutExtension { get; }
@@ -65,6 +68,14 @@ namespace Memorandum.Core.Domain.Files
         public IDirectoryItem GetParent()
         {
             return FileManager.GetDirectory(Owner, Path.GetDirectoryName(RelativePath));
+        }
+
+        public string GetHash()
+        {
+            var hash = Encoding.ASCII.GetBytes(Owner.Name + this.RelativePath);
+            MD5 md5 = new MD5CryptoServiceProvider();
+            var hashenc = md5.ComputeHash(hash);
+            return hashenc.Aggregate("", (current, b) => current + b.ToString("x2"));
         }
 
         public static IFileItem Create(User owner, string relativePath)

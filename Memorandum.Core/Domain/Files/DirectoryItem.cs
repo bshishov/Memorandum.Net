@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 using Memorandum.Core.Domain.Users;
 
 namespace Memorandum.Core.Domain.Files
@@ -25,13 +27,8 @@ namespace Memorandum.Core.Domain.Files
         public DirectoryItem(User user, string relativePath)
         {
             Owner = user;
-            relativePath = relativePath.Replace('\\', '/');
-            if (relativePath.StartsWith("/"))
-                relativePath = relativePath.Substring(1);
             RelativePath = relativePath;
            _directoryInfo = new DirectoryInfo(Path.Combine(user.BaseDirectory, relativePath));
-
-            Index = FileManager.GetFile(user, Path.Combine(relativePath, "Index.md"));
         }
 
         public void Rename(string newName)
@@ -53,10 +50,10 @@ namespace Memorandum.Core.Domain.Files
 
         public void Delete()
         {
-            throw new NotImplementedException();
+            _directoryInfo.Delete();
         }
 
-        public IFileItem Index { get; }
+        public IFileItem Index => FileManager.GetFile(Owner, Path.Combine(RelativePath, "Index.md"));
 
         public void PerformOnchild(Action<IItem> action, bool recursive = false)
         {
@@ -76,6 +73,14 @@ namespace Memorandum.Core.Domain.Files
             return null;
         }
 
+        public string GetHash()
+        {
+            var hash = Encoding.ASCII.GetBytes(Owner.Name + this.RelativePath);
+            MD5 md5 = new MD5CryptoServiceProvider();
+            var hashenc = md5.ComputeHash(hash);
+            return hashenc.Aggregate("", (current, b) => current + b.ToString("x2"));
+        }
+
         public IEnumerable<IItem> GetChild()
         {
             var child = new List<IItem>();
@@ -90,7 +95,7 @@ namespace Memorandum.Core.Domain.Files
             try
             {
                 var dirs = _directoryInfo.GetDirectories("*", SearchOption.TopDirectoryOnly);
-                retval.AddRange(dirs.Select(directoryInfo => FileManager.GetDirectory(Owner, Path.Combine(RelativePath, directoryInfo.Name))));
+                retval.AddRange(dirs.Select(directoryInfo => FileManager.GetDirectory(Owner, Path.Combine(RelativePath, directoryInfo.Name))).Where(d => d != null));
             }
             catch (System.UnauthorizedAccessException ex)
             {
@@ -106,7 +111,7 @@ namespace Memorandum.Core.Domain.Files
             try
             {
                 var files = _directoryInfo.GetFiles("*", SearchOption.TopDirectoryOnly);
-                retval.AddRange(files.Select(fileInfo => FileManager.GetFile(Owner, Path.Combine(RelativePath, fileInfo.Name))));
+                retval.AddRange(files.Select(fileInfo => FileManager.GetFile(Owner, Path.Combine(RelativePath, fileInfo.Name))).Where(f => f != null));
             }
             catch (System.UnauthorizedAccessException ex)
             {

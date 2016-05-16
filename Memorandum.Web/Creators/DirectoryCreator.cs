@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 using Memorandum.Core.Domain.Files;
-using Memorandum.Web.Framework;
+using Shine;
 
 namespace Memorandum.Web.Creators
 {

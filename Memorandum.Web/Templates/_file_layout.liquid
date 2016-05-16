@@ -5,9 +5,9 @@
 	<div class="ui item"><div class="ui label">{{ Item.Modified }}</div> </div>  
 	<a class="ui item" href="{{Item.URL}}?action=raw"><i class="code icon"></i> Raw</a>
 	<a class="ui item" href="{{Item.URL}}?action=download"><i class="download icon"></i> Download <div class="ui label">{{ Item.Size|ReadableSize }}</div></a>
-	<a class="ui item needconfirm red" href="{{Item.URL}}?action=delete" title="Delete this file">
+	<a class="ui item" href="{{Item.URL}}?action=delete" title="Delete this file">
 	<i class="delete icon"></i> Delete</a>			
-	<a class="ui item blue" href="#"><i class="comments icon"></i> Comments</a>
+	<a class="ui item" href="javascript:;" onclick="$('.notes').transition('slide left');"><i class="comments icon"></i> Comments</a>
 <script type="text/javascript">
 $('.popuped').popup();
 </script>

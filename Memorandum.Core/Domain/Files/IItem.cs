@@ -20,5 +20,7 @@ namespace Memorandum.Core.Domain.Files
         void CopyTo(IDirectoryItem target);
         void Delete();
         IDirectoryItem GetParent();
+
+        string GetHash();
     }
 }

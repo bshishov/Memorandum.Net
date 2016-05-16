@@ -1,16 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using Memorandum.Core.Domain.Files;
 using Memorandum.Core.Domain.Permissions;
 using Memorandum.Core.Domain.Users;
-using Memorandum.Web.Actions;
-using Memorandum.Web.Framework;
-using Memorandum.Web.Framework.Errors;
-using Memorandum.Web.Framework.Responses;
-using Memorandum.Web.Framework.Routing;
+using Memorandum.Web.Editors;
 using Memorandum.Web.Middleware;
+using Shine;
+using Shine.Errors;
+using Shine.Responses;
+using Shine.Routing;
 
 namespace Memorandum.Web.Views
 {
@@ -81,9 +80,9 @@ namespace Memorandum.Web.Views
             if (!string.IsNullOrEmpty(request.QuerySet["action"]))
                 action = request.QuerySet["action"];
 
-            var editor = String.Empty; // default action
+            var editorName = String.Empty; // default action
             if (!string.IsNullOrEmpty(request.QuerySet["editor"]))
-                editor = request.QuerySet["editor"];
+                editorName = request.QuerySet["editor"];
 
             if (item == null)
                 throw new Http404Exception("Item not found");
@@ -95,30 +94,24 @@ namespace Memorandum.Web.Views
             if (item.IsDirectory)
             {
                 var dir = item as IDirectoryItem;
-                IItemAction<IDirectoryItem> actionImpl;
-                if(string.IsNullOrEmpty(editor))
-                    actionImpl = DirectoryActions.LastOrDefault(a => a.Action.Equals(action) && a.CanHandle(dir));
-                else
-                    actionImpl = DirectoryActions.LastOrDefault(a => a.Action.Equals(action) && a.Editor.Equals(editor));
+                var editor = string.IsNullOrEmpty(editorName) ? 
+                    EditorManager.GetDefaultEditor(dir) : EditorManager.GetDirectoryEditor(editorName);
 
-                if (actionImpl == null)
+                if (editor == null)
                     throw new InvalidOperationException($"Cannot find implementation of action '{action}'");
 
-                return actionImpl.Do(request, user, dir);
+                return editor.GetAction(action).Do(request, user, dir);
             }
             else
             {
                 var file = item as IFileItem;
-                IItemAction<IFileItem> actionImpl;
-                if (string.IsNullOrEmpty(editor))
-                    actionImpl = FileActions.LastOrDefault(a => a.Action.Equals(action) && a.CanHandle(file));
-                else
-                    actionImpl = FileActions.LastOrDefault(a => a.Action.Equals(action) && a.Editor.Equals(editor));
+                var editor = string.IsNullOrEmpty(editorName) ?
+                   EditorManager.GetDefaultEditor(file) : EditorManager.GetFileEditor(editorName);
 
-                if (actionImpl == null)
+                if (editor == null)
                     throw new InvalidOperationException($"Cannot find implementation of action '{action}'");
 
-                return actionImpl.Do(request, user, file);
+                return editor.GetAction(action).Do(request, user, file);
             }
         }
      
@@ -129,26 +122,5 @@ namespace Memorandum.Web.Views
             new Route("^/logout$", Logout),
             new RouteWithArg("/tree/([a-z]+)/([^?]+)?", TreeView),
         });
-
-        // TODO: collect using attributes
-        private static readonly List<IItemAction<IFileItem>> FileActions = new List<IItemAction<IFileItem>>
-        {
-            new BinaryFileViewAction(),
-            new FileDownloadAction(),
-            new FileRawAction(),
-            new ItemRenameAction(),
-            new CodeFileViewAction(),
-            new UrlFileViewAction(),
-            new MdFileViewAction(),
-        };
-
-        // TODO: collect using attributes
-        private static readonly List<IItemAction<IDirectoryItem>> DirectoryActions = new List<IItemAction<IDirectoryItem>>
-        {
-            new ItemRenameAction(),
-            new DirectoryCreateFileAction(),
-            new DirectoryViewAction(),
-            new DirectoryUploadAction() // duplicate of create ?
-        };
     }
 }

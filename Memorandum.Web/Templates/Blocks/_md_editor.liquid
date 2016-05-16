@@ -52,7 +52,10 @@
 		});
 
 		$(".md-editor .save").click(function() {
-			
+			var val = $(".md-editor .md-raw").val();
+      $.post("{{Item.URL}}?action=save", { data: val })
+        //.done(function(data) { alert(data) })
+        .error(function(error) { console.log(error) });
 		});
-    }); 
+  }); 
 </script>

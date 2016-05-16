@@ -1,8 +1,8 @@
 ﻿using System;
 using System.IO;
 using Memorandum.Core.Domain.Files;
-using Memorandum.Web.Framework;
 using Memorandum.Web.Utitlities;
+using Shine;
 
 namespace Memorandum.Web.Creators
 {
@@ -21,9 +21,15 @@ namespace Memorandum.Web.Creators
                 throw new InvalidOperationException("Url is not set");
 
             var urlInfo = new UrlInfoParser(url);
-            var urlItem = new UrlFileItem(url, directory.Owner, Path.Combine(directory.RelativePath,"some" + DefaultExtension));
-            urlItem.Save();
-            return urlItem;
+
+            var item = FileItem.Create(directory.Owner, Path.Combine(directory.RelativePath, $"{urlInfo.FileName}.url"));
+            using (var writer = new StreamWriter(item.GetStream(FileMode.OpenOrCreate)))
+            {
+                writer.WriteLine("[InternetShortcut]");
+                writer.WriteLine($"URL={url}");
+            }
+            
+            return item;
         }
     }
 }

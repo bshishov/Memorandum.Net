@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using Memorandum.Web.Framework;
-using Memorandum.Web.Framework.Middleware;
-using Memorandum.Web.Framework.Responses;
+using Shine;
+using Shine.Middleware;
+using Shine.Responses;
 
 namespace Memorandum.Web.Middleware
 {

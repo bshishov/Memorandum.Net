@@ -14,7 +14,7 @@ namespace Memorandum.Core.Domain.Users
             Name = info.Name;
             BaseDirectory = info.BaseDirectory;
             Password = info.Password;
-            Base = new DirectoryItem(this, string.Empty);
+            Base = FileManager.GetDirectory(this, string.Empty);
         }
     }
 }

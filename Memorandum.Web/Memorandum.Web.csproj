@@ -39,6 +39,10 @@
       <HintPath>..\packages\DotLiquid.1.8.0\lib\NET45\DotLiquid.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="FastCGI, Version=1.2.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\FastCGI.1.2.0\lib\net45\FastCGI.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="HttpMultipartParser, Version=2.1.4.0, Culture=neutral, PublicKeyToken=6d293681fa6c7a03, processorArchitecture=MSIL">
       <HintPath>..\packages\HttpMultipartParser.2.1.4\lib\net40\HttpMultipartParser.dll</HintPath>
       <Private>True</Private>
@@ -59,12 +63,16 @@
       <HintPath>..\packages\Newtonsoft.Json.8.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Shine, Version=0.1.7.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Shine.0.1.7\lib\net45\Shine.dll</HintPath>
+    <Reference Include="Shine, Version=0.1.8.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Shine.0.1.8\lib\net45\Shine.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Shine.Templates.DotLiquid, Version=0.1.7.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Shine.Templates.DotLiquid.0.1.7\lib\net45\Shine.Templates.DotLiquid.dll</HintPath>
+    <Reference Include="Shine.FastCGI, Version=0.1.8.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Shine.FastCGI.0.1.8\lib\net45\Shine.FastCGI.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Shine.Templates.DotLiquid, Version=0.1.8.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Shine.Templates.DotLiquid.0.1.8\lib\net45\Shine.Templates.DotLiquid.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />

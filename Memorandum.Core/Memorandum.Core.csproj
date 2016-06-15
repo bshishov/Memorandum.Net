@@ -53,6 +53,10 @@
     <Compile Include="Domain\Files\IItem.cs" />
     <Compile Include="Domain\Files\YamlFileItem.cs" />
     <Compile Include="Domain\Permissions\PermissionManager.cs" />
+    <Compile Include="Domain\Users\Guest.cs" />
+    <Compile Include="Domain\Users\Sharing.cs" />
+    <Compile Include="Domain\Users\SharingInfo.cs" />
+    <Compile Include="Domain\Users\SharingType.cs" />
     <Compile Include="Domain\Users\User.cs" />
     <Compile Include="Domain\Users\UserInfo.cs" />
     <Compile Include="Domain\Users\UserManager.cs" />

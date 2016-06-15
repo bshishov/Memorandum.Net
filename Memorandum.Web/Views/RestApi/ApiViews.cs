@@ -33,7 +33,7 @@ namespace Memorandum.Web.Views.RestApi
 
                 if (request.PostArgs["username"] == null || request.PostArgs["password"] == null)
                     return new BadRequestApiResponse("Invalid creditentials");
-                var user = UserManager.Auth(request.PostArgs["username"], request.PostArgs["password"]);
+                var user = UserManager.AuthByPassword(request.PostArgs["username"], request.PostArgs["password"]);
                 if (user == null)
                     return new BadRequestApiResponse("Invalid creditentials");
                 var token = Guid.NewGuid().ToString();

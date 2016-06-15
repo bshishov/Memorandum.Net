@@ -22,5 +22,6 @@ namespace Memorandum.Core.Domain.Files
         IDirectoryItem GetParent();
 
         string GetHash();
+        bool Equals(IItem item);
     }
 }

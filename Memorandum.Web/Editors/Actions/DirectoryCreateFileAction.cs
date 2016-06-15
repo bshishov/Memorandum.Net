@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Memorandum.Core.Domain.Files;
+using Memorandum.Core.Domain.Permissions;
 using Memorandum.Core.Domain.Users;
 using Memorandum.Web.Creators;
 using Shine;
@@ -14,6 +15,9 @@ namespace Memorandum.Web.Editors.Actions
 
         public Response Do(IRequest request, User user, IDirectoryItem item)
         {
+            if (!user.CanWrite(item))
+                throw new InvalidOperationException("You don't have permission to create new files in this directory");
+
             var creator =
                 CreatorManager.Creators.FirstOrDefault(
                     c => c.Id.Equals(request.QuerySet["creator"].ToLowerInvariant()));

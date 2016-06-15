@@ -3,7 +3,7 @@
   <Profiles />
   <Settings>
     <Setting Name="Port" Type="System.Int32" Scope="Application">
-      <Value Profile="(Default)">19000</Value>
+      <Value Profile="(Default)">8888</Value>
     </Setting>
     <Setting Name="MediaPath" Type="System.String" Scope="Application">
       <Value Profile="(Default)">.\</Value>

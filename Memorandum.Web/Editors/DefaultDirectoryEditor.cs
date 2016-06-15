@@ -8,6 +8,7 @@ namespace Memorandum.Web.Editors
         public DefaultDirectoryEditor() : base(new DefaultDirectoryViewFactory(), 
             new ItemRenameAction(),
             new ItemDeleteAction(),
+            new ItemShareAction(),
             new DirectoryCreateFileAction(),
             new DirectoryViewAction(),
             new DirectoryUploadAction()

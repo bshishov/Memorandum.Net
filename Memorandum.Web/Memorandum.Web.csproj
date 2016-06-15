@@ -63,16 +63,16 @@
       <HintPath>..\packages\Newtonsoft.Json.8.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Shine, Version=0.1.8.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Shine.0.1.8\lib\net45\Shine.dll</HintPath>
+    <Reference Include="Shine, Version=0.1.9.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Shine.0.1.9\lib\net45\Shine.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Shine.FastCGI, Version=0.1.8.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Shine.FastCGI.0.1.8\lib\net45\Shine.FastCGI.dll</HintPath>
+    <Reference Include="Shine.FastCGI, Version=0.1.9.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Shine.FastCGI.0.1.9\lib\net45\Shine.FastCGI.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Shine.Templates.DotLiquid, Version=0.1.8.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Shine.Templates.DotLiquid.0.1.8\lib\net45\Shine.Templates.DotLiquid.dll</HintPath>
+    <Reference Include="Shine.Templates.DotLiquid, Version=0.1.9.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Shine.Templates.DotLiquid.0.1.9\lib\net45\Shine.Templates.DotLiquid.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -98,6 +98,7 @@
     <Compile Include="Creators\CreatorManager.cs" />
     <Compile Include="Creators\ICreator.cs" />
     <Compile Include="Creators\FileCreator.cs" />
+    <Compile Include="Editors\Actions\ItemShareAction.cs" />
     <Compile Include="Editors\EditorManager.cs" />
     <Compile Include="Editors\FileCodeEditor.cs" />
     <Compile Include="Editors\DefaultDirectoryEditor.cs" />
@@ -120,6 +121,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
+    <Compile Include="Utitlities\TemplateFilters.cs" />
     <Compile Include="Utitlities\UrlInfo.cs" />
     <Compile Include="ViewModels\CreatorViewModel.cs" />
     <Compile Include="ViewModels\DirectoryViewModel.cs" />
@@ -150,6 +152,11 @@
     <EmbeddedResource Include="Templates\Files\_url.liquid" />
     <EmbeddedResource Include="Templates\_file_layout.liquid" />
     <EmbeddedResource Include="Templates\_page_layout.liquid" />
+    <EmbeddedResource Include="Templates\Blocks\_share.liquid" />
+    <EmbeddedResource Include="Templates\_home.liquid" />
+    <None Include="Templates\Blocks\Thumbnails\_dir.liquid" />
+    <None Include="Templates\Blocks\Thumbnails\_file.liquid" />
+    <None Include="Templates\Blocks\Thumbnails\_image.liquid" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Properties\Settings.settings">

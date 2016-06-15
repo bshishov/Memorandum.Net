@@ -1,7 +1,10 @@
-﻿using Memorandum.Core.Domain.Files;
+﻿using System;
+using Memorandum.Core.Domain.Files;
+using Memorandum.Core.Domain.Permissions;
 using Memorandum.Core.Domain.Users;
 using Memorandum.Web.ViewModels;
 using Shine;
+using Shine.Middleware.CSRF;
 using Shine.Responses;
 
 namespace Memorandum.Web.Editors.Actions
@@ -29,12 +32,16 @@ namespace Memorandum.Web.Editors.Actions
 
         public Response Do(IRequest request, User user, IFileItem item)
         {
+            if (!user.CanRead(item))
+                throw new InvalidOperationException("You don't have permission to view this item");
+
             return new TemplatedResponse(Template, new
             {
                 Title = item.Name,
                 BaseDirectory = new DirectoryViewModel(item.GetParent()),
                 Item = _viewFactory.Create(item),
-                User = new UserViewModel(user)
+                User = new UserViewModel(user),
+                CsrfToken = CsrfMiddleware.GetToken(request)
             });
         }
     }

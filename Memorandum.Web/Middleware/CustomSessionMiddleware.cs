@@ -24,15 +24,15 @@ namespace Memorandum.Web.Middleware
             }
             set
             {
-                if (_user == null)
+                if ((_user == null || _user is Guest) && value != null)
                 {
                     Set(UserSessionKey, value.Name);
-                    _user = UserManager.Get(value.Name);
+                    _user = value;
                 }
-                else if(_user != null && value == null) // logout
+                else if (_user != null && !(_user is Guest) && value == null) // logout
                 {
                     Remove(UserSessionKey);
-                    _user = null;
+                    _user = UserManager.GuestAuth();
                 }
                 else
                 {
@@ -43,6 +43,7 @@ namespace Memorandum.Web.Middleware
 
         public CustomSessionContext(string key, DateTime expires) : base(key, expires)
         {
+            User = UserManager.GuestAuth();
         }
     }
 
@@ -56,7 +57,7 @@ namespace Memorandum.Web.Middleware
 
     class CustomSessionMiddleware : SessionMiddleware
     {
-        public CustomSessionMiddleware(ISessionStorage storage) : base(Settings.Default.Secret, storage, new CustomSessionFactory())
+        public CustomSessionMiddleware(ISessionStorage storage) : base(Settings.Default.Secret, storage, new CustomSessionFactory(), TimeSpan.FromDays(1))
         {
         }
 

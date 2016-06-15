@@ -17,6 +17,7 @@ namespace Memorandum.Core.Domain.Files
                     Load();
                 return _data;
             }
+            set { _data = value; }
         }
 
         public YamlFileItem(User user, string relativePath) : base(user, relativePath)

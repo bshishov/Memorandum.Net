@@ -126,5 +126,10 @@ namespace Memorandum.Core.Domain.Files
             Directory.CreateDirectory(dir.FileSystemPath);
             return dir;
         }
+
+        public bool Equals(IItem item)
+        {
+            return item.Owner.Equals(Owner) && item.RelativePath.Equals(RelativePath);
+        }
     }
 }

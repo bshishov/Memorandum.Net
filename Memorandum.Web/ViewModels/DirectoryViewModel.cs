@@ -14,6 +14,8 @@ namespace Memorandum.Web.ViewModels
         public bool IsRoot => _item.IsRoot;
         public FileItemViewModel Index { get; }
 
+        public override string ThumbnailTemplate => "Blocks/Thumbnails/dir";
+
         public List<DirectoryViewModel> ChildDirectories
         {
             get {

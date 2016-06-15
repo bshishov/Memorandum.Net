@@ -8,6 +8,7 @@ using Memorandum.Web.Editors;
 using Memorandum.Web.Middleware;
 using Shine;
 using Shine.Errors;
+using Shine.Middleware.CSRF;
 using Shine.Responses;
 using Shine.Routing;
 
@@ -17,7 +18,14 @@ namespace Memorandum.Web.Views
     {
         public static Response Home(IRequest request)
         {
-            if (((CustomSessionContext)request.Session).User != null)
+            var user = ((CustomSessionContext) request.Session).User;
+
+            if (user is Guest)
+            {
+                return new TemplatedResponse("home", new { Title = "Memorandum "});
+            }
+
+            if (user != null)
             {
                 return new RedirectResponse("/tree/" + ((CustomSessionContext)request.Session).User.Name + "/");
             }
@@ -29,18 +37,21 @@ namespace Memorandum.Web.Views
         {
             if (request.Method == "GET")
             {
-                if (((CustomSessionContext)request.Session).User != null)
+                var user = ((CustomSessionContext) request.Session).User;
+
+                if (user != null && !(user is Guest))
                     return new RedirectResponse("/");
 
                 return new TemplatedResponse("login", new
                 {
-                    Title = "Login"
+                    Title = "Login",
+                    CsrfToken = CsrfMiddleware.GetToken(request)
                 });
             }
 
             if (request.Method == "POST")
             {
-                var user = UserManager.Auth(request.PostArgs["username"], request.PostArgs["password"]);
+                var user = UserManager.AuthByPassword(request.PostArgs["username"], request.PostArgs["password"]);
                 if (user != null)
                 {
                     ((CustomSessionContext)request.Session).User = user;
@@ -64,17 +75,19 @@ namespace Memorandum.Web.Views
         private static Response TreeView(IRequest request, string[] args)
         {
             var user = ((CustomSessionContext) request.Session).User;
+
             if (user == null)
-                return new RedirectResponse("/login");
+                throw new InvalidOperationException("Unauthorized");
 
             if (string.IsNullOrEmpty(args[0]))
                 throw new InvalidOperationException("Missing args");
 
-            if (((CustomSessionContext)request.Session).User == null)
-                throw new InvalidOperationException("Unauthorized");
+            var owner = UserManager.Get(args[0]);
+            if (owner == null)
+                throw new Http404Exception("No such owner");
 
             var path = string.IsNullOrEmpty(args[1]) ? String.Empty : args[1];
-            var item = FileManager.Get(UserManager.Get(args[0]), WebUtility.UrlDecode(path));
+            var item = FileManager.Get(owner, WebUtility.UrlDecode(path));
 
             var action = "view"; // default action
             if (!string.IsNullOrEmpty(request.QuerySet["action"]))
@@ -87,9 +100,8 @@ namespace Memorandum.Web.Views
             if (item == null)
                 throw new Http404Exception("Item not found");
 
-            if (!PermissionManager.CanRead(item, user))
-                throw new InvalidOperationException("Access denied :)");
-
+            if (!user.CanRead(item))
+                throw new InvalidOperationException("You don't have permission to access this item");
             
             if (item.IsDirectory)
             {

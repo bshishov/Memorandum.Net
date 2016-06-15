@@ -8,7 +8,6 @@ namespace Memorandum.Web.Editors.Actions
 {
     class ItemDeleteAction : IItemAction<IItem>
     {
-        public string Editor => "item";
         public string Action => "delete";
 
         public bool CanHandle(IItem item)
@@ -18,6 +17,9 @@ namespace Memorandum.Web.Editors.Actions
 
         public Response Do(IRequest request, User user, IItem item)
         {
+            if (!user.Equals(item.Owner))
+                throw new InvalidOperationException("You don't have permission to delete this item");
+
             var dir = item as IDirectoryItem;
             if(dir != null && dir.IsRoot)
                 throw new InvalidOperationException("Cannot delete root folder");

@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace Memorandum.Core.Domain.Users
 {
+    /// <summary>
+    /// Serailizable class for storing user settings
+    /// </summary>
     public class UserInfo
     {
         public string Name { get; set; }
@@ -14,5 +13,6 @@ namespace Memorandum.Core.Domain.Users
         public string BaseDirectory { get; set; }
         public bool UseIpAuth { get; set; }
         public string IpAddress { get; set; }
+        public List<SharingInfo> Sharings { get; set; }
     }
 }

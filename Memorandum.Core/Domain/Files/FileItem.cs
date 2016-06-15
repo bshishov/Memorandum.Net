@@ -84,5 +84,10 @@ namespace Memorandum.Core.Domain.Files
             using (File.Create(item.FileSystemPath)) { }
             return item;
         }
+
+        public bool Equals(IItem item)
+        {
+            return item.Owner.Equals(Owner) && item.RelativePath.Equals(RelativePath);
+        }
     }
 }

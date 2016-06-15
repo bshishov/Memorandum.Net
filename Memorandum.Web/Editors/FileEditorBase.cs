@@ -9,6 +9,7 @@ namespace Memorandum.Web.Editors
         public static readonly IItemAction<IFileItem>[] DefaultActions = {
             new ItemRenameAction(),
             new ItemDeleteAction(),
+            new ItemShareAction(),
             new FileDownloadAction(),
             new FileRawAction()
         };

@@ -22,11 +22,13 @@ namespace Memorandum.Web.ViewModels
         public string Name => Item.Name;
         public DateTime Modified => Item.Modified;
         public bool IsDirectory => Item.IsDirectory;
-
+        public abstract string ThumbnailTemplate { get; }
+        public UserViewModel Owner => new UserViewModel(Item.Owner);
 
         private IEnumerable<DirectoryViewModel> _breadcrumbs;
         public IEnumerable<DirectoryViewModel> Breadcrumbs => _breadcrumbs ?? (_breadcrumbs = GetBreadcrumbs());
 
+        
         public IEnumerable<DirectoryViewModel> GetBreadcrumbs()
         {
             var bc = new List<DirectoryViewModel>();
@@ -43,5 +45,7 @@ namespace Memorandum.Web.ViewModels
 
             return bc;
         }
+
+        public IItem GetModel() => Item;
     }
 }

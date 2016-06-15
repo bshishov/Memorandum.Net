@@ -25,7 +25,7 @@ namespace Memorandum.Web.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("19000")]
+        [global::System.Configuration.DefaultSettingValueAttribute("8888")]
         public int Port {
             get {
                 return ((int)(this["Port"]));

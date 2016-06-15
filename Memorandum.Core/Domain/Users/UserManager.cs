@@ -11,8 +11,12 @@ namespace Memorandum.Core.Domain.Users
 {
     public static class UserManager
     {
+        private const string UsersFilePath = "users.memo";
+
         private static YamlFileItem<List<UserInfo>> UsersFile { get; }
-        public static IEnumerable<User> Users { get; }
+        private static List<User> _users { get; set; }
+
+        public static IEnumerable<User> Users => _users;
         public static User System { get; }
 
         static UserManager()
@@ -26,13 +30,17 @@ namespace Memorandum.Core.Domain.Users
                 UseIpAuth = true,
             });
 
-            UsersFile = new YamlFileItem<List<UserInfo>>(System, "users.memo");
-            Users = UsersFile.Data.Select(info => new User(info)).ToList();
+            UsersFile = new YamlFileItem<List<UserInfo>>(System, UsersFilePath);
         }
 
-        public static User Auth(string name, string password)
+        public static void Load()
         {
-            var user = Users.FirstOrDefault(u => u.Name.Equals(name));
+            _users = UsersFile.Data.Select(info => new User(info)).ToList();
+        }
+        
+        public static User AuthByPassword(string name, string password)
+        {
+            var user = Users.FirstOrDefault(u => u.UsePasswordAuth && u.Name.Equals(name));
             if (user == null)
                 throw new Exception("User not found");
 
@@ -53,6 +61,16 @@ namespace Memorandum.Core.Domain.Users
             throw new Exception("Password mismatch");
         }
 
+        public static User AuthByIp(string ip)
+        {
+            return Users.FirstOrDefault(u => u.UseIpAuth && u.IpAddress.Equals(ip));
+        }
+
+        public static Guest GuestAuth()
+        {
+            return new Guest("");
+        }
+
         public static User Create(string username, string password, string baseDirectory)
         {
             var info = new UserInfo()
@@ -62,14 +80,23 @@ namespace Memorandum.Core.Domain.Users
                 BaseDirectory = baseDirectory,
                 UsePasswordAuth = true
             };
-            UsersFile.Data.Add(info);
-            UsersFile.Save();
+            
             var user = new User(info);
+            _users.Add(user);
+            Save();
             return user;
+        }
+
+        public static void Save()
+        {
+            UsersFile.Data = _users.Select(u => (UserInfo)u).ToList();
+            UsersFile.Save();
         }
 
         public static User Get(string name)
         {
+            if(name.Equals("guest"))
+                return new Guest("");
             return Users.FirstOrDefault(u => u.Name.Equals(name));
         }
 

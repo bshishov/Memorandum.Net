@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using Memorandum.Core.Domain.Users;
@@ -12,6 +13,7 @@ namespace Memorandum.Core.Domain.Files
         public static IItem Get(User user, string relativePath)
         {
             var fullPath = Path.Combine(user.Base.FileSystemPath, relativePath);
+            
             var attr = File.GetAttributes(fullPath);
             if ((attr & FileAttributes.Directory) == FileAttributes.Directory)
             {
@@ -27,7 +29,8 @@ namespace Memorandum.Core.Domain.Files
             if (relativePath.StartsWith("/"))
                 relativePath = relativePath.Substring(1);
 
-            
+            if (string.IsNullOrEmpty(user.BaseDirectory))
+                return null;
 
             var item = new DirectoryItem(user, relativePath);
             var attr = File.GetAttributes(item.FileSystemPath);

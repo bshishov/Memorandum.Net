@@ -22,6 +22,8 @@ namespace Memorandum.Web.ViewModels
             }
         }
 
+        public override string ThumbnailTemplate => "Blocks/Thumbnails/image";
+
         public FileImageViewModel(IFileItem item) : base(item)
         {
             _thumbnail = $"{item.GetHash()}.png";

@@ -5,11 +5,13 @@ using Memorandum.Core.Domain.Users;
 using Memorandum.Core.Search;
 using Memorandum.Web.Middleware;
 using Memorandum.Web.Properties;
+using Memorandum.Web.Utitlities;
 using Memorandum.Web.ViewModels;
 using Memorandum.Web.Views;
 using Memorandum.Web.Views.RestApi;
 using Shine;
 using Shine.FastCGI;
+using Shine.Middleware.CSRF;
 using Shine.Responses;
 using Shine.Routing;
 using Shine.Server;
@@ -33,6 +35,8 @@ namespace Memorandum.Web
 
         private static int Runserver(RunServerOptions options)
         {
+            UserManager.Load();
+
             var router = new Router();
 
             if (Settings.Default.ServeStatic)
@@ -48,6 +52,7 @@ namespace Memorandum.Web
                 SearchManager.StartIndexingTask();
 
             var templateEngine = new DotLiquidTemplateProcessor("../../Templates");
+            templateEngine.RegisterFilters(typeof(TemplateFilters));
             templateEngine.RegisterSafeType<CreatorViewModel>();
             templateEngine.RegisterSafeType<DirectoryViewModel>();
             templateEngine.RegisterSafeType<FileImageViewModel>();
@@ -59,6 +64,7 @@ namespace Memorandum.Web
             var app = new App(router);
             app.SetTemplateProcessor(templateEngine);
             app.RegisterMiddleware(new CustomSessionMiddleware());
+            app.RegisterMiddleware(new CsrfMiddleware());
             app.RegisterMiddleware(new ApiMiddleware("/api"));
 
             app.ErrorHandler = (request, code, e) => new TemplatedResponse("error", new
@@ -73,7 +79,7 @@ namespace Memorandum.Web
             if (options.FastCGI)
                 server = new FastCGIServer(Settings.Default.Port);
             else
-                server = new HttpListenerServer($"http://127.0.0.1:{Settings.Default.Port}/");
+                server = new HttpListenerServer($"http://+:{Settings.Default.Port}/");
             server.Run(app);
             Console.ReadKey();
             return 0;

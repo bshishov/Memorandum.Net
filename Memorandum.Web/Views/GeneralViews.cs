@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Net;
 using Memorandum.Core.Domain.Files;
 using Memorandum.Core.Domain.Permissions;
@@ -16,7 +15,7 @@ namespace Memorandum.Web.Views
 {
     internal static class GeneralViews
     {
-        public static Response Home(IRequest request)
+        public static IResponse Home(IRequest request)
         {
             var user = ((CustomSessionContext) request.Session).User;
 
@@ -33,7 +32,7 @@ namespace Memorandum.Web.Views
             return new RedirectResponse("/login");
         }
 
-        public static Response Login(IRequest request)
+        public static IResponse Login(IRequest request)
         {
             if (request.Method == "GET")
             {
@@ -42,6 +41,7 @@ namespace Memorandum.Web.Views
                 if (user != null && !(user is Guest))
                     return new RedirectResponse("/");
 
+                Console.WriteLine(CsrfMiddleware.GetToken(request));
                 return new TemplatedResponse("login", new
                 {
                     Title = "Login",
@@ -61,7 +61,7 @@ namespace Memorandum.Web.Views
             return new RedirectResponse("/");
         }
 
-        public static Response Logout(IRequest request)
+        public static IResponse Logout(IRequest request)
         {
             if (((CustomSessionContext)request.Session).User != null)
             {
@@ -72,7 +72,7 @@ namespace Memorandum.Web.Views
             return new RedirectResponse("/");
         }
 
-        private static Response TreeView(IRequest request, string[] args)
+        private static IResponse TreeView(IRequest request, string[] args)
         {
             var user = ((CustomSessionContext) request.Session).User;
 
@@ -127,12 +127,10 @@ namespace Memorandum.Web.Views
             }
         }
      
-        public static Router Router = new Router(new List<IRoute>
-        {
+        public static Router Router = new Router(
             new Route("^/?$", Home),
             new Route("^/login$", Login),
             new Route("^/logout$", Logout),
-            new RouteWithArg("/tree/([a-z]+)/([^?]+)?", TreeView),
-        });
+            new RouteWithArg("/tree/([a-z]+)/([^?]+)?", TreeView));
     }
 }

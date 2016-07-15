@@ -1,5 +1,4 @@
-﻿using DotLiquid;
-using Memorandum.Core.Domain.Users;
+﻿using Memorandum.Core.Domain.Users;
 
 namespace Memorandum.Web.ViewModels
 {

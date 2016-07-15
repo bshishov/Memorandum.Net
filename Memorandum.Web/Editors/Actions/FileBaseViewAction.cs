@@ -30,7 +30,7 @@ namespace Memorandum.Web.Editors.Actions
             return new FileItemViewModel(item);
         }
 
-        public Response Do(IRequest request, User user, IFileItem item)
+        public IResponse Do(IRequest request, User user, IFileItem item)
         {
             if (!user.CanRead(item))
                 throw new InvalidOperationException("You don't have permission to view this item");

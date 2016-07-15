@@ -16,7 +16,7 @@ namespace Memorandum.Web.Editors.Actions
             return item.Exists;
         }
 
-        public Response Do(IRequest request, User user, IItem item)
+        public IResponse Do(IRequest request, User user, IItem item)
         {
             if (!user.CanWrite(item))
                 throw new InvalidOperationException("You don't have permission to edit this file");

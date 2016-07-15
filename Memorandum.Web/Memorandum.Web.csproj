@@ -35,20 +35,8 @@
     <Reference Include="CommandLine">
       <HintPath>..\packages\CommandLineParser.2.0.275-beta\lib\net45\CommandLine.dll</HintPath>
     </Reference>
-    <Reference Include="DotLiquid, Version=1.8.0.0, Culture=neutral, PublicKeyToken=82e46016ecf9f07c, processorArchitecture=MSIL">
-      <HintPath>..\packages\DotLiquid.1.8.0\lib\NET45\DotLiquid.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="FastCGI, Version=1.2.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\FastCGI.1.2.0\lib\net45\FastCGI.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="HttpMultipartParser, Version=2.1.4.0, Culture=neutral, PublicKeyToken=6d293681fa6c7a03, processorArchitecture=MSIL">
       <HintPath>..\packages\HttpMultipartParser.2.1.4\lib\net40\HttpMultipartParser.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.0.518, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
-      <HintPath>..\packages\SharpZipLib.0.86.0\lib\20\ICSharpCode.SharpZipLib.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="itextsharp, Version=5.5.8.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
@@ -63,22 +51,9 @@
       <HintPath>..\packages\Newtonsoft.Json.8.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Shine, Version=0.1.9.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Shine.0.1.9\lib\net45\Shine.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Shine.FastCGI, Version=0.1.9.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Shine.FastCGI.0.1.9\lib\net45\Shine.FastCGI.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Shine.Templates.DotLiquid, Version=0.1.9.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Shine.Templates.DotLiquid.0.1.9\lib\net45\Shine.Templates.DotLiquid.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
-    <Reference Include="System.Runtime.Serialization" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Editors\Actions\DirectoryUploadAction.cs" />
@@ -121,7 +96,6 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Include="Utitlities\TemplateFilters.cs" />
     <Compile Include="Utitlities\UrlInfo.cs" />
     <Compile Include="ViewModels\CreatorViewModel.cs" />
     <Compile Include="ViewModels\DirectoryViewModel.cs" />
@@ -141,7 +115,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="packages.config" />
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
     <EmbeddedResource Include="Templates\_item_layout.liquid" />
     <EmbeddedResource Include="Templates\_dir.liquid" />
     <EmbeddedResource Include="Templates\Blocks\Forms\_text_file.liquid" />
@@ -154,9 +130,9 @@
     <EmbeddedResource Include="Templates\_page_layout.liquid" />
     <EmbeddedResource Include="Templates\Blocks\_share.liquid" />
     <EmbeddedResource Include="Templates\_home.liquid" />
-    <None Include="Templates\Blocks\Thumbnails\_dir.liquid" />
-    <None Include="Templates\Blocks\Thumbnails\_file.liquid" />
-    <None Include="Templates\Blocks\Thumbnails\_image.liquid" />
+    <EmbeddedResource Include="Templates\Blocks\Thumbnails\_dir.liquid" />
+    <EmbeddedResource Include="Templates\Blocks\Thumbnails\_file.liquid" />
+    <EmbeddedResource Include="Templates\Blocks\Thumbnails\_image.liquid" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Properties\Settings.settings">
@@ -172,6 +148,18 @@
     <EmbeddedResource Include="Templates\_login.liquid" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Shine\src\Shine.FastCGI\Shine.FastCGI.csproj">
+      <Project>{26d9c994-0365-4ca1-bfba-b93fdfb0ea96}</Project>
+      <Name>Shine.FastCGI</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Shine\src\Shine.Templates.DotLiquid\Shine.Templates.DotLiquid.csproj">
+      <Project>{e7e22edc-fd4b-44f5-8404-e41266c2781c}</Project>
+      <Name>Shine.Templates.DotLiquid</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Shine\src\Shine\Shine.csproj">
+      <Project>{bac5f444-4a63-4240-b923-28dfeed918c5}</Project>
+      <Name>Shine</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Memorandum.Core\Memorandum.Core.csproj">
       <Project>{f4bf3ea8-2436-4bc5-8fb4-8d2c603b77ec}</Project>
       <Name>Memorandum.Core</Name>
@@ -185,7 +173,7 @@
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>

@@ -9,6 +9,6 @@ namespace Memorandum.Web.Editors.Actions
         where T : IItem
     {
         string Action { get; }
-        Response Do(IRequest request, User user, T item);
+        IResponse Do(IRequest request, User user, T item);
     }
 }

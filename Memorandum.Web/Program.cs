@@ -1,14 +1,15 @@
 ﻿using System;
 using System.IO;
 using CommandLine;
+
 using Memorandum.Core.Domain.Users;
 using Memorandum.Core.Search;
 using Memorandum.Web.Middleware;
 using Memorandum.Web.Properties;
-using Memorandum.Web.Utitlities;
 using Memorandum.Web.ViewModels;
 using Memorandum.Web.Views;
 using Memorandum.Web.Views.RestApi;
+
 using Shine;
 using Shine.FastCGI;
 using Shine.Middleware.CSRF;
@@ -41,18 +42,22 @@ namespace Memorandum.Web
 
             if (Settings.Default.ServeStatic)
             {
-                router.Bind("^/static", new StaticServeRouter(Settings.Default.StaticPath));
-                router.Bind("^/media", new StaticServeRouter(Settings.Default.MediaPath));
+                router.Routables.Add(new StaticServeRouter("^/static", Settings.Default.StaticPath));
+                router.Routables.Add(new StaticServeRouter("^/media", Settings.Default.MediaPath));
             }
 
-            router.Bind("^/api", ApiViews.Router);
-            router.Bind(String.Empty, GeneralViews.Router);
+            router.Routables.Add(ApiViews.Router);
+            router.Routables.Add(GeneralViews.Router);
+
+            ApiViews.Router.RegisterMiddleware(new ApiMiddleware());
+
+            GeneralViews.Router.RegisterMiddleware(new CustomSessionMiddleware());
+            GeneralViews.Router.RegisterMiddleware(new CsrfMiddleware(Settings.Default.Secret));
 
             if (options.ForceReindex)
                 SearchManager.StartIndexingTask();
 
             var templateEngine = new DotLiquidTemplateProcessor("../../Templates");
-            templateEngine.RegisterFilters(typeof(TemplateFilters));
             templateEngine.RegisterSafeType<CreatorViewModel>();
             templateEngine.RegisterSafeType<DirectoryViewModel>();
             templateEngine.RegisterSafeType<FileImageViewModel>();
@@ -63,9 +68,6 @@ namespace Memorandum.Web
 
             var app = new App(router);
             app.SetTemplateProcessor(templateEngine);
-            app.RegisterMiddleware(new CustomSessionMiddleware());
-            app.RegisterMiddleware(new CsrfMiddleware());
-            app.RegisterMiddleware(new ApiMiddleware("/api"));
 
             app.ErrorHandler = (request, code, e) => new TemplatedResponse("error", new
             {

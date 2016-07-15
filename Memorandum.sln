@@ -7,6 +7,16 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Memorandum.Core", "Memorand
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Memorandum.Web", "Memorandum.Web\Memorandum.Web.csproj", "{30DD4420-6808-4F21-A8AF-DBE08EC1B5BC}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shine", "Shine", "{6FA48811-42A9-4378-BD55-811D6739F283}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shine", "..\Shine\src\Shine\Shine.csproj", "{BAC5F444-4A63-4240-B923-28DFEED918C5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shine.FastCGI", "..\Shine\src\Shine.FastCGI\Shine.FastCGI.csproj", "{26D9C994-0365-4CA1-BFBA-B93FDFB0EA96}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shine.Templates.DotLiquid", "..\Shine\src\Shine.Templates.DotLiquid\Shine.Templates.DotLiquid.csproj", "{E7E22EDC-FD4B-44F5-8404-E41266C2781C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shine.AspNet", "..\Shine\src\Shine.AspNet\Shine.AspNet.csproj", "{C6F1AE1A-C285-4261-99C1-4A0B15879ADD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,8 +31,30 @@ Global
 		{30DD4420-6808-4F21-A8AF-DBE08EC1B5BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{30DD4420-6808-4F21-A8AF-DBE08EC1B5BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{30DD4420-6808-4F21-A8AF-DBE08EC1B5BC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BAC5F444-4A63-4240-B923-28DFEED918C5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BAC5F444-4A63-4240-B923-28DFEED918C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BAC5F444-4A63-4240-B923-28DFEED918C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BAC5F444-4A63-4240-B923-28DFEED918C5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{26D9C994-0365-4CA1-BFBA-B93FDFB0EA96}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{26D9C994-0365-4CA1-BFBA-B93FDFB0EA96}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{26D9C994-0365-4CA1-BFBA-B93FDFB0EA96}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{26D9C994-0365-4CA1-BFBA-B93FDFB0EA96}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E7E22EDC-FD4B-44F5-8404-E41266C2781C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E7E22EDC-FD4B-44F5-8404-E41266C2781C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E7E22EDC-FD4B-44F5-8404-E41266C2781C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E7E22EDC-FD4B-44F5-8404-E41266C2781C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C6F1AE1A-C285-4261-99C1-4A0B15879ADD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C6F1AE1A-C285-4261-99C1-4A0B15879ADD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C6F1AE1A-C285-4261-99C1-4A0B15879ADD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C6F1AE1A-C285-4261-99C1-4A0B15879ADD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{BAC5F444-4A63-4240-B923-28DFEED918C5} = {6FA48811-42A9-4378-BD55-811D6739F283}
+		{26D9C994-0365-4CA1-BFBA-B93FDFB0EA96} = {6FA48811-42A9-4378-BD55-811D6739F283}
+		{E7E22EDC-FD4B-44F5-8404-E41266C2781C} = {6FA48811-42A9-4378-BD55-811D6739F283}
+		{C6F1AE1A-C285-4261-99C1-4A0B15879ADD} = {6FA48811-42A9-4378-BD55-811D6739F283}
 	EndGlobalSection
 EndGlobal

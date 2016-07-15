@@ -15,7 +15,7 @@ namespace Memorandum.Web.Editors.Actions
             return item.Exists;
         }
 
-        public Response Do(IRequest request, User user, IItem item)
+        public IResponse Do(IRequest request, User user, IItem item)
         {
             if (!user.Equals(item.Owner))
                 throw new InvalidOperationException("Only owner of this item can share it");

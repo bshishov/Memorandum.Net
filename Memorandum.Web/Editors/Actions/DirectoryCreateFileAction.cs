@@ -13,7 +13,7 @@ namespace Memorandum.Web.Editors.Actions
     {
         public string Action => "create";
 
-        public Response Do(IRequest request, User user, IDirectoryItem item)
+        public IResponse Do(IRequest request, User user, IDirectoryItem item)
         {
             if (!user.CanWrite(item))
                 throw new InvalidOperationException("You don't have permission to create new files in this directory");

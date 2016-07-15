@@ -10,9 +10,9 @@ namespace Memorandum.Web.Views.RestApi
 {
     internal static class ApiViews
     {
-        private static Response ApiHome(IRequest request)
+        private static IResponse ApiHome(IRequest request)
         {
-            // TODO: describe router | pass Router
+            // TODO: describe OldRouter | pass OldRouter
             return new ApiResponse(new
             {
                 Auth = "/auth (POST)",
@@ -24,7 +24,7 @@ namespace Memorandum.Web.Views.RestApi
         }
 
      
-        private static Response Auth(IRequest request)
+        private static IResponse Auth(IRequest request)
         {
             if (request.Method == "POST")
             {
@@ -44,22 +44,9 @@ namespace Memorandum.Web.Views.RestApi
             return new BadRequestApiResponse();
         }
 
-        public static Router Router = new Router(new List<IRoute>
-        {
+        public static Router Router = new Router("^/api",
             new Route("/auth", Auth),
-            /*
-            new Route("/search", Search),
-
-            new RouteWithArg("/links/([0-9]+)", LinkView),
-            new Route("/links", LinksView),
-
-            new RouteWithArg("/([a-z]+)/([^/]+)/([a-z]+)", ProviderNodeAction),
-            new RouteWithArg("/([a-z]+)/([^/]+)", ProviderNode),
-            new RouteWithArg("/([a-z]+)", Provider),
-
-            new RouteWithArg("/([a-z]+)/(.+)/links", NodeLinksView),*/
-
-            new Route("/", ApiHome),
-        });
+            new Route("/", ApiHome)
+        );
     }
 }
